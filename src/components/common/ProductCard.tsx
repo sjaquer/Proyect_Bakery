@@ -1,7 +1,7 @@
 import React from 'react';
 import { Plus, Minus, ShoppingCart } from 'lucide-react';
 import { Product } from '../../types';
-import useStore from '../../store/useStore';
+import { useStore } from '../../store/useStore'; // Corregida la importación
 
 interface ProductCardProps {
   product: Product;

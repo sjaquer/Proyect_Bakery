@@ -1,4 +1,5 @@
 import React from 'react';
+import { useStore } from '../../../store/useStore'; // Corregida la importación
 import {
   Chart as ChartJS,
   CategoryScale,

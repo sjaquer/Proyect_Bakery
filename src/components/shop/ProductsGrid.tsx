@@ -1,4 +1,5 @@
 import React from 'react';
+import { useStore } from '../../store/useStore'; // Corregida la importación
 import ProductCard from '../common/ProductCard';
 import { Product } from '../../types';
 

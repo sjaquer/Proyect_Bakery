@@ -1,2 +1,0 @@
-Admin: username: "admin", password: "admin123"
-Manager: username: "manager", password: "manager123"

@@ -1,39 +1,33 @@
+// src/App.tsx
+
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/common/Header';
 import ShopPage from './pages/ShopPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
-import AdminPage from './pages/AdminPage';
 import OrdersPage from './pages/OrdersPage';
-import ProtectedRoute from './components/auth/ProtectedRoute';
+import AdminPage from './pages/AdminPage';
+import ProductManagementPage from './pages/ProductManagementPage'; // <— nuevo
+import LoginPage from './pages/LoginPage';
+import PrivateRoute from './components/common/PrivateRoute';
 
-function App() {
+const App: React.FC = () => {
   return (
     <Router>
+      <Header />
       <Routes>
         <Route path="/" element={<ShopPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
-        <Route 
-          path="/admin" 
-          element={
-            <ProtectedRoute requiredRole="admin">
-              <AdminPage />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/orders" 
-          element={
-            <ProtectedRoute>
-              <OrdersPage />
-            </ProtectedRoute>
-          } 
-        />
-        <Route path="*" element={<Navigate to="/\" replace />} />
+        <Route path="/orders" element={<PrivateRoute role="customer"><OrdersPage /></PrivateRoute>} />
+        <Route path="/admin" element={<PrivateRoute role="admin"><AdminPage /></PrivateRoute>} />
+        <Route path="/admin/products" element={<PrivateRoute role="admin"><ProductManagementPage /></PrivateRoute> } />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </Router>
+    
   );
-}
+};
 
 export default App;

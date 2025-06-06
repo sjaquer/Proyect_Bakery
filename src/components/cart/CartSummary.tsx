@@ -1,17 +1,15 @@
 import React from 'react';
 import { ShoppingBag } from 'lucide-react';
-import useStore from '../../store/useStore';
+import { useStore } from '../../store/useStore'; // Corregida la importación
 
 interface CartSummaryProps {
   onProceedToCheckout: () => void;
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({ onProceedToCheckout }) => {
-  const cart = useStore((state) => state.cart);
-  const calculateCartTotal = useStore((state) => state.calculateCartTotal);
-  
-  const cartTotal = calculateCartTotal();
-  const itemCount = cart.reduce((count, item) => count + item.quantity, 0);
+  const rawCartItems = useStore((state) => state.cartItems);
+  const cartItems = Array.isArray(rawCartItems) ? rawCartItems : [];
+  const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
   return (
     <div className="bg-white rounded-lg shadow-md p-6 h-fit sticky top-20">
@@ -20,7 +18,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ onProceedToCheckout }) => {
       <div className="space-y-3 mb-6">
         <div className="flex justify-between text-gray-600">
           <span>Subtotal</span>
-          <span>S/ {cartTotal.toFixed(2)}</span>
+          <span>S/ {total.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-gray-600">
           <span>Impuestos</span>
@@ -32,20 +30,20 @@ const CartSummary: React.FC<CartSummaryProps> = ({ onProceedToCheckout }) => {
       <div className="border-t border-gray-200 pt-4">
         <div className="flex justify-between font-semibold text-lg mb-6">
           <span>Total</span>
-          <span className="text-primary-700">S/ {cartTotal.toFixed(2)}</span>
+          <span className="text-primary-700">S/ {total.toFixed(2)}</span>
         </div>
         
         <button
           onClick={onProceedToCheckout}
-          disabled={cart.length === 0}
+          disabled={cartItems.length === 0}
           className={`w-full py-3 rounded-md flex items-center justify-center ${
-            cart.length === 0
+            cartItems.length === 0
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
               : 'bg-primary-700 text-white hover:bg-primary-800 transition-colors'
           }`}
         >
           <ShoppingBag className="h-5 w-5 mr-2" />
-          Proceder al pago {itemCount > 0 && `(${itemCount})`}
+          Proceder al pago {cartItems.reduce((count, item) => count + item.quantity, 0) > 0 && `(${cartItems.reduce((count, item) => count + item.quantity, 0)})`}
         </button>
       </div>
       

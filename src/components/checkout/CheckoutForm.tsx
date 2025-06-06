@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapPin, CreditCard, AlertCircle } from 'lucide-react';
-import useStore from '../../store/useStore';
+import { useStore } from '../../store/useStore'; // Corregida la importación
 
 interface CheckoutFormProps {
   onPlaceOrder: () => void;

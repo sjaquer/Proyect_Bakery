@@ -1,60 +1,77 @@
-import React, { useState } from 'react';
-import { Search } from 'lucide-react';
-import Layout from '../components/common/Layout';
-import CategorySidebar from '../components/common/CategorySidebar';
-import ProductsGrid from '../components/shop/ProductsGrid';
-import useStore from '../store/useStore';
+// src/pages/ShopPage.tsx
+
+import React, { useEffect, useState } from 'react';
+import { useStore } from '../store/useStore';
 
 const ShopPage: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  
-  const products = useStore((state) => state.products);
-  
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch && product.isAvailable;
+  const products = useStore(state => state.products);
+  const fetchProducts = useStore(state => state.fetchProducts);
+  const addToCart = useStore(state => state.addToCart);
+
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  // Filtrado por categoría y búsqueda
+  const filtered = products.filter(prod => {
+    const matchCategory = activeCategory === 'all' || prod.category === activeCategory;
+    const matchSearch = prod.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchCategory && matchSearch;
   });
-  
+
+  const handleAddToCart = (product: typeof products[0]) => {
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      price: typeof product.price === 'string' 
+        ? parseFloat(product.price) 
+        : product.price,
+      quantity: 1,
+    });
+  };
+
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-display font-bold text-gray-800 mb-2">Nuestros Productos</h1>
-          <p className="text-gray-600">Descubre nuestra variedad de panes y pasteles artesanales</p>
-        </div>
-        
-        <div className="relative mb-8">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            type="text"
-            placeholder="Buscar productos..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          />
-        </div>
-        
-        <div className="flex flex-col md:flex-row gap-8">
-          <div className="w-full md:w-64 flex-shrink-0">
-            <CategorySidebar
-              activeCategory={activeCategory}
-              onSelectCategory={setActiveCategory}
-            />
-          </div>
-          
-          <div className="flex-grow">
-            <ProductsGrid
-              products={filteredProducts}
-              category={activeCategory}
-            />
-          </div>
-        </div>
+    <div className="container mx-auto p-4">
+      <div className="mb-4 flex justify-between">
+        <select
+          value={activeCategory}
+          onChange={e => setActiveCategory(e.target.value)}
+          className="border rounded p-2"
+        >
+          <option value="all">Todos</option>
+          <option value="bread">Bread</option>
+          <option value="sweet">Sweet</option>
+          <option value="special">Special</option>
+        </select>
+        <input
+          type="text"
+          placeholder="Buscar producto..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className="border rounded p-2 w-1/3"
+        />
       </div>
-    </Layout>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filtered.map(prod => (
+          <div key={prod.id} className="border rounded p-4 shadow-sm">
+            <h3 className="text-xl font-semibold">{prod.name}</h3>
+            <p className="text-gray-600">{prod.description}</p>
+            <p className="mt-2 font-bold">${prod.price}</p>
+            <button
+              onClick={() => handleAddToCart(prod)}
+              className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              disabled={prod.stock === 0}
+            >
+              {prod.stock === 0 ? 'Agotado' : 'Agregar al carrito'}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 

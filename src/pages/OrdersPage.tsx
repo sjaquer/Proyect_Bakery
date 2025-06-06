@@ -1,71 +1,57 @@
-import React from 'react';
-import Layout from '../components/common/Layout';
-import OrdersBoard from '../components/orders/OrdersBoard';
-import useStore from '../store/useStore';
+// src/pages/OrdersPage.tsx
+
+import React, { useEffect } from 'react';
+import { useStore } from '../store/useStore';
+import { useNavigate } from 'react-router-dom';
 
 const OrdersPage: React.FC = () => {
-  const orders = useStore((state) => state.orders);
-  const updateOrderStatus = useStore((state) => state.updateOrderStatus);
-  
-  const handleAdvanceOrder = (orderId: string) => {
-    const order = orders.find((o) => o.id === orderId);
-    if (!order) return;
-    
-    let nextStatus;
-    switch (order.status) {
-      case 'pending':
-        nextStatus = 'accepted';
-        break;
-      case 'accepted':
-        nextStatus = 'dispatched';
-        break;
-      case 'dispatched':
-        nextStatus = 'concluded';
-        break;
-      default:
-        return;
+  const user = useStore(state => state.user);
+  const customerOrders = useStore(state => state.customerOrders);
+  const fetchCustomerOrders = useStore(state => state.fetchCustomerOrders);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+      return;
     }
-    
-    updateOrderStatus(orderId, nextStatus);
-  };
-  
-  const handleRevertOrder = (orderId: string) => {
-    const order = orders.find((o) => o.id === orderId);
-    if (!order) return;
-    
-    let previousStatus;
-    switch (order.status) {
-      case 'accepted':
-        previousStatus = 'pending';
-        break;
-      case 'dispatched':
-        previousStatus = 'accepted';
-        break;
-      case 'concluded':
-        previousStatus = 'dispatched';
-        break;
-      default:
-        return;
-    }
-    
-    updateOrderStatus(orderId, previousStatus);
-  };
-  
+    fetchCustomerOrders(user.id);
+  }, [user, fetchCustomerOrders, navigate]);
+
+  if (!user) {
+    return null;
+  }
+
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-display font-bold text-gray-800 mb-2">Gestión de Pedidos</h1>
-          <p className="text-gray-600">Administre los pedidos y su estado en tiempo real</p>
-        </div>
-        
-        <OrdersBoard
-          orders={orders}
-          onAdvanceOrder={handleAdvanceOrder}
-          onRevertOrder={handleRevertOrder}
-        />
-      </div>
-    </Layout>
+    <div className="container mx-auto p-4">
+      <h2 className="text-2xl font-semibold mb-4">Mis Pedidos</h2>
+      {customerOrders.length === 0 ? (
+        <p>No tienes pedidos todavía.</p>
+      ) : (
+        customerOrders.map(order => (
+          <div key={order.id} className="border rounded p-4 mb-4">
+            <p>
+              <span className="font-medium">Pedido #{order.id}</span>{' '}
+              <span className="text-gray-600">
+                ({new Date(order.createdAt).toLocaleString()})
+              </span>
+            </p>
+            <p>Estado: <strong>{order.status}</strong></p>
+            <p>Total: ${order.total}</p>
+            <div className="mt-2">
+              <p className="font-medium">Productos:</p>
+              <ul className="list-disc list-inside">
+                {order.orderItems.map((item: any) => (
+                  <li key={item.id}>
+                    {item.quantity} × {item.product.name} (${item.priceUnit})
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
   );
 };
 

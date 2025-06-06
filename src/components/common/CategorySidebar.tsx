@@ -1,4 +1,5 @@
 import React from 'react';
+import { useStore } from '../../store/useStore'; // Corregida la importación
 import { CakeSlice, Heading as Bread, Coffee, Sandwich, ShoppingBag, Star } from 'lucide-react';
 
 interface CategorySidebarProps {

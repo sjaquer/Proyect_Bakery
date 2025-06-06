@@ -1,196 +1,264 @@
+// src/store/useStore.ts
+// ---------------------
+// Store de Zustand para el frontend (consumiendo el backend).
+// Ahora incluye CRUD completo de productos, además de órdenes y autenticación.
+
 import { create } from 'zustand';
-import { mockProducts, mockOrders, mockCustomers, mockDashboardStats } from '../data/mock-data';
-import { Product, Order, OrderStatus, Customer, CartItem, PaymentMethod, DashboardStats } from '../types';
+import api from '../api/axiosConfig';
 
-interface StoreState {
-  // Products
+export type CartItem = {
+  productId: number;
+  name: string;
+  price: number;
+  quantity: number;
+};
+
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'customer';
+};
+
+export type Product = {
+  id: number;
+  name: string;
+  description: string;
+  price: number | string;
+  stock: number;
+  category: string;
+  imageUrl: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+type State = {
+  // =========================
+  // Productos
   products: Product[];
-  addProduct: (product: Product) => void;
-  updateProduct: (id: string, updates: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
-  
-  // Orders
-  orders: Order[];
-  addOrder: (order: Order) => void;
-  updateOrderStatus: (id: string, status: OrderStatus) => void;
-  getOrdersByStatus: (status: OrderStatus) => Order[];
-  
-  // Cart
-  cart: CartItem[];
-  addToCart: (product: Product, quantity: number) => void;
-  removeFromCart: (productId: string) => void;
-  updateCartItemQuantity: (productId: string, quantity: number) => void;
-  clearCart: () => void;
-  
-  // Customers
-  customers: Customer[];
-  addCustomer: (customer: Customer) => void;
-  updateCustomer: (id: string, updates: Partial<Customer>) => void;
-  
-  // Checkout
-  customerName: string;
-  customerWhatsapp: string;
-  customerAddress: string;
-  isDelivery: boolean;
-  paymentMethod: PaymentMethod;
-  cashAmount: number;
-  setCustomerName: (name: string) => void;
-  setCustomerWhatsapp: (whatsapp: string) => void;
-  setCustomerAddress: (address: string) => void;
-  setIsDelivery: (isDelivery: boolean) => void;
-  setPaymentMethod: (method: PaymentMethod) => void;
-  setCashAmount: (amount: number) => void;
-  
-  // Analytics
-  dashboardStats: DashboardStats;
-  
-  // Helper methods
-  calculateCartTotal: () => number;
-  createNewOrder: () => Order | null;
-}
+  fetchProducts: () => Promise<void>;
+  createProduct: (data: {
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
+    category: string;
+    imageUrl: string;
+  }) => Promise<void>;
+  updateProduct: (
+    id: number,
+    data: {
+      name?: string;
+      description?: string;
+      price?: number;
+      stock?: number;
+      category?: string;
+      imageUrl?: string;
+    }
+  ) => Promise<void>;
+  deleteProduct: (id: number) => Promise<void>;
 
-const useStore = create<StoreState>((set, get) => ({
-  // Products
-  products: mockProducts,
-  addProduct: (product) => set((state) => ({ products: [...state.products, product] })),
-  updateProduct: (id, updates) => set((state) => ({
-    products: state.products.map((product) => 
-      product.id === id ? { ...product, ...updates } : product
-    ),
-  })),
-  deleteProduct: (id) => set((state) => ({
-    products: state.products.filter((product) => product.id !== id),
-  })),
-  
-  // Orders
-  orders: mockOrders,
-  addOrder: (order) => set((state) => ({ orders: [...state.orders, order] })),
-  updateOrderStatus: (id, status) => set((state) => ({
-    orders: state.orders.map((order) => {
-      if (order.id === id) {
-        const statusHistory = [
-          ...order.statusHistory,
-          { status, timestamp: new Date() },
-        ];
-        return { 
-          ...order, 
-          status, 
-          statusHistory,
-          updatedAt: new Date() 
-        };
+  // =========================
+  // Carrito
+  cartItems: CartItem[];
+  addToCart: (item: CartItem) => void;
+  updateCartItemQuantity: (productId: number, quantity: number) => void;
+  removeFromCart: (productId: number) => void;
+  clearCart: () => void;
+  getCartTotal: () => number;
+
+  // =========================
+  // Autenticación
+  user: User | null;
+  token: string | null;
+  login: (email: string, password: string) => Promise<void>;
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    role?: 'customer'
+  ) => Promise<void>;
+  logout: () => void;
+
+  // =========================
+  // Órdenes de cliente
+  customerOrders: any[];
+  fetchCustomerOrders: (clientId: number) => Promise<void>;
+
+  // =========================
+  // Órdenes admin
+  allOrders: any[];
+  fetchAllOrders: () => Promise<void>;
+  updateOrderStatus: (orderId: number, newStatus: string) => Promise<void>;
+};
+
+export const useStore = create<State>((set, get) => ({
+  // =========================
+  // Productos
+  products: [],
+  fetchProducts: async () => {
+    try {
+      const resp = await api.get('/products');
+      set({ products: resp.data });
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  },
+  createProduct: async (data) => {
+    try {
+      await api.post('/products', data);
+      // Refrescar listado
+      get().fetchProducts();
+    } catch (error) {
+      console.error('Error creating product:', error);
+      throw error;
+    }
+  },
+  updateProduct: async (id, data) => {
+    try {
+      await api.put(`/products/${id}`, data);
+      // Refrescar listado
+      get().fetchProducts();
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw error;
+    }
+  },
+  deleteProduct: async (id) => {
+    try {
+      await api.delete(`/products/${id}`);
+      // Refrescar listado
+      get().fetchProducts();
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      throw error;
+    }
+  },
+
+  // =========================
+  // Carrito
+  cartItems: (() => {
+    try {
+      const stored = localStorage.getItem('cart');
+      const parsed = JSON.parse(stored || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  })(),
+  addToCart: (item) => {
+    set((state) => {
+      const exists = state.cartItems.find(ci => ci.productId === item.productId);
+      let updatedCart;
+      if (exists) {
+        updatedCart = state.cartItems.map(ci =>
+          ci.productId === item.productId
+            ? { ...ci, quantity: ci.quantity + item.quantity }
+            : ci
+        );
+      } else {
+        updatedCart = [...state.cartItems, item];
       }
-      return order;
-    }),
-  })),
-  getOrdersByStatus: (status) => {
-    return get().orders.filter((order) => order.status === status);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      return { cartItems: updatedCart };
+    });
   },
-  
-  // Cart
-  cart: [],
-  addToCart: (product, quantity) => set((state) => {
-    const existingItem = state.cart.find((item) => item.product.id === product.id);
-    if (existingItem) {
-      return {
-        cart: state.cart.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
+  updateCartItemQuantity: (productId, quantity) => {
+    set((state) => {
+      const updatedCart = state.cartItems.map(ci =>
+        ci.productId === productId ? { ...ci, quantity } : ci
+      );
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      return { cartItems: updatedCart };
+    });
+  },
+  removeFromCart: (productId) => {
+    set((state) => {
+      const updatedCart = state.cartItems.filter(ci => ci.productId !== productId);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      return { cartItems: updatedCart };
+    });
+  },
+  clearCart: () => {
+    set({ cartItems: [] });
+    localStorage.removeItem('cart');
+  },
+  getCartTotal: () => {
+    const ci = get().cartItems;
+    return Array.isArray(ci)
+      ? ci.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      : 0;
+  },
+
+  // =========================
+  // Autenticación
+  user: JSON.parse(localStorage.getItem('user') || 'null'),
+  token: localStorage.getItem('token'),
+  login: async (email, password) => {
+    try {
+      const resp = await api.post('/auth/login', { email, password });
+      const { id, name, email: userEmail, role, token } = resp.data;
+      const userObj: User = { id, name, email: userEmail, role };
+      set({ user: userObj, token });
+      localStorage.setItem('user', JSON.stringify(userObj));
+      localStorage.setItem('token', token);
+    } catch (error: any) {
+      console.error('Error en login:', error.response?.data || error);
+      throw error;
+    }
+  },
+  register: async (name, email, password, role = 'customer') => {
+    try {
+      const resp = await api.post('/auth/register', { name, email, password, role });
+      const { id, name: nm, email: userEmail, role: rl, token } = resp.data;
+      const userObj: User = { id, name: nm, email: userEmail, role: rl };
+      set({ user: userObj, token });
+      localStorage.setItem('user', JSON.stringify(userObj));
+      localStorage.setItem('token', token);
+    } catch (error: any) {
+      console.error('Error en register:', error.response?.data || error);
+      throw error;
+    }
+  },
+  logout: () => {
+    set({ user: null, token: null });
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+  },
+
+  // =========================
+  // Órdenes de cliente
+  customerOrders: [],
+  fetchCustomerOrders: async (clientId) => {
+    try {
+      const resp = await api.get(`/orders?clientId=${clientId}`);
+      set({ customerOrders: resp.data });
+    } catch (error) {
+      console.error('Error fetching customer orders:', error);
+    }
+  },
+
+  // =========================
+  // Órdenes admin
+  allOrders: [],
+  fetchAllOrders: async () => {
+    try {
+      const resp = await api.get('/orders');
+      set({ allOrders: resp.data });
+    } catch (error) {
+      console.error('Error fetching all orders:', error);
+    }
+  },
+  updateOrderStatus: async (orderId, newStatus) => {
+    try {
+      await api.patch(`/orders/${orderId}/status`, { status: newStatus });
+      set((state) => ({
+        allOrders: state.allOrders.map(o =>
+          o.id === orderId ? { ...o, status: newStatus } : o
         ),
-      };
+      }));
+    } catch (error) {
+      console.error('Error updating order status:', error);
     }
-    return { cart: [...state.cart, { product, quantity }] };
-  }),
-  removeFromCart: (productId) => set((state) => ({
-    cart: state.cart.filter((item) => item.product.id !== productId),
-  })),
-  updateCartItemQuantity: (productId, quantity) => set((state) => ({
-    cart: state.cart.map((item) =>
-      item.product.id === productId ? { ...item, quantity } : item
-    ),
-  })),
-  clearCart: () => set({ cart: [] }),
-  
-  // Customers
-  customers: mockCustomers,
-  addCustomer: (customer) => set((state) => ({ customers: [...state.customers, customer] })),
-  updateCustomer: (id, updates) => set((state) => ({
-    customers: state.customers.map((customer) => 
-      customer.id === id ? { ...customer, ...updates } : customer
-    ),
-  })),
-  
-  // Checkout
-  customerName: '',
-  customerWhatsapp: '',
-  customerAddress: '',
-  isDelivery: false,
-  paymentMethod: 'cash',
-  cashAmount: 0,
-  setCustomerName: (name) => set({ customerName: name }),
-  setCustomerWhatsapp: (whatsapp) => set({ customerWhatsapp: whatsapp }),
-  setCustomerAddress: (address) => set({ customerAddress: address }),
-  setIsDelivery: (isDelivery) => set({ isDelivery }),
-  setPaymentMethod: (method) => set({ paymentMethod: method }),
-  setCashAmount: (amount) => set({ cashAmount: amount }),
-  
-  // Analytics
-  dashboardStats: mockDashboardStats,
-  
-  // Helper methods
-  calculateCartTotal: () => {
-    return get().cart.reduce(
-      (total, item) => total + item.product.price * item.quantity,
-      0
-    );
-  },
-  createNewOrder: () => {
-    const {
-      cart,
-      customerName,
-      customerWhatsapp,
-      customerAddress,
-      isDelivery,
-      paymentMethod,
-      cashAmount,
-      calculateCartTotal,
-    } = get();
-    
-    if (cart.length === 0 || !customerName || !customerWhatsapp) {
-      return null;
-    }
-    
-    const totalAmount = calculateCartTotal();
-    
-    const newOrder: Order = {
-      id: `ORD-${Date.now().toString().slice(-6)}`,
-      customer: {
-        name: customerName,
-        whatsapp: customerWhatsapp,
-        address: isDelivery ? customerAddress : undefined,
-      },
-      items: [...cart],
-      status: 'pending',
-      payment: {
-        method: paymentMethod,
-        amount: totalAmount,
-        changeAmount: paymentMethod === 'cash' ? cashAmount - totalAmount : undefined,
-      },
-      totalAmount,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      statusHistory: [
-        {
-          status: 'pending',
-          timestamp: new Date(),
-        },
-      ],
-      isDelivery,
-      estimatedTime: isDelivery ? 45 : 30,
-    };
-    
-    return newOrder;
   },
 }));
-
-export default useStore;
