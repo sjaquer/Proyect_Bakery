@@ -99,9 +99,15 @@ export const useStore = create<State>((set, get) => ({
   fetchProducts: async () => {
     try {
       const resp = await api.get('/products');
-      set({ products: resp.data });
-    } catch (error) {
-      console.error('Error fetching products:', error);
+      const data = resp.data;
+      const productsArray = Array.isArray(data)
+      ? data
+      : Array.isArray(data.products)
+        ? data.products
+        : [];
+    set({ products: productsArray });
+  } catch (error) {
+    console.error('Error fetching products:', error);
     }
   },
   createProduct: async (data) => {
