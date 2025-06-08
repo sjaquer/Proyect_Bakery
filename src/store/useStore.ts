@@ -1,7 +1,4 @@
 // src/store/useStore.ts
-// ---------------------
-// Store de Zustand para el frontend (consumiendo el backend).
-// Ahora incluye CRUD completo de productos, además de órdenes y autenticación.
 
 import { create } from 'zustand';
 import api from '../api/axiosConfig';
@@ -33,7 +30,6 @@ export type Product = {
 };
 
 type State = {
-  // =========================
   // Productos
   products: Product[];
   fetchProducts: () => Promise<void>;
@@ -58,7 +54,6 @@ type State = {
   ) => Promise<void>;
   deleteProduct: (id: number) => Promise<void>;
 
-  // =========================
   // Carrito
   cartItems: CartItem[];
   addToCart: (item: CartItem) => void;
@@ -67,7 +62,6 @@ type State = {
   clearCart: () => void;
   getCartTotal: () => number;
 
-  // =========================
   // Autenticación
   user: User | null;
   token: string | null;
@@ -80,12 +74,10 @@ type State = {
   ) => Promise<void>;
   logout: () => void;
 
-  // =========================
-  // Órdenes de cliente
+  // Órdenes cliente
   customerOrders: any[];
   fetchCustomerOrders: (clientId: number) => Promise<void>;
 
-  // =========================
   // Órdenes admin
   allOrders: any[];
   fetchAllOrders: () => Promise<void>;
@@ -99,21 +91,28 @@ export const useStore = create<State>((set, get) => ({
   fetchProducts: async () => {
     try {
       const resp = await api.get('/products');
-      const data = resp.data;
-      const productsArray = Array.isArray(data)
-      ? data
-      : Array.isArray(data.products)
-        ? data.products
-        : [];
-    set({ products: productsArray });
-  } catch (error) {
-    console.error('Error fetching products:', error);
+      // forzar siempre un array
+      let productsArray: Product[] = [];
+
+      if (Array.isArray(resp.data)) {
+        productsArray = resp.data as Product[];
+      } else if (resp.data && Array.isArray((resp.data as any).products)) {
+        productsArray = (resp.data as any).products;
+      } else {
+        console.warn(
+          'fetchProducts: resp.data no era array ni { products: [...] }, fue:',
+          resp.data
+        );
+      }
+
+      set({ products: productsArray });
+    } catch (error) {
+      console.error('Error fetching products:', error);
     }
   },
   createProduct: async (data) => {
     try {
       await api.post('/products', data);
-      // Refrescar listado
       get().fetchProducts();
     } catch (error) {
       console.error('Error creating product:', error);
@@ -123,7 +122,6 @@ export const useStore = create<State>((set, get) => ({
   updateProduct: async (id, data) => {
     try {
       await api.put(`/products/${id}`, data);
-      // Refrescar listado
       get().fetchProducts();
     } catch (error) {
       console.error('Error updating product:', error);
@@ -133,7 +131,6 @@ export const useStore = create<State>((set, get) => ({
   deleteProduct: async (id) => {
     try {
       await api.delete(`/products/${id}`);
-      // Refrescar listado
       get().fetchProducts();
     } catch (error) {
       console.error('Error deleting product:', error);

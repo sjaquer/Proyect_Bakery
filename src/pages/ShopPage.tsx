@@ -1,76 +1,58 @@
 // src/pages/ShopPage.tsx
 
-import React, { useEffect, useState } from 'react';
-import { useStore } from '../store/useStore';
+import React, { useEffect } from 'react';
+import { useStore, Product } from '../store/useStore';
 
 const ShopPage: React.FC = () => {
-  const products = useStore(state => state.products);
-  const fetchProducts = useStore(state => state.fetchProducts);
-  const addToCart = useStore(state => state.addToCart);
+  // Normalizar a array
+  const rawProducts = useStore(state => state.products);
+  const products: Product[] = Array.isArray(rawProducts) ? rawProducts : [];
 
-  const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const fetchProducts = useStore(state => state.fetchProducts);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
-  // Filtrado por categoría y búsqueda
-  const filtered = products.filter(prod => {
-    const matchCategory = activeCategory === 'all' || prod.category === activeCategory;
-    const matchSearch = prod.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchCategory && matchSearch;
-  });
-
-  const handleAddToCart = (product: typeof products[0]) => {
-    addToCart({
-      productId: product.id,
-      name: product.name,
-      price: typeof product.price === 'string' 
-        ? parseFloat(product.price) 
-        : product.price,
-      quantity: 1,
-    });
-  };
-
   return (
     <div className="container mx-auto p-4">
-      <div className="mb-4 flex justify-between">
-        <select
-          value={activeCategory}
-          onChange={e => setActiveCategory(e.target.value)}
-          className="border rounded p-2"
-        >
-          <option value="all">Todos</option>
-          <option value="bread">Bread</option>
-          <option value="sweet">Sweet</option>
-          <option value="special">Special</option>
-        </select>
-        <input
-          type="text"
-          placeholder="Buscar producto..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="border rounded p-2 w-1/3"
-        />
-      </div>
+      <h1 className="text-3xl font-bold mb-6">Nuestra Tienda</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map(prod => (
-          <div key={prod.id} className="border rounded p-4 shadow-sm">
-            <h3 className="text-xl font-semibold">{prod.name}</h3>
-            <p className="text-gray-600">{prod.description}</p>
-            <p className="mt-2 font-bold">${prod.price}</p>
-            <button
-              onClick={() => handleAddToCart(prod)}
-              className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              disabled={prod.stock === 0}
-            >
-              {prod.stock === 0 ? 'Agotado' : 'Agregar al carrito'}
-            </button>
-          </div>
-        ))}
-      </div>
+      {products.length === 0 ? (
+        <p className="text-gray-600">No hay productos disponibles.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {products
+            .filter(p => p.stock > 0)
+            .map(p => (
+              <div key={p.id} className="border p-4 rounded shadow">
+                {p.imageUrl && (
+                  <img
+                    src={p.imageUrl}
+                    alt={p.name}
+                    className="w-full h-40 object-cover mb-2"
+                  />
+                )}
+                <h2 className="text-xl font-semibold">{p.name}</h2>
+                <p className="text-gray-500">{p.description}</p>
+                <p className="mt-2 font-bold">${p.price}</p>
+                <button
+                  onClick={() =>
+                    useStore.getState().addToCart({
+                      productId: p.id,
+                      name: p.name,
+                      price: typeof p.price === 'string' ? parseFloat(p.price) : p.price,
+                      quantity: 1,
+                    })
+                  }
+                  className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Añadir al Carrito
+                </button>
+              </div>
+            ))}
+        </div>
+      )}
     </div>
   );
 };
