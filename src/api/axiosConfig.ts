@@ -2,21 +2,23 @@
 
 import axios from 'axios';
 
-// Si VITE_API_URL no está definido, lanzamos un error visible en consola
+// 1) Forzar el uso de la URL de tu túnel ngrok (sin fallback a localhost)
 const API_URL = import.meta.env.VITE_API_URL;
+
+// 2) Debug: avísanos si no está definido
 if (!API_URL) {
   console.error(
-    '🚨 Error: VITE_API_URL no está definido. ' +
-    'Revisa tus Environment Variables en Vercel.'
+    '🚨 VITE_API_URL NO está definida. ' +
+    'Revisa "Environment Variables" en Vercel (key=VITE_API_URL).'
   );
 }
 
-// Creamos la instancia de Axios apuntando **solo** a la URL de ngrok (o tu API real)
+// 3) Crea la instancia de Axios
 const api = axios.create({
-  baseURL: `${API_URL}/api`
+  baseURL: `${API_URL}/api`,
 });
 
-// Interceptor para inyectar el token de auth
+// 4) Interceptor para añadir el token
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('token');
   if (token && config.headers) {
