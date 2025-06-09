@@ -23,9 +23,11 @@ const ShopPage: React.FC = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Nuestra Tienda</h1>
 
-      {products.length === 0 ? (
-        <p className="text-gray-600">No hay productos disponibles.</p>
-      ) : (
+console.log("👀 Render: products =", products);
+  return products.length === 0 ? (
+    <p className="text-gray-600">No hay productos disponibles.</p>
+  ) : (
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {products
             .filter(p => p.stock > 0)
@@ -57,7 +59,6 @@ const ShopPage: React.FC = () => {
               </div>
             ))}
         </div>
-      )}
     </div>
   );
 };
