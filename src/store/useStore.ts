@@ -90,37 +90,15 @@ export const useStore = create<State>((set, get) => ({
   products: [],
   fetchProducts: async () => {
     try {
-      // forzamos respuesta como texto para poder interceptar HTML
-      const resp = await api.get('/products', { responseType: 'text' });
-      let raw = resp.data as string;
-      let productsArray: Product[] = [];
-
-      // 1) Si es HTML de Ngrok con JSON dentro de <pre>
-      if (raw.trim().startsWith('<!DOCTYPE html>')) {
-        const match = raw.match(/<pre[^>]*>([\s\S]*?)<\/pre>/);
-        if (match && match[1]) {
-          try {
-            const parsed = JSON.parse(match[1]);
-            if (Array.isArray(parsed)) {
-              productsArray = parsed;
-            }
-          } catch (err) {
-            console.warn('❌ No se pudo parsear JSON desde HTML:', err);
-          }
-        }
-      }
-      // 2) Si es JSON puro
-      else {
-        const json = JSON.parse(raw);
-        if (Array.isArray(json)) {
-          productsArray = json;
-        } else if (json && Array.isArray((json as any).products)) {
-          productsArray = (json as any).products;
-        }
-      }
-
+      const resp = await api.get('/products');
+      // Forzar siempre un array de productos
+      const data = resp.data;
+      const productsArray: Product[] = Array.isArray(data)
+        ? data
+        : Array.isArray((data as any).products)
+        ? (data as any).products
+        : [];
       set({ products: productsArray });
-      console.log('📦 Productos cargados:', productsArray);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -167,16 +145,13 @@ export const useStore = create<State>((set, get) => ({
   addToCart: (item) => {
     set((state) => {
       const exists = state.cartItems.find(ci => ci.productId === item.productId);
-      let updatedCart;
-      if (exists) {
-        updatedCart = state.cartItems.map(ci =>
-          ci.productId === item.productId
-            ? { ...ci, quantity: ci.quantity + item.quantity }
-            : ci
-        );
-      } else {
-        updatedCart = [...state.cartItems, item];
-      }
+      const updatedCart = exists
+        ? state.cartItems.map(ci =>
+            ci.productId === item.productId
+              ? { ...ci, quantity: ci.quantity + item.quantity }
+              : ci
+          )
+        : [...state.cartItems, item];
       localStorage.setItem('cart', JSON.stringify(updatedCart));
       return { cartItems: updatedCart };
     });
