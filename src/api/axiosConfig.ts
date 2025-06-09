@@ -27,4 +27,16 @@ api.interceptors.request.use(config => {
   return config;
 });
 
+api.interceptors.response.use(
+  res => {
+    console.log("✅ Axios response from:", res.config.url);
+    console.log("📦 Data:", res.data);
+    return res;
+  },
+  err => {
+    console.error("❌ Axios error:", err.response?.status, err.message);
+    return Promise.reject(err);
+  }
+);
+
 export default api;
