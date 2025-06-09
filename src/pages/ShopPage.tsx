@@ -10,9 +10,14 @@ const ShopPage: React.FC = () => {
 
   const fetchProducts = useStore(state => state.fetchProducts);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+ useEffect(() => {
+  console.log('🛒 ShopPage montado, llamando fetchProducts()');
+  fetchProducts().then(() => {
+    const estado = useStore.getState();
+    console.log('📦 Productos cargados:', estado.products);
+  });
+}, [fetchProducts]);
+
 
   return (
     <div className="container mx-auto p-4">
