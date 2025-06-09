@@ -90,8 +90,8 @@ export const useStore = create<State>((set, get) => ({
   products: [],
   fetchProducts: async () => {
     try {
-      const resp = await api.get('/products');
-      // Forzar siempre un array de productos
+      // Llamada al endpoint correcto
+      const resp = await api.get('/api/products');
       const data = resp.data;
       const productsArray: Product[] = Array.isArray(data)
         ? data
@@ -101,11 +101,12 @@ export const useStore = create<State>((set, get) => ({
       set({ products: productsArray });
     } catch (error) {
       console.error('Error fetching products:', error);
+      set({ products: [] });
     }
   },
   createProduct: async (data) => {
     try {
-      await api.post('/products', data);
+      await api.post('/api/products', data);
       get().fetchProducts();
     } catch (error) {
       console.error('Error creating product:', error);
@@ -114,7 +115,7 @@ export const useStore = create<State>((set, get) => ({
   },
   updateProduct: async (id, data) => {
     try {
-      await api.put(`/products/${id}`, data);
+      await api.put(`/api/products/${id}`, data);
       get().fetchProducts();
     } catch (error) {
       console.error('Error updating product:', error);
@@ -123,7 +124,7 @@ export const useStore = create<State>((set, get) => ({
   },
   deleteProduct: async (id) => {
     try {
-      await api.delete(`/products/${id}`);
+      await api.delete(`/api/products/${id}`);
       get().fetchProducts();
     } catch (error) {
       console.error('Error deleting product:', error);
@@ -189,7 +190,7 @@ export const useStore = create<State>((set, get) => ({
   token: localStorage.getItem('token'),
   login: async (email, password) => {
     try {
-      const resp = await api.post('/auth/login', { email, password });
+      const resp = await api.post('/api/auth/login', { email, password });
       const { id, name, email: userEmail, role, token } = resp.data;
       const userObj: User = { id, name, email: userEmail, role };
       set({ user: userObj, token });
@@ -202,7 +203,7 @@ export const useStore = create<State>((set, get) => ({
   },
   register: async (name, email, password, role = 'customer') => {
     try {
-      const resp = await api.post('/auth/register', { name, email, password, role });
+      const resp = await api.post('/api/auth/register', { name, email, password, role });
       const { id, name: nm, email: userEmail, role: rl, token } = resp.data;
       const userObj: User = { id, name: nm, email: userEmail, role: rl };
       set({ user: userObj, token });
@@ -224,7 +225,7 @@ export const useStore = create<State>((set, get) => ({
   customerOrders: [],
   fetchCustomerOrders: async (clientId) => {
     try {
-      const resp = await api.get(`/orders?clientId=${clientId}`);
+      const resp = await api.get(`/api/orders?clientId=${clientId}`);
       set({ customerOrders: resp.data });
     } catch (error) {
       console.error('Error fetching customer orders:', error);
@@ -236,7 +237,7 @@ export const useStore = create<State>((set, get) => ({
   allOrders: [],
   fetchAllOrders: async () => {
     try {
-      const resp = await api.get('/orders');
+      const resp = await api.get('/api/orders');
       set({ allOrders: resp.data });
     } catch (error) {
       console.error('Error fetching all orders:', error);
@@ -244,7 +245,7 @@ export const useStore = create<State>((set, get) => ({
   },
   updateOrderStatus: async (orderId, newStatus) => {
     try {
-      await api.patch(`/orders/${orderId}/status`, { status: newStatus });
+      await api.patch(`/api/orders/${orderId}/status`, { status: newStatus });
       set((state) => ({
         allOrders: state.allOrders.map(o =>
           o.id === orderId ? { ...o, status: newStatus } : o
