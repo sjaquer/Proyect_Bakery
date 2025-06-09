@@ -1,30 +1,20 @@
 // src/api/axiosConfig.ts
-
 import axios from 'axios';
 
-const raw = import.meta.env.VITE_API_URL;
-if (!raw) {
-  throw new Error('🚨 VITE_API_URL no definida');
-}
+const RAW = import.meta.env.VITE_API_URL;
+if (!RAW) throw new Error('VITE_API_URL no definida');
 
-// Quita barra final si la hubiera, luego agrega "/api"
-const base =
-  raw.endsWith('/') && raw.length > 1 ? raw.slice(0, raw.length - 1) : raw;
-
+const BASE = RAW.replace(/\/$/, '');      // quita “/” final si existe
 const api = axios.create({
-  baseURL: `${base}/api`,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: `${BASE}/api`,                 // apuntamos siempre a /api
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Si usas JWT en localStorage, adjúntalo automáticamente
-api.interceptors.request.use(config => {
+// Adjuntar JWT si existe
+api.interceptors.request.use(cfg => {
   const token = localStorage.getItem('token');
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+  if (token && cfg.headers) cfg.headers.Authorization = `Bearer ${token}`;
+  return cfg;
 });
 
 export default api;
