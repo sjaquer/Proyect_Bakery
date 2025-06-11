@@ -1,46 +1,33 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Cake, Eye, EyeOff } from 'lucide-react';
-import { useAuthStore } from '../../store/useAuthStore';
+import { useStore } from '../../store/useStore';
 import Input from '../../components/shared/Input';
 import Button from '../../components/shared/Button';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { login, isLoading, error, clearError } = useAuthStore();
-
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const { login, error, isLoading } = useStore();
+  
+  // Estado simplificado
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
-  const from = location.state?.from?.pathname || '/';
-
-  React.useEffect(() => {
-    clearError();
-  }, [clearError]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (error) clearError();
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(formData);
-      navigate(from, { replace: true });
-    } catch (error) {
-      // Error is handled by the store
+      await login(email, password);
+      navigate('/'); // Redirige a inicio
+    } catch {
+      // El error se maneja en el store
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
+        {/* Logo y título */}
         <div className="text-center">
           <Link to="/" className="flex items-center justify-center space-x-2 mb-6">
             <Cake className="h-12 w-12 text-amber-600" />
@@ -50,6 +37,7 @@ const Login: React.FC = () => {
           <p className="mt-2 text-gray-600">Sign in to your account</p>
         </div>
 
+        {/* Formulario */}
         <div className="bg-white rounded-xl shadow-lg p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
@@ -62,8 +50,8 @@ const Login: React.FC = () => {
               label="Email Address"
               name="email"
               type="email"
-              value={formData.email}
-              onChange={handleInputChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
 
@@ -72,8 +60,8 @@ const Login: React.FC = () => {
                 label="Password"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
-                value={formData.password}
-                onChange={handleInputChange}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
               <button
@@ -99,6 +87,7 @@ const Login: React.FC = () => {
             </Button>
           </form>
 
+          {/* Enlaces adicionales */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
@@ -109,6 +98,7 @@ const Login: React.FC = () => {
           </div>
         </div>
 
+        {/* Credenciales demo */}
         <div className="text-center">
           <p className="text-xs text-gray-500">
             Demo credentials: admin@bakery.com / password

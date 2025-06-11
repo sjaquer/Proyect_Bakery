@@ -2,15 +2,18 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Layout/Header';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
+
+// Importaciones de páginas
 import Shop from './pages/Shop';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
+import AdminDashboard from './pages/Admin/Dashboard';
+import AdminProducts from './pages/Admin/Products';
 import Login from './pages/Auth/Login';
-import Dashboard from './pages/Admin/Dashboard';
-import Products from './pages/Admin/Products';
-import { useAuthStore } from './store/useAuthStore';
+import { useStore } from './store/useStore';
 
+// Mantenemos el componente HomePage
 const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
@@ -84,20 +87,21 @@ const HomePage: React.FC = () => {
 };
 
 function App() {
-  const { user } = useAuthStore();
-
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
         <Header />
         <main>
           <Routes>
+            {/* Ruta principal muestra HomePage */}
             <Route path="/" element={<HomePage />} />
+            
+            {/* Rutas públicas */}
             <Route path="/shop" element={<Shop />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/login" element={<Login />} />
             
-            {/* Protected Routes */}
+            {/* Rutas protegidas */}
             <Route
               path="/checkout"
               element={
@@ -115,35 +119,26 @@ function App() {
               }
             />
             
-            {/* Admin Routes */}
+            {/* Rutas de administrador */}
             <Route
               path="/admin"
               element={
-                <ProtectedRoute requireAdmin>
-                  <Dashboard />
+                <ProtectedRoute role="admin">
+                  <AdminDashboard />
                 </ProtectedRoute>
               }
             />
             <Route
               path="/admin/products"
               element={
-                <ProtectedRoute requireAdmin>
-                  <Products />
+                <ProtectedRoute role="admin">
+                  <AdminProducts />
                 </ProtectedRoute>
               }
             />
             
-            {/* Redirect /admin to /admin if user is admin, otherwise to login */}
-            <Route
-              path="/admin/*"
-              element={
-                user?.role === 'admin' ? (
-                  <Navigate to="/admin\" replace />
-                ) : (
-                  <Navigate to="/login" replace />
-                )
-              }
-            />
+            {/* Ruta por defecto redirige a inicio */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
       </div>
