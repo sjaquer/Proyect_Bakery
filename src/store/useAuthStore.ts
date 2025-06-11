@@ -1,47 +1,75 @@
-// src/store/useAuthStore.ts
-
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import api from '../api/axiosConfig';
+import { ENDPOINTS } from '../api/endpoints';
+import type { User, LoginCredentials, RegisterData, AuthResponse } from '../types/auth';
 
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: 'admin' | 'customer';
-};
-
-type AuthState = {
+interface AuthState {
   user: User | null;
   token: string | null;
+  isLoading: boolean;
   error: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  register: (data: RegisterData) => Promise<void>;
   logout: () => void;
-};
+  clearError: () => void;
+}
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: JSON.parse(localStorage.getItem('user') || 'null'),
-  token: localStorage.getItem('token'),
-  error: null,
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      user: null,
+      token: null,
+      isLoading: false,
+      error: null,
 
-  login: async (email, password) => {
-    try {
-      set({ error: null });
-      const resp = await api.post('/auth/login', { email, password });
-      const { id, name, role, token } = resp.data;
-      const user = { id, name, email, role } as User;
-      set({ user, token });
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('token', token);
-    } catch (err: any) {
-      const msg = err.response?.data?.message || err.message;
-      set({ error: msg });
-      throw new Error(msg);
+      login: async (credentials: LoginCredentials) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await api.post<AuthResponse>(ENDPOINTS.login, credentials);
+          const { user, token } = response.data;
+          
+          localStorage.setItem('token', token);
+          set({ user, token, isLoading: false });
+        } catch (error: any) {
+          set({ 
+            error: error.response?.data?.message || 'Login failed',
+            isLoading: false 
+          });
+          throw error;
+        }
+      },
+
+      register: async (data: RegisterData) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await api.post<AuthResponse>(ENDPOINTS.register, data);
+          const { user, token } = response.data;
+          
+          localStorage.setItem('token', token);
+          set({ user, token, isLoading: false });
+        } catch (error: any) {
+          set({ 
+            error: error.response?.data?.message || 'Registration failed',
+            isLoading: false 
+          });
+          throw error;
+        }
+      },
+
+      logout: () => {
+        localStorage.removeItem('token');
+        set({ user: null, token: null, error: null });
+      },
+
+      clearError: () => set({ error: null }),
+    }),
+    {
+      name: 'auth-storage',
+      partialize: (state) => ({ 
+        user: state.user, 
+        token: state.token 
+      }),
     }
-  },
-
-  logout: () => {
-    set({ user: null, token: null });
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-  },
-}));
+  )
+);

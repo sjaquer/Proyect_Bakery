@@ -1,25 +1,25 @@
-// src/components/Layout/ProtectedRoute.tsx
-
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 
-type Props = {
+interface ProtectedRouteProps {
   children: React.ReactNode;
-  role?: 'admin' | 'customer';
-};
+  requireAdmin?: boolean;
+}
 
-const ProtectedRoute: React.FC<Props> = ({ children, role }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
+  children, 
+  requireAdmin = false 
+}) => {
   const { user } = useAuthStore();
+  const location = useLocation();
 
   if (!user) {
-    // No estás logueado
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login\" state={{ from: location }} replace />;
   }
 
-  if (role && user.role !== role) {
-    // No tienes el rol requerido
-    return <Navigate to="/" replace />;
+  if (requireAdmin && user.role !== 'admin') {
+    return <Navigate to="/\" replace />;
   }
 
   return <>{children}</>;
