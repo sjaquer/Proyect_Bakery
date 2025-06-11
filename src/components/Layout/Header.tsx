@@ -1,0 +1,183 @@
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ShoppingCart, User, LogOut, Cake, Menu, X } from 'lucide-react';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useCartStore } from '../../store/useCartStore';
+import Button from '../shared/Button';
+
+const Header: React.FC = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const { user, logout } = useAuthStore();
+  const { getItemCount } = useCartStore();
+  const navigate = useNavigate();
+
+  const itemCount = getItemCount();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  return (
+    <header className="bg-white shadow-lg sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
+            <Cake className="h-8 w-8 text-amber-600" />
+            <span className="text-xl font-bold text-gray-900">Digital Bakery</span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link 
+              to="/shop" 
+              className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+            >
+              Shop
+            </Link>
+            {user && (
+              <Link 
+                to="/orders" 
+                className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+              >
+                My Orders
+              </Link>
+            )}
+            {user?.role === 'admin' && (
+              <Link 
+                to="/admin" 
+                className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+              >
+                Admin
+              </Link>
+            )}
+          </nav>
+
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-4">
+            {/* Cart */}
+            <Link
+              to="/cart"
+              className="relative p-2 text-gray-700 hover:text-amber-600 transition-colors duration-200"
+            >
+              <ShoppingCart className="h-6 w-6" />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+            </Link>
+
+            {/* User Menu */}
+            {user ? (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-700">Hello, {user.name}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="flex items-center space-x-1"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </Button>
+              </div>
+            ) : (
+              <Link to="/login">
+                <Button variant="primary" size="sm" className="flex items-center space-x-1">
+                  <User className="h-4 w-4" />
+                  <span>Login</span>
+                </Button>
+              </Link>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={toggleMobileMenu}
+            className="md:hidden p-2 rounded-md text-gray-700 hover:text-amber-600 focus:outline-none"
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden py-4 border-t border-gray-200">
+            <div className="flex flex-col space-y-4">
+              <Link 
+                to="/shop" 
+                className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Shop
+              </Link>
+              {user && (
+                <Link 
+                  to="/orders" 
+                  className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  My Orders
+                </Link>
+              )}
+              {user?.role === 'admin' && (
+                <Link 
+                  to="/admin" 
+                  className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Admin
+                </Link>
+              )}
+              
+              <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                <Link
+                  to="/cart"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-amber-600 transition-colors duration-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  <span>Cart ({itemCount})</span>
+                </Link>
+
+                {user ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex items-center space-x-1"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Logout</span>
+                  </Button>
+                ) : (
+                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button variant="primary" size="sm" className="flex items-center space-x-1">
+                      <User className="h-4 w-4" />
+                      <span>Login</span>
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+};
+
+export default Header;

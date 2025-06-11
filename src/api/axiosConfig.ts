@@ -1,20 +1,40 @@
-// src/api/axiosConfig.ts
 import axios from 'axios';
+console.log('🔎 [axiosConfig] baseURL =', import.meta.env.VITE_API_URL);
 
-const RAW = import.meta.env.VITE_API_URL;
-if (!RAW) throw new Error('VITE_API_URL no definida');
+const API_URL = import.meta.env.VITE_API_URL;
 
-const BASE = RAW.replace(/\/$/, '');      // quita “/” final si existe
+if (!API_URL) {
+  throw new Error('VITE_API_URL environment variable is not defined');
+}
+
+const base = API_URL.replace(/\/$/, '');
+
 const api = axios.create({
-  baseURL: `${BASE}/api`,                 // apuntamos siempre a /api
-  headers: { 'Content-Type': 'application/json' },
+  baseURL: `${base}/api`,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-// Adjuntar JWT si existe
-api.interceptors.request.use(cfg => {
+// Add request interceptor to include auth token
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
-  if (token && cfg.headers) cfg.headers.Authorization = `Bearer ${token}`;
-  return cfg;
+  if (token && config.headers) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
+
+// Add response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default api;

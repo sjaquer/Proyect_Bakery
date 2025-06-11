@@ -1,21 +1,23 @@
-export type UserRole = 'admin' | 'manager';
-
 export interface User {
   id: string;
-  username: string;
-  role: UserRole;
+  email: string;
   name: string;
+  role: 'customer' | 'admin';
+  createdAt: string;
 }
 
 export interface LoginCredentials {
-  username: string;
+  email: string;
   password: string;
 }
 
-export interface AuthState {
-  user: User | null;
-  token: string | null;
-  loginAttempts: number;
-  lastAttemptTime: number | null;
-  isLocked: boolean;
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
 }
