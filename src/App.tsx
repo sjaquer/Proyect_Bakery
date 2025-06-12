@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Layout/Header';
+import ProductList from './pages/Admin/ProductList';
+import ProductEdit from './pages/Admin/ProductEdit';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 import Shop from './pages/Shop';
 import Cart from './pages/Cart';
@@ -132,7 +134,30 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+            <Route
+              path="/admin/products"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <ProductList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/products/create"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <ProductEdit />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/products/edit/:id"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <ProductEdit />
+                </ProtectedRoute>
+              }
+            />
             {/* Redirect /admin to /admin if user is admin, otherwise to login */}
             <Route
               path="/admin/*"
