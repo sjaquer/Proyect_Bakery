@@ -1,10 +1,10 @@
 import axios from 'axios';
+
 console.log('🔎 [axiosConfig] baseURL =', import.meta.env.VITE_API_URL);
 
 const API_URL = import.meta.env.VITE_API_URL;
-
 if (!API_URL) {
-  throw new Error('VITE_API_URL environment variable is not defined');
+  throw new Error('VITE_API_URL no está definido');
 }
 
 const base = API_URL.replace(/\/$/, '');
@@ -16,17 +16,18 @@ const api = axios.create({
   },
 });
 
-// Add request interceptor to include auth token
-api.interceptors.request.use(config => {
+// **INTERCEPTOR** para mandar siempre el token en Authorization
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (token && config.headers) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
 
-
-// Add response interceptor for error handling
+// Manejo global de 401
 api.interceptors.response.use(
-  (response) => response,
+  (resp) => resp,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
