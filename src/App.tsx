@@ -138,7 +138,7 @@ function App() {
               path="/admin/*"
               element={
                 user?.role === 'admin' ? (
-                  <Navigate to="/admin\" replace />
+                  <Navigate to="/admin" replace />
                 ) : (
                   <Navigate to="/login" replace />
                 )

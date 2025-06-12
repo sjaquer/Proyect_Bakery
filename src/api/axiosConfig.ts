@@ -17,13 +17,12 @@ const api = axios.create({
 });
 
 // Add request interceptor to include auth token
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(config => {
   const token = localStorage.getItem('token');
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
 
 // Add response interceptor for error handling
 api.interceptors.response.use(
