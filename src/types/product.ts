@@ -1,3 +1,5 @@
+// src/types/product.ts
+
 export interface Product {
   id: string;
   name: string;
@@ -5,7 +7,8 @@ export interface Product {
   price: number;
   category: string;
   imageUrl: string;
-  inStock: boolean;
+  stock: number;    // ← refleja el stock real de la BD
+  inStock: boolean; // ← lo calcularemos en el store
   ingredients?: string[];
   allergens?: string[];
   createdAt: string;
@@ -18,9 +21,7 @@ export interface ProductFormData {
   price: number;
   category: string;
   imageUrl: string;
-  inStock: boolean;
+  stock: number;    // ← formulario de admin debe enviar stock
   ingredients?: string[];
   allergens?: string[];
 }
-
-export type ProductCategory = 'bread' | 'pastry' | 'cake' | 'cookie' | 'dessert';

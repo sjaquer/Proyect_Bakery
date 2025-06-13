@@ -16,6 +16,7 @@ interface ProductState {
   clearError: () => void;
 }
 
+
 export const useProductStore = create<ProductState>((set, get) => ({
   products: [],
   selectedProduct: null,
@@ -26,7 +27,12 @@ export const useProductStore = create<ProductState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.get<Product[]>(ENDPOINTS.products);
-      set({ products: response.data, isLoading: false });
+      // ▶▶▶ Mapear stock → inStock
+      const mapped = response.data.map(p => ({
+        ...p,
+        inStock: p.stock > 0
+      }));
+      set({ products: mapped, isLoading: false });
     } catch (error: any) {
       set({ 
         error: error.response?.data?.message || 'Failed to fetch products',
@@ -39,7 +45,13 @@ export const useProductStore = create<ProductState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.get<Product>(ENDPOINTS.productById(id));
-      set({ selectedProduct: response.data, isLoading: false });
+      set({
+        selectedProduct: {
+          ...response.data,
+          inStock: response.data.stock > 0
+        },
+        isLoading: false
+      });
     } catch (error: any) {
       set({ 
         error: error.response?.data?.message || 'Failed to fetch product',
@@ -52,7 +64,10 @@ export const useProductStore = create<ProductState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.post<Product>(ENDPOINTS.adminProducts, data);
-      const newProduct = response.data;
+      const newProduct = {
+        ...response.data,
+        inStock: response.data.stock > 0
+      };
       set(state => ({ 
         products: [...state.products, newProduct],
         isLoading: false 
@@ -70,9 +85,12 @@ export const useProductStore = create<ProductState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.put<Product>(ENDPOINTS.productById(id), data);
-      const updatedProduct = response.data;
+      const updated = {
+        ...response.data,
+        inStock: response.data.stock > 0
+      };
       set(state => ({ 
-        products: state.products.map(p => p.id === id ? updatedProduct : p),
+        products: state.products.map(p => p.id === id ? updated : p),
         isLoading: false 
       }));
     } catch (error: any) {
@@ -101,5 +119,5 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
-  clearError: () => set({ error: null }),
+  clearError: () => set({ error: null })
 }));
