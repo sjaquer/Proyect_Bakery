@@ -8,14 +8,14 @@ import Input from '../../components/shared/Input';
 import ProductForm from '../../components/Product/ProductForm';
 
 const Products: React.FC = () => {
-  const { 
-    products, 
-    fetchProducts, 
-    createProduct, 
-    updateProduct, 
-    deleteProduct, 
-    isLoading, 
-    error 
+  const {
+    products,
+    fetchProducts,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    isLoading,
+    error,
   } = useProductStore();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,7 +26,7 @@ const Products: React.FC = () => {
     fetchProducts();
   }, [fetchProducts]);
 
-  const filteredProducts = products.filter(product =>
+  const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -35,29 +35,28 @@ const Products: React.FC = () => {
     try {
       await createProduct(data);
       setShowForm(false);
-    } catch (error) {
+    } catch {
       // Error is handled by the store
     }
   };
 
-  const handleUpdateProduct = async (data: ProductFormData) => {
+   const handleUpdateProduct = async (data: ProductFormData) => {
     if (!editingProduct) return;
-    
     try {
       await updateProduct(editingProduct.id, data);
       setEditingProduct(null);
       setShowForm(false);
-    } catch (error) {
-      // Error is handled by the store
+    } catch {
+      // el store maneja error
     }
   };
 
   const handleDeleteProduct = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
+    if (window.confirm('¿Seguro que quieres eliminar este producto?')) {
       try {
         await deleteProduct(id);
-      } catch (error) {
-        // Error is handled by the store
+      } catch {
+        // el store maneja error
       }
     }
   };
@@ -72,24 +71,23 @@ const Products: React.FC = () => {
     setEditingProduct(null);
   };
 
-  if (showForm) {
+   if (showForm) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-3xl font-bold text-gray-900">
-              {editingProduct ? 'Edit Product' : 'Add New Product'}
+              {editingProduct ? 'Editar Producto' : 'Agregar Producto'}
             </h1>
             <Button variant="outline" onClick={handleCloseForm}>
-              Cancel
+              Cancelar
             </Button>
           </div>
-
           <div className="bg-white rounded-lg shadow-md p-6">
             <ProductForm
               initialData={editingProduct || undefined}
               onSubmit={editingProduct ? handleUpdateProduct : handleCreateProduct}
-              submitLabel={editingProduct ? 'Update Product' : 'Create Product'}
+              submitLabel={editingProduct ? 'Actualizar Producto' : 'Crear Producto'}
               isLoading={isLoading}
             />
           </div>
@@ -98,14 +96,17 @@ const Products: React.FC = () => {
     );
   }
 
-  return (
+   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Products Management</h1>
-          <Button onClick={() => setShowForm(true)} className="flex items-center space-x-2">
+          <h1 className="text-3xl font-bold text-gray-900">Gestión de Productos</h1>
+          <Button
+            onClick={() => setShowForm(true)}
+            className="flex items-center space-x-2"
+          >
             <Plus className="h-5 w-5" />
-            <span>Add Product</span>
+            <span>Agregar Producto</span>
           </Button>
         </div>
 
@@ -120,7 +121,7 @@ const Products: React.FC = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Input
-              placeholder="Search products..."
+              placeholder="Buscar productos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -128,26 +129,26 @@ const Products: React.FC = () => {
           </div>
         </div>
 
-        {/* Products Table */}
+         {/* Products Table */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Product
+                    Producto
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Category
+                    Categoría
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Price
+                    Precio
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Stock
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
+                    Acciones
                   </th>
                 </tr>
               </thead>
