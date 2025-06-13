@@ -1,3 +1,6 @@
+// =========================================
+// src/components/Layout/ProtectedRoute.tsx
+// =========================================
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -11,26 +14,19 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requireAdmin = false,
 }) => {
-  const { user } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const isLoading = useAuthStore((state) => state.isLoading);
   const location = useLocation();
 
-  // 1) Si no hay usuario, forzamos login
-  if (!user) {
-    return (
-      <Navigate
-        to="/login"
-        state={{ from: location }}
-        replace
-      />
-    );
+  if (isLoading) {
+    return <div>Loading authentication...</div>;
   }
-
-  // 2) Si es ruta de admin y no es admin, al home
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
   if (requireAdmin && user.role !== 'admin') {
     return <Navigate to="/" replace />;
   }
-
-  // 3) OK, renderizamos
   return <>{children}</>;
 };
 

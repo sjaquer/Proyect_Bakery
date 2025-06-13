@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, LogOut, Cake, Menu, X } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useCartStore } from '../../store/useCartStore';
@@ -10,12 +10,11 @@ const Header: React.FC = () => {
   const { user, logout } = useAuthStore();
   const { getItemCount } = useCartStore();
   const navigate = useNavigate();
-
-  const itemCount = getItemCount();
+  const cartCount = getItemCount();
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    window.location.href = '/';
   };
 
   const toggleMobileMenu = () => {
@@ -34,27 +33,34 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link 
-              to="/shop" 
-              className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+            <NavLink
+              to="/shop"
+              className={({ isActive }) =>
+                isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+              }
             >
               Shop
-            </Link>
+            </NavLink>
             {user && (
-              <Link 
-                to="/orders" 
-                className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+              <NavLink
+                to="/orders"
+                className={({ isActive }) =>
+                  isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                }
               >
                 My Orders
-              </Link>
+              </NavLink>
             )}
             {user?.role === 'admin' && (
-              <Link 
-                to="/admin" 
-                className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+              <NavLink
+                to="/admin"
+                end={false}
+                className={({ isActive }) =>
+                  isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                }
               >
                 Admin
-              </Link>
+              </NavLink>
             )}
           </nav>
 
@@ -66,9 +72,9 @@ const Header: React.FC = () => {
               className="relative p-2 text-gray-700 hover:text-amber-600 transition-colors duration-200"
             >
               <ShoppingCart className="h-6 w-6" />
-              {itemCount > 0 && (
+              {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {itemCount}
+                  {cartCount}
                 </span>
               )}
             </Link>
@@ -114,32 +120,39 @@ const Header: React.FC = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
-              <Link 
-                to="/shop" 
-                className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+              <NavLink
+                to="/shop"
+                className={({ isActive }) =>
+                  isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Shop
-              </Link>
+              </NavLink>
               {user && (
-                <Link 
-                  to="/orders" 
-                  className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+                <NavLink
+                  to="/orders"
+                  className={({ isActive }) =>
+                    isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                  }
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   My Orders
-                </Link>
+                </NavLink>
               )}
               {user?.role === 'admin' && (
-                <Link 
-                  to="/admin" 
-                  className="text-gray-700 hover:text-amber-600 transition-colors duration-200"
+                <NavLink
+                  to="/admin"
+                  end={false}
+                  className={({ isActive }) =>
+                    isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                  }
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Admin
-                </Link>
+                </NavLink>
               )}
-              
+
               <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                 <Link
                   to="/cart"
@@ -147,7 +160,7 @@ const Header: React.FC = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  <span>Cart ({itemCount})</span>
+                  <span>Cart ({cartCount})</span>
                 </Link>
 
                 {user ? (

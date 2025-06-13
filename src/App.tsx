@@ -10,7 +10,7 @@ import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import Login from './pages/Auth/Login';
 import Dashboard from './pages/Admin/Dashboard';
-import Products from './pages/Admin/Products';
+import OrderList from './pages/Admin/OrderList';           // ← NUEVO import
 import { useAuthStore } from './store/useAuthStore';
 
 const HomePage: React.FC = () => {
@@ -126,14 +126,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/admin/products"
-              element={
-                <ProtectedRoute requireAdmin>
-                  <Products />
-                </ProtectedRoute>
-              }
-            />
+           {/* → Gestión de productos (solo una ruta) */}
             <Route
               path="/admin/products"
               element={
@@ -150,6 +143,15 @@ function App() {
                 </ProtectedRoute>
               }
             />
+             {/* → Gestión de pedidos */}
+            <Route
+              path="/admin/orders"
+              element={
+              <ProtectedRoute requireAdmin>
+                <OrderList />
+            </ProtectedRoute>
+             }
+           />
             <Route
               path="/admin/products/edit/:id"
               element={
@@ -158,22 +160,11 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            {/* Redirect /admin to /admin if user is admin, otherwise to login */}
-            <Route
-              path="/admin/*"
-              element={
-                user?.role === 'admin' ? (
-                  <Navigate to="/admin" replace />
-                ) : (
-                  <Navigate to="/login" replace />
-                )
-              }
-            />
-          </Routes>
+            </Routes>
         </main>
       </div>
     </Router>
   );
 }
 
-export default App;
+export default App

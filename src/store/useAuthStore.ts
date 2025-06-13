@@ -29,7 +29,10 @@ export const useAuthStore = create<AuthState>()(
           const response = await api.post<AuthResponse>(ENDPOINTS.login, credentials);
           const { user, token } = response.data;
           
+        // Fija el token en tu instancia "api" para todas las peticiones
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           localStorage.setItem('token', token);
+          // El middleware de persist ya guarda user+token; no hace falta el setItem aquí
           set({ user, token, isLoading: false });
         } catch (error: any) {
           set({ 
@@ -58,8 +61,10 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        localStorage.removeItem('token');
+        // Limpia el header de tu instancia "api"
+        delete api.defaults.headers.common['Authorization'];
         set({ user: null, token: null, error: null });
+        localStorage.removeItem('auth-storage');
       },
 
       clearError: () => set({ error: null }),
