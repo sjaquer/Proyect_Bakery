@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import api from '../api/axiosConfig';
-import { ENDPOINTS } from '../api/endpoints';
 import type { User, LoginCredentials, RegisterData, AuthResponse } from '../types/auth';
+import { ENDPOINTS } from '../api/endpoints';
+
 
 interface AuthState {
   user: User | null;
@@ -29,11 +30,11 @@ export const useAuthStore = create<AuthState>()(
           const response = await api.post<AuthResponse>(ENDPOINTS.login, credentials);
           const { user, token } = response.data;
           
-        // Fija el token en tu instancia "api" para todas las peticiones
+          // ▶▶▶ Fija el token en TU instancia "api", no en axios.defaults
           api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          localStorage.setItem('token', token);
-          // El middleware de persist ya guarda user+token; no hace falta el setItem aquí
-          set({ user, token, isLoading: false });
+          
+          
+         set({ user, token, isLoading: false });
         } catch (error: any) {
           set({ 
             error: error.response?.data?.message || 'Login failed',
@@ -43,13 +44,15 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      register: async (data: RegisterData) => {
+register: async (data: RegisterData) => {
         set({ isLoading: true, error: null });
         try {
           const response = await api.post<AuthResponse>(ENDPOINTS.register, data);
           const { user, token } = response.data;
           
-          localStorage.setItem('token', token);
+          // ▶▶▶ Si tras registro quieres auto-login, fija también el header:
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
           set({ user, token, isLoading: false });
         } catch (error: any) {
           set({ 
@@ -60,11 +63,13 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
+
       logout: () => {
-        // Limpia el header de tu instancia "api"
+        // ▶▶▶ Limpia el header de TU instancia "api"
         delete api.defaults.headers.common['Authorization'];
         set({ user: null, token: null, error: null });
-        localStorage.removeItem('auth-storage');
+        // ▶▶▶ persist ya borra el storage; no hace falta removeItem manual
+        // localStorage.removeItem('auth-storage');
       },
 
       clearError: () => set({ error: null }),

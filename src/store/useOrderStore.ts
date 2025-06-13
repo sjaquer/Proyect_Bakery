@@ -1,10 +1,10 @@
 // src/store/useOrderStore.ts
-
 import { create } from 'zustand';
 import api from '../api/axiosConfig';
 import { ENDPOINTS } from '../api/endpoints';
+import { useAuthStore } from './useAuthStore';  // ▶▶▶ Importa tu store de auth
+
 import type { Order, CheckoutData } from '../types/order';
-import type { User } from '../types/auth';
 
 interface OrderState {
   orders: Order[];
@@ -24,43 +24,39 @@ export const useOrderStore = create<OrderState>((set) => ({
   fetchOrders: async () => {
     set({ isLoading: true, error: null });
     try {
-      // Leer usuario de localStorage
-      const stored = localStorage.getItem('auth-storage');
-      const auth = stored ? JSON.parse(stored) as { user: User } : null;
-      
-      let response;
-      if (auth?.user.role === 'admin') {
-        // Admin: todas las órdenes
-        response = await api.get<Order[]>(ENDPOINTS.adminOrders);
-      } else {
-        // Cliente: solo sus órdenes
-        response = await api.get<Order[]>(ENDPOINTS.customerOrders(auth?.user.id.toString() || ''));
-      }
+      // ▶▶▶ Toma el user del store, no de localStorage
+      const user = useAuthStore.getState().user;
+      if (!user) throw new Error('No está logueado');
+    // ▶▶▶ Usa el endpoint correcto según tu ENDPOINTS
+      const endpoint =
+        user.role === 'admin' ? ENDPOINTS.adminOrders : ENDPOINTS.orders;
+      const response = await api.get<Order[]>(endpoint);
 
       set({ orders: response.data, isLoading: false });
     } catch (err: any) {
       console.error('Error fetching orders:', err);
-      set({ error: err.response?.data?.message || err.message, isLoading: false });
+      set({
+        error: err.response?.data?.message || err.message,
+        isLoading: false
+      });
     }
   },
 
   createOrder: async (data) => {
     set({ isLoading: true, error: null });
     try {
-      // Crear la orden en el backend
-      const auth = JSON.parse(localStorage.getItem('auth-storage') || '{}') as { user: User };
-      const payload = {
-        customerId: auth.user.id,
-        items: data.items,
-      };
-      const response = await api.post<Order>(ENDPOINTS.orders, payload);
-      // Refrescar lista si es cliente
-      await (auth.user.role === 'customer' && set(() => { /** nop */ }));
-      set(state => ({ orders: [response.data, ...state.orders], isLoading: false }));
+      // ▶▶▶ Usa siempre ENDPOINTS.orders para crear
+      const response = await api.post<Order>(ENDPOINTS.orders, data);
+      set((state) => ({
+        orders: [response.data, ...state.orders],
+        isLoading: false
+      }));
       return response.data;
     } catch (err: any) {
-      console.error('Error creating order:', err);
-      set({ error: err.response?.data?.message || err.message, isLoading: false });
+      set({
+        error: err.response?.data?.message || err.message,
+        isLoading: false
+      });
       throw err;
     }
   },
@@ -68,14 +64,19 @@ export const useOrderStore = create<OrderState>((set) => ({
   updateOrderStatus: async (id, status) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.patch<Order>(`${ENDPOINTS.orders}/${id}/status`, { status });
-      set(state => ({
-        orders: state.orders.map(o => (o.id === response.data.id ? response.data : o)),
-        isLoading: false
-      }));
+      // ▶▶▶ Si tu backend expone PATCH /orders/:id/status, ajústalo:
+      await api.patch(`${ENDPOINTS.orders}/${id}/status`, { status });
+      set((state) => {
+        const orders = state.orders.map((order) =>
+          order.id === id ? { ...order, status } : order
+        );
+        return { orders, isLoading: false };
+      });
     } catch (err: any) {
-      console.error('Error updating order status:', err);
-      set({ error: err.response?.data?.message || err.message, isLoading: false });
+      set({
+        error: err.response?.data?.message || err.message,
+        isLoading: false
+      });
       throw err;
     }
   },

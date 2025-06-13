@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/axiosConfig';
 import { useAuthStore } from '../store/useAuthStore';
+import { useOrderStore } from '../store/useOrderStore';
 import Button from '../components/shared/Button';
 import { Package, Clock, CheckCircle, XCircle } from 'lucide-react';
 import {
@@ -11,62 +11,18 @@ import {
   getStatusColor
 } from '../utils/formatters';
 
-interface OrderItem {
-  id: number;
-  productId: number;
-  name: string;
-  imageUrl: string;
-  quantity: number;
-  price: number;
-}
-
-interface Order {
-  id: string;                 // ahora como string para usar slice
-  total: number;
-  status: string;
-  createdAt: string;
-  OrderItems: OrderItem[];
-  customerInfo?: {            // opcional, en caso de que no venga
-    address?: string;
-    phone?: string;
-    email?: string;
-  };
-}
-
 const OrdersPage: React.FC = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
+  const { orders, isLoading, error, fetchOrders } = useOrderStore();
 
   useEffect(() => {
-    // 1) Si no hay usuario, lo mandamos al login
     if (!user) {
       navigate('/login', { replace: true });
       return;
     }
-
-    // 2) Cargamos las órdenes
-    const fetch = async () => {
-      try {
-        const { data } = await api.get<Order[]>('/orders');
-        // Aseguramos que id sea string
-        const normalized = data.map((o) => ({
-          ...o,
-          id: String(o.id),
-        }));
-        setOrders(normalized);
-      } catch (err: any) {
-        console.error('Error fetching client orders', err);
-        setError(err.response?.data?.message || err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetch();
-  }, [user, navigate]);
+    fetchOrders();
+  }, [user, navigate, fetchOrders]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -84,7 +40,7 @@ const OrdersPage: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">My Orders</h1>
 
-        {loading ? (
+        {isLoading ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, idx) => (
               <div

@@ -1,26 +1,25 @@
-export interface CartItem {
-  id: string;
-  productId: string;
+export interface OrderItem {
+  id: number;
+  productId: number;
   name: string;
-  price: number;
-  quantity: number;
   imageUrl: string;
+  quantity: number;
+  price: number;
 }
 
 export interface Order {
   id: string;
-  userId: string;
-  items: CartItem[];
   total: number;
-  status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled';
-  customerInfo: {
-    name: string;
-    email: string;
-    phone: string;
-    address: string;
-  };
+  status: string;
   createdAt: string;
-  updatedAt: string;
+  // ▶▶▶ Añade esto:
+  OrderItems: OrderItem[];
+  // Si usas customerInfo:
+  customerInfo?: {
+    address?: string;
+    phone?: string;
+    email?: string;
+  };
 }
 
 export interface CheckoutData {
