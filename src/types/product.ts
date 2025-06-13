@@ -1,8 +1,3 @@
-// =========================================
-// src/types/product.ts
-// =========================================
-
-// Actualiza tu definición de Product para usar `stock: number` en lugar de `inStock`
 export interface Product {
   id: string;
   name: string;
@@ -10,7 +5,7 @@ export interface Product {
   price: number;
   category: string;
   imageUrl: string;
-  stock: number;            // cambiamos aquí
+  inStock: boolean;
   ingredients?: string[];
   allergens?: string[];
   createdAt: string;
@@ -23,7 +18,7 @@ export interface ProductFormData {
   price: number;
   category: string;
   imageUrl: string;
-  stock: number;            // cambiamos aquí
+  inStock: boolean;
   ingredients?: string[];
   allergens?: string[];
 }
