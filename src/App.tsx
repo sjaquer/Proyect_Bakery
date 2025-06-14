@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import AdminSidebar from './components/Layout/AdminSidebar';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Layout/Header';
-import ProductList from './pages/Admin/ProductList';
+import Products from './pages/Admin/Products';
 import ProductEdit from './pages/Admin/ProductEdit';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 import Shop from './pages/Shop';
@@ -119,7 +119,7 @@ function App() {
               }
             >
               <Route index element={<Dashboard />} />
-              <Route path="products" element={<ProductList />} />
+              <Route path="products" element={<Products />} />
               <Route path="products/create" element={<ProductEdit />} />
               <Route path="products/edit/:id" element={<ProductEdit />} />
               <Route path="orders" element={<OrderList />} />
