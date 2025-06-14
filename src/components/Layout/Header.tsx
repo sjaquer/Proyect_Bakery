@@ -40,16 +40,14 @@ const Header: React.FC = () => {
             >
               Tienda
             </NavLink>
-            {user && (
-              <NavLink
-                to="/orders"
-                className={({ isActive }) =>
-                  isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
-                }
-              >
-                Mis pedidos
-              </NavLink>
-            )}
+            <NavLink
+              to="/orders"
+              className={({ isActive }) =>
+                isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+              }
+            >
+              Mis pedidos
+            </NavLink>
             {user?.role === 'admin' && (
               <NavLink
                 to="/admin"
@@ -128,17 +126,15 @@ const Header: React.FC = () => {
               >
                 Tienda
               </NavLink>
-              {user && (
-                <NavLink
-                  to="/orders"
-                  className={({ isActive }) =>
-                    isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
-                  }
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Mis pedidos
-                </NavLink>
-              )}
+              <NavLink
+                to="/orders"
+                className={({ isActive }) =>
+                  isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                }
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Mis pedidos
+              </NavLink>
               {user?.role === 'admin' && (
                 <NavLink
                   to="/admin"

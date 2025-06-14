@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/useCartStore';
 import { useOrderStore } from '../store/useOrderStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { formatPrice } from '../utils/formatters';
 import Input from '../components/shared/Input';
 import Button from '../components/shared/Button';
@@ -15,8 +16,9 @@ interface FormData {
 }
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const { items, total, clearCart } = useCartStore();
-  const { createOrder, error } = useOrderStore();
+  const { createOrder, error, isLoading } = useOrderStore();
 
   const [formData, setFormData] = useState<FormData>(() => {
     const saved = JSON.parse(localStorage.getItem('guest_info') || '{}');
@@ -69,6 +71,17 @@ const Checkout: React.FC = () => {
       }
 
       const result = await createOrder(reqData);
+
+      // Guardar info del formulario para siguientes compras
+      localStorage.setItem('guest_info', JSON.stringify(formData));
+
+      // Si el usuario es invitado, persistir su lista de pedidos
+      if (!user) {
+        const raw = localStorage.getItem('guest_orders');
+        const prev = raw ? JSON.parse(raw) : [];
+        localStorage.setItem('guest_orders', JSON.stringify([result, ...prev]));
+      }
+
       clearCart();
 
       // Guardar customerId en guest_customerId luego de primer pedido
@@ -202,10 +215,10 @@ const Checkout: React.FC = () => {
             {error && <p className="text-red-500 mb-2">{error}</p>}
             <Button
               type="submit"
-              disabled={loading || items.length === 0}
+              disabled={isLoading || items.length === 0}
               className="w-full"
             >
-              {loading ? 'Procesando...' : 'Realizar Pedido'}
+              {isLoading ? 'Procesando...' : 'Realizar Pedido'}
             </Button>
           </div>
         </form>
