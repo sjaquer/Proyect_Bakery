@@ -81,7 +81,7 @@ const Dashboard: React.FC = () => {
                         Order #{order.id.slice(-8)}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {order.customerInfo.name}
+                        {order.Customer?.name || 'Cliente'}
                       </p>
                     </div>
                     <div className="text-right">

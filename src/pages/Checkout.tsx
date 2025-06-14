@@ -53,63 +53,35 @@ const Checkout: React.FC = () => {
       alert('Selecciona un método de pago');
       return;
     }
-    const payload = {
+    const payload: any = {
       items: items.map(item => ({
         productId: item.id,
         quantity: item.quantity,
-        priceUnit: item.price,
-        subtotal: item.quantity * item.price,
       })),
-      customerInfo: {
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        address: formData.address,
-      },
       paymentMethod: formData.paymentMethod,
-      total,
       ...(formData.paymentMethod === 'cash'
         ? { cashAmount: Number(formData.cashAmount || 0) }
         : {}),
     };
+    if (!user) {
+      payload.customerInfo = {
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        address: formData.address,
+      };
+    }
 
  try {
-      // Para invitado, reutilizar customerId por dispositivo si existe
-      const storedId = localStorage.getItem('guest_customerId');
-      const reqData: any = {
-        items: payload.items,
-        paymentMethod: payload.paymentMethod,
-        total: payload.total,
-      };
-      if (formData.paymentMethod === 'cash') {
-        reqData.cashAmount = payload.cashAmount;
-      }
-      if (storedId) {
-        reqData.customerId = Number(storedId);
-      } else {
-        reqData.customerInfo = payload.customerInfo;
-      }
-
-      const result = await createOrder(reqData);
+      const result = await createOrder(payload);
 
       // Guardar info del formulario para siguientes compras
       localStorage.setItem('guest_info', JSON.stringify(formData));
 
-      // Si el usuario es invitado, persistir su lista de pedidos
-      if (!user) {
-        const raw = localStorage.getItem('guest_orders');
-        const prev = raw ? JSON.parse(raw) : [];
-        localStorage.setItem('guest_orders', JSON.stringify([result, ...prev]));
-      }
-
       clearCart();
 
-      // Guardar customerId en guest_customerId luego de primer pedido
-      if (!storedId && result.Customer) {
-        localStorage.setItem(
-          'guest_customerId',
-          String(result.Customer.id)
-        );
+      if (result.Customer) {
+        localStorage.setItem('guest_customerId', String(result.Customer.id));
       }
 
       navigate('/orders', { replace: true });
