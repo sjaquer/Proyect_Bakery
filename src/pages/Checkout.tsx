@@ -76,7 +76,6 @@ const Checkout: React.FC = () => {
       <div className="container mx-auto py-12 px-4">
         <h2 className="text-3xl font-bold mb-6">Checkout</h2>
         <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-8">
-          {/* Billing / Shipping Information */}
           <div className="flex-1 bg-white p-6 rounded-lg shadow">
             <h3 className="text-xl font-semibold mb-4">Información de envío</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -120,7 +119,6 @@ const Checkout: React.FC = () => {
             </div>
           </div>
 
-          {/* Order Summary */}
           <div className="w-full lg:w-1/3 bg-white p-6 rounded-lg shadow">
             <h3 className="text-xl font-semibold mb-4">Resumen de Pedido</h3>
             <ul className="divide-y divide-gray-200 mb-4">
@@ -147,11 +145,7 @@ const Checkout: React.FC = () => {
             </div>
 
             {error && <p className="text-red-500 mb-2">{error}</p>}
-            <Button
-              type="submit"
-              disabled={loading || items.length === 0}
-              className="w-full"
-            >
+            <Button type="submit" disabled={loading || items.length === 0} className="w-full">
               {loading ? 'Procesando...' : 'Realizar Pedido'}
             </Button>
           </div>
@@ -162,4 +156,3 @@ const Checkout: React.FC = () => {
 };
 
 export default Checkout;
-```
