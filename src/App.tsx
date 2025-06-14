@@ -23,25 +23,25 @@ const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Fresh Baked
-              <span className="text-amber-600 block">Every Day</span>
+              Recién horneado
+              <span className="text-amber-600 block">cada día</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              From artisan breads to decadent desserts, discover our handcrafted selection 
-              of fresh baked goods made with premium ingredients and traditional techniques.
+              Desde panes artesanales hasta postres deliciosos, descubre nuestra selección
+              elaborada con ingredientes de primera calidad y técnicas tradicionales.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/shop"
                 className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-amber-600 hover:bg-amber-700 transition-colors duration-200"
               >
-                Shop Now
+                Comprar ahora
               </a>
               <a
                 href="/shop"
                 className="inline-flex items-center justify-center px-8 py-3 border-2 border-amber-600 text-base font-medium rounded-lg text-amber-600 bg-transparent hover:bg-amber-600 hover:text-white transition-colors duration-200"
               >
-                View Menu
+                Ver menú
               </a>
             </div>
           </div>
@@ -52,8 +52,8 @@ const HomePage: React.FC = () => {
       <div className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Us</h2>
-            <p className="text-lg text-gray-600">Quality ingredients, traditional methods, modern convenience</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">¿Por qué elegirnos?</h2>
+            <p className="text-lg text-gray-600">Ingredientes de calidad, métodos tradicionales y comodidad moderna</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -61,24 +61,24 @@ const HomePage: React.FC = () => {
               <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🥖</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Fresh Daily</h3>
-              <p className="text-gray-600">All our products are baked fresh every morning using traditional recipes.</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Frescura diaria</h3>
+              <p className="text-gray-600">Todos nuestros productos se hornean cada mañana con recetas tradicionales.</p>
             </div>
             
             <div className="text-center">
               <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🚚</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Fast Delivery</h3>
-              <p className="text-gray-600">Quick and reliable delivery service to bring our bakery to your door.</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Entrega rápida</h3>
+              <p className="text-gray-600">Servicio de entrega rápido y confiable que lleva nuestra panadería a tu puerta.</p>
             </div>
             
             <div className="text-center">
               <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">⭐</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Premium Quality</h3>
-              <p className="text-gray-600">We use only the finest ingredients sourced from trusted suppliers.</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Calidad premium</h3>
+              <p className="text-gray-600">Utilizamos solo los mejores ingredientes de proveedores de confianza.</p>
             </div>
           </div>
         </div>

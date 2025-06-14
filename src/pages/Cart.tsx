@@ -14,12 +14,12 @@ const Cart: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <ShoppingBag className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Your cart is empty</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Tu carrito está vacío</h2>
             <p className="text-gray-600 mb-8">
-              Looks like you haven't added any delicious items to your cart yet.
+              Aún no has añadido ningún delicioso producto a tu carrito.
             </p>
             <Link to="/shop">
-              <Button size="lg">Start Shopping</Button>
+              <Button size="lg">Ir a la tienda</Button>
             </Link>
           </div>
         </div>
@@ -31,13 +31,13 @@ const Cart: React.FC = () => {
     <div className="min-h-screen bg-amber-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Carrito de compras</h1>
           <Button
             variant="outline"
             onClick={clearCart}
             className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
           >
-            Clear Cart
+            Vaciar carrito
           </Button>
         </div>
 
@@ -106,12 +106,12 @@ const Cart: React.FC = () => {
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-end">
           <Link to="/shop">
             <Button variant="outline" size="lg" className="w-full sm:w-auto">
-              Continue Shopping
+              Seguir comprando
             </Button>
           </Link>
           <Link to="/checkout">
             <Button size="lg" className="w-full sm:w-auto">
-              Proceed to Checkout
+              Ir a pagar
             </Button>
           </Link>
         </div>

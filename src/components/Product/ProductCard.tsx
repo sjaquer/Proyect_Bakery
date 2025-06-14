@@ -33,7 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {product.stock <= 0 && (
            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-             <span className="text-white font-semibold">Out of Stock</span>
+             <span className="text-white font-semibold">Agotado</span>
            </div>
          )}
        </div>
@@ -61,8 +61,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             : 'text-red-600 text-sm' 
           }> 
             {product.stock > 0 
-              ? `In stock: ${product.stock}` 
-              : 'Out of stock' 
+              ? `En stock: ${product.stock}`
+              : 'Agotado'
             } 
           </span>
                     
@@ -73,7 +73,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className="flex items-center space-x-1"
           >
             <Plus className="h-4 w-4" />
-            <span>Add</span>
+            <span>Añadir</span>
           </Button>
         </div>
       </div>

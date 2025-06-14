@@ -1,12 +1,12 @@
 export const formatPrice = (price: number): string => {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('es-ES', {
     style: 'currency',
     currency: 'USD',
   }).format(price);
 };
 
 export const formatDate = (date: string): string => {
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('es-ES', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -17,12 +17,12 @@ export const formatDate = (date: string): string => {
 
 export const formatOrderStatus = (status: string): string => {
   const statusMap: Record<string, string> = {
-    pending: 'Pending',
-    confirmed: 'Confirmed',
-    preparing: 'Preparing',
-    ready: 'Ready for Pickup',
-    delivered: 'Delivered',
-    cancelled: 'Cancelled',
+    pending: 'Pendiente',
+    confirmed: 'Confirmado',
+    preparing: 'Preparando',
+    ready: 'Listo para recoger',
+    delivered: 'Entregado',
+    cancelled: 'Cancelado',
   };
   return statusMap[status] || status;
 };

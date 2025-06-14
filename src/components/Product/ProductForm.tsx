@@ -13,7 +13,7 @@ interface ProductFormProps {
 const ProductForm: React.FC<ProductFormProps> = ({
   initialData,
   onSubmit,
-  submitLabel = 'Save Product',
+  submitLabel = 'Guardar producto',
   isLoading = false,
 }) => {
   const [formData, setFormData] = useState<ProductFormData>({
@@ -68,7 +68,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
-          label="Product Name"
+          label="Nombre"
           name="name"
           value={formData.name}
           onChange={handleInputChange}
@@ -76,7 +76,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         />
 
         <Input
-          label="Price ($)"
+          label="Precio ($)"
           name="price"
           type="number"
           step="0.01"
@@ -88,7 +88,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Category
+          Categoría
         </label>
         <select
           name="category"
@@ -97,17 +97,17 @@ const ProductForm: React.FC<ProductFormProps> = ({
           className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
           required
         >
-          <option value="bread">Bread</option>
-          <option value="pastry">Pastry</option>
-          <option value="cake">Cake</option>
-          <option value="cookie">Cookie</option>
-          <option value="dessert">Dessert</option>
+          <option value="bread">Pan</option>
+          <option value="pastry">Pastel</option>
+          <option value="cake">Torta</option>
+          <option value="cookie">Galleta</option>
+          <option value="dessert">Postre</option>
         </select>
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Description
+          Descripción
         </label>
         <textarea
           name="description"
@@ -120,7 +120,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       </div>
 
       <Input
-        label="Image URL"
+        label="URL de imagen"
         name="imageUrl"
         value={formData.imageUrl}
         onChange={handleInputChange}
@@ -128,17 +128,17 @@ const ProductForm: React.FC<ProductFormProps> = ({
       />
 
       <Input
-        label="Ingredients (comma-separated)"
+        label="Ingredientes (separados por coma)"
         value={ingredientsText}
         onChange={(e) => setIngredientsText(e.target.value)}
-        helperText="Enter ingredients separated by commas"
+        helperText="Introduce los ingredientes separados por comas"
       />
 
       <Input
-        label="Allergens (comma-separated)"
+        label="Alérgenos (separados por coma)"
         value={allergensText}
         onChange={(e) => setAllergensText(e.target.value)}
-        helperText="Enter allergens separated by commas"
+        helperText="Introduce los alérgenos separados por comas"
       />
 
       <div className="flex items-center">
@@ -151,7 +151,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
         />
         <label htmlFor="inStock" className="ml-2 block text-sm text-gray-700">
-          In Stock
+          Disponible
         </label>
       </div>
 

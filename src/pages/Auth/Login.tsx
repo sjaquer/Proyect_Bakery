@@ -49,14 +49,14 @@ const Login: React.FC = () => {
         {/* Formulario */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <Input
-            label="Email"
+            label="Correo"
             type="email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
           />
           <Input
-            label="Password"
+            label="Contraseña"
             type={showPassword ? 'text' : 'password'}
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -77,14 +77,14 @@ const Login: React.FC = () => {
             size="lg"
             className="w-full"
           >
-            Sign In
+            Entrar
           </Button>
         </form>
 
         {/* Pie */}
         <div className="text-center">
           <p className="text-xs text-gray-500">
-            Demo credentials: admin@bakery.com / password
+            Credenciales de demo: admin@bakery.com / password
           </p>
         </div>
       </div>
