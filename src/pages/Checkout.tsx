@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/useAuthStore';
 import { useCartStore } from '../store/useCartStore';
 import { useOrderStore } from '../store/useOrderStore';
 import { formatPrice } from '../utils/formatters';
@@ -16,9 +15,8 @@ interface FormData {
 }
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
   const { items, total, clearCart } = useCartStore();
-  const { createOrder, isLoading, error } = useOrderStore();
+  const { createOrder, error } = useOrderStore();
 
   const [formData, setFormData] = useState<FormData>(() => {
     const saved = JSON.parse(localStorage.getItem('guest_info') || '{}');
