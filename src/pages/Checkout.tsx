@@ -7,241 +7,159 @@ import { formatPrice } from '../utils/formatters';
 import Input from '../components/shared/Input';
 import Button from '../components/shared/Button';
 import Header from '../components/Layout/Header';
-import ProtectedRoute from '../components/Layout/ProtectedRoute';
-import AdminSidebar from '../components/Layout/AdminSidebar';
 
-  const Checkout: React.FC = () => {
+interface FormData {
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+}
+
+const Checkout: React.FC = () => {
   const navigate = useNavigate();
-  const { items, total, clearCart } = useCartStore();
   const { user } = useAuthStore();
-  const { createOrder, isLoading } = useOrderStore();
+  const { items, total, clearCart } = useCartStore();
+  const { createOrder, loading, error } = useOrderStore();
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    paymentMethod: 'card' as 'cash' | 'card',
+  const [formData, setFormData] = useState<FormData>(() => {
+    const saved = localStorage.getItem('guest_info');
+    return saved
+      ? JSON.parse(saved)
+      : { name: '', phone: '', email: '', address: '' };
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-    // Si el carrito queda vacío, redirijo a /cart
-  useEffect(() => {
-    if (items.length === 0) {
-      navigate('/cart', { replace: true });
-    }
-  }, [items, navigate]);
-
-  // Ahora acepta también los <textarea>
-  const handleInputChange = (
-  e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-     const { name, value } = e.target;
-     setFormData(f => ({ ...f, [name]: value }));
-     if (errors[name]) {
-      setErrors(e => ({ ...e, [name]: '' }));
-    }
-  };
-
-const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-    if (!formData.name.trim())    newErrors.name    = 'Tu nombre es requerido';
-    if (!formData.email.trim())   newErrors.email   = 'Tu email es requerido';
-    if (!formData.phone.trim())   newErrors.phone   = 'Tu teléfono es requerido';
-    if (!formData.address.trim()) newErrors.address = 'Tu dirección es requerida';
-    if (
-      formData.email &&
-      !/\S+@\S+\.\S+/.test(formData.email)
-    ) {
-      newErrors.email = 'Ingresa un email válido';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-     if (!validateForm()) return;
-     if (items.length === 0) return;
-
-// payload alineado al tipo CheckoutData
-    const payload: CheckoutData = {
-      items: items.map(i => ({
-        productId: i.productId,
-        quantity: i.quantity,
-        price: i.price,
-        name: i.name,
-        imageUrl: i.imageUrl
+    const payload = {
+      items: items.map(item => ({
+        productId: item.id,
+        quantity: item.quantity,
+        priceUnit: item.price,
+        subtotal: item.quantity * item.price,
       })),
-      customerInfo: {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        paymentMethod: formData.paymentMethod
-      }
+      customerInfo: formData,
     };
 
-     if (user) {
-      // Usuario autenticado: envío al backend
+    if (user) {
       try {
         await createOrder(payload);
         clearCart();
         navigate('/orders', { replace: true });
       } catch {
-        // error ya está en store.error
+        // error handled in store
       }
     } else {
-      // Invitado: guardar orden en localStorage
-      const guestOrders = JSON.parse(localStorage.getItem('guest_orders') || '[]');
+      const guestOrders = JSON.parse(
+        localStorage.getItem('guest_orders') || '[]'
+      );
       guestOrders.push({
         id: Date.now().toString(),
         ...payload,
         date: new Date().toISOString(),
       });
       localStorage.setItem('guest_orders', JSON.stringify(guestOrders));
-      // Guardar datos de cliente para próxima vez
       localStorage.setItem('guest_info', JSON.stringify(formData));
       clearCart();
       navigate('/orders', { replace: true });
     }
-     
-   return (
-     <div className="min-h-screen bg-amber-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+  };
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Order Form */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Information</h2>
-              <div className="bg-white rounded-lg shadow-md p-6"></div>
-                <form onSubmit={handleSubmit} className="space-y-6">
+  return (
+    <div className="bg-gray-100 min-h-screen">
+      <Header />
+      <div className="container mx-auto py-12 px-4">
+        <h2 className="text-3xl font-bold mb-6">Checkout</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-8">
+          {/* Billing / Shipping Information */}
+          <div className="flex-1 bg-white p-6 rounded-lg shadow">
+            <h3 className="text-xl font-semibold mb-4">Información de envío</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
-                label="Nombre completo"
+                label="Nombre"
                 name="name"
                 value={formData.name}
-                onChange={handleInputChange}
-                error={errors.name}
-                required
-              />
-              <Input
-                label="Correo electrónico"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                error={errors.email}
+                onChange={handleChange}
                 required
               />
               <Input
                 label="Teléfono"
                 name="phone"
-                type="tel"
                 value={formData.phone}
-                onChange={handleInputChange}
-                error={errors.phone}
+                onChange={handleChange}
                 required
               />
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Delivery Address
-                </label>
-                <textarea
-                  name="Direccion"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className={`
-                    w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400
-                    focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent
-                    ${errors.address ? 'border-red-300' : 'border-gray-300'}
-                  `}
+              <div className="md:col-span-2">
+                <Input
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   required
                 />
-                {errors.address && (
-                  <p className="text-sm text-red-600 mt-1">{errors.address}</p>
-                )}
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Payment Method
+              <div className="md:col-span-2">
+                <label htmlFor="address" className="block mb-1 text-gray-700">
+                  Dirección
                 </label>
-                <select
-                  name="paymentMethod"
-                  value={formData.paymentMethod}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                >
-                  <option value="card">Tarjeta de debito o credito / Yape</option>
-                  <option value="cash">Pago en Efectivo (Contraentrega)</option>
-                </select>
+                <textarea
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
+                  required
+                />
               </div>
-
-            <Button
-             type="submit"
-             loading={isLoading}
-             size="lg"
-             className="w-full"
-           >
-             Place Order ({formatPrice(total)})
-           </Button>
-           {/* Muestro el error de store (no confundir con errors de validación) */}
-              {error && (
-                <p className="text-red-600 text-sm mt-2">{error}</p>
-              )}
-            </form>
+            </div>
           </div>
 
           {/* Order Summary */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>
-            
-            <div className="bg-white rounded-lg shadow-md p-6">
-              {items.map((item) => (
-                <div key={item.id} className="flex items-center space-x-3">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.name}
-                    className="h-12 w-12 object-cover rounded-lg"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">{item.name}</p>
-                    <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
-                  </div>
-                  <p className="text-sm font-medium text-gray-900">
-                    {formatPrice(item.price * item.quantity)}
-                  </p>
-                </div>
-              ))}
+          <div className="w-full lg:w-1/3 bg-white p-6 rounded-lg shadow">
+            <h3 className="text-xl font-semibold mb-4">Resumen de Pedido</h3>
+            <ul className="divide-y divide-gray-200 mb-4">
+              {items.length > 0 ? (
+                items.map(item => (
+                  <li key={item.id} className="py-2 flex justify-between">
+                    <span>{item.name} x {item.quantity}</span>
+                    <span>{formatPrice(item.price * item.quantity)}</span>
+                  </li>
+                ))
+              ) : (
+                <li className="py-2 text-gray-500">El carrito está vacío.</li>
+              )}
+            </ul>
+
+            <div className="flex justify-between font-bold text-lg mb-4">
+              <span>Total:</span>
+              <span>{formatPrice(total)}</span>
             </div>
 
-            <div className="border-t border-gray-200 pt-4">
-              <div className="flex items-center justify-between text-lg font-semibold text-gray-900">
-                <span>Total:</span>
-                <span>{formatPrice(total)}</span>
-              </div>
+            <div className="text-sm text-gray-600 mb-4 space-y-2">
+              <p>• Free delivery for orders over $25</p>
+              <p>• You'll receive an email confirmation once your order is confirmed</p>
             </div>
 
-            <div className="mt-6 p-4 bg-amber-50 rounded-lg">
-              <h3 className="font-medium text-gray-900 mb-2">Delivery Information</h3>
-              <p className="text-sm text-gray-600">
-                • Orders are typically ready within 2-4 hours
-              </p>
-              <p className="text-sm text-gray-600">
-                • Free delivery for orders over $25
-              </p>
-              <p className="text-sm text-gray-600">
-                • You'll receive an email confirmation once your order is confirmed
-              </p>
-            </div>
+            {error && <p className="text-red-500 mb-2">{error}</p>}
+            <Button
+              type="submit"
+              disabled={loading || items.length === 0}
+              className="w-full"
+            >
+              {loading ? 'Procesando...' : 'Realizar Pedido'}
+            </Button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
 };
 
 export default Checkout;
+```
