@@ -14,12 +14,11 @@ interface FormData {
   address: string;
   paymentMethod: string;
 }
-
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const { items, total, clearCart } = useCartStore();
-  const { createOrder, loading, error } = useOrderStore();
+  const { createOrder, isLoading, error } = useOrderStore();
 
   const [formData, setFormData] = useState<FormData>(() => {
     const saved = JSON.parse(localStorage.getItem('guest_info') || '{}');
@@ -31,6 +30,7 @@ const Checkout: React.FC = () => {
       paymentMethod: saved.paymentMethod || '',
     };
   });
+
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -57,33 +57,34 @@ const Checkout: React.FC = () => {
       paymentMethod: formData.paymentMethod,
     };
 
-    if (user) {
-      try {
-        await createOrder(payload);
-        clearCart();
-        navigate('/orders', { replace: true });
-      } catch {
-        // manejo de errores interno
+ try {
+      // Para invitado, reutilizar customerId por dispositivo si existe
+      const storedId = localStorage.getItem('guest_customerId');
+      const reqData: any = {
+        items: payload.items,
+        paymentMethod: payload.paymentMethod
+      };
+      if (storedId) {
+        reqData.customerId = Number(storedId);
+      } else {
+        reqData.customerInfo = payload.customerInfo;
       }
-    } else {
-      const guestOrders = JSON.parse(
-        localStorage.getItem('guest_orders') || '[]'
-      );
-      guestOrders.push({
-        id: Date.now().toString(),
-        ...payload,
-        date: new Date().toISOString(),
-      });
-      localStorage.setItem(
-        'guest_orders',
-        JSON.stringify(guestOrders)
-      );
-      localStorage.setItem(
-        'guest_info',
-        JSON.stringify(formData)
-      );
+
+      const result = await createOrder(reqData);
       clearCart();
+
+      // Guardar customerId en guest_customerId luego de primer pedido
+      if (!storedId && result.Customer) {
+        localStorage.setItem(
+          'guest_customerId',
+          String(result.Customer.id)
+        );
+      }
+
       navigate('/orders', { replace: true });
+
+    } catch {
+      // error manejado en store.error
     }
   };
 

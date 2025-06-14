@@ -31,7 +31,8 @@ export const useOrderStore = create<OrderState>((set) => ({
       return;
     }
 
-  // Usuario autenticado → llamo al backend
+
+   // Usuario autenticado → llamo al backend
     try {
       const endpoint =
         user.role === 'admin' ? ENDPOINTS.adminOrders : ENDPOINTS.orders;
@@ -45,38 +46,8 @@ export const useOrderStore = create<OrderState>((set) => ({
     }
   },
 
-  createOrder: async (data) => {
+   createOrder: async (data) => {
     set({ isLoading: true, error: null });
-    const user = useAuthStore.getState().user;
-
-    if (!user) {
-      // Cliente sin sesión → guardo en localStorage
-      const raw = localStorage.getItem('guest_orders');
-      const guestOrders: Order[] = raw ? JSON.parse(raw) : [];
-
-      // Calcular total
-      const total = data.items.reduce(
-        (sum, i) => sum + i.price * i.quantity,
-        0
-      );
-
-      const newOrder: Order = {
-        id: crypto.randomUUID(),
-        OrderItems: data.items,
-        total,
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        customerInfo: data.customerInfo
-      } as any;
-
-     guestOrders.unshift(newOrder);
-      localStorage.setItem('guest_orders', JSON.stringify(guestOrders));
-      set({ orders: guestOrders, isLoading: false });
-      return newOrder;
-    }
-
-    // Usuario autenticado → envío al backend
     try {
       const resp = await api.post<Order>(ENDPOINTS.orders, data);
       set((st) => ({
