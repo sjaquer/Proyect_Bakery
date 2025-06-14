@@ -1,4 +1,7 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
+import AdminSidebar from './components/Layout/AdminSidebar';
+import { useAuthStore } from './store/useAuthStore';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Layout/Header';
 import ProductList from './pages/Admin/ProductList';
@@ -10,8 +13,8 @@ import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import Login from './pages/Auth/Login';
 import Dashboard from './pages/Admin/Dashboard';
-import OrderList from './pages/Admin/OrderList';           // ← NUEVO import
-import { useAuthStore } from './store/useAuthStore';
+import OrderList from './pages/Admin/OrderList';
+
 
 const HomePage: React.FC = () => {
   return (
@@ -116,51 +119,27 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
-            {/* Admin Routes */}
+{/* Admin: layout con sidebar + contenido anidado */}
             <Route
-              path="/admin"
+              path="/admin/*"
               element={
                 <ProtectedRoute requireAdmin>
-                  <Dashboard />
+                  <div className="flex">
+                    <AdminSidebar />
+                    <div className="flex-1 p-6 bg-gray-50">
+                      <Outlet />
+                    </div>
+                  </div>
                 </ProtectedRoute>
               }
-            />
-           {/* → Gestión de productos (solo una ruta) */}
-            <Route
-              path="/admin/products"
-              element={
-                <ProtectedRoute requireAdmin>
-                  <ProductList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/products/create"
-              element={
-                <ProtectedRoute requireAdmin>
-                  <ProductEdit />
-                </ProtectedRoute>
-              }
-            />
-             {/* → Gestión de pedidos */}
-            <Route
-              path="/admin/orders"
-              element={
-              <ProtectedRoute requireAdmin>
-                <OrderList />
-            </ProtectedRoute>
-             }
-           />
-            <Route
-              path="/admin/products/edit/:id"
-              element={
-                <ProtectedRoute requireAdmin>
-                  <ProductEdit />
-                </ProtectedRoute>
-              }
-            />
-            </Routes>
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="products" element={<ProductList />} />
+              <Route path="products/create" element={<ProductEdit />} />
+              <Route path="products/edit/:id" element={<ProductEdit />} />
+              <Route path="orders" element={<OrderList />} />
+            </Route>
+       </Routes>
         </main>
       </div>
     </Router>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { CreditCard, MapPin, Phone, Mail, User } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { useOrderStore } from '../store/useOrderStore';
@@ -47,31 +48,39 @@ const Checkout: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) return;
+     e.preventDefault();
+     
+     if (!validateForm()) return;
 
+     if (items.length === 0) {
+       alert('Tu carrito está vacío. Por favor, agrega productos antes de realizar el pedido.');
+       return;
+     }
+
+     try {
+       //  - items: sólo productId y quantity
+       const orderPayload = {
+         items: items.map(({ productId, quantity }) => ({ productId, quantity })),
+       };
+       // createOrder usa el user del token para customerId
+       await createOrder(orderPayload);
+       // limpia el carrito y redirige
+       clearCart();
+       navigate('/orders', { replace: true });
+     } catch (error) {
+       console.error('Order creation failed:', error);
+     }
+}; // ← Cierre de handleSubmit
+
+  // Si el carrito está vacío, redirigimos en cuanto monte el componente
+  useEffect(() => {
     if (items.length === 0) {
-      alert('Your cart is empty');
-      return;
+      navigate('/cart', { replace: true });
     }
-
-    try {
-      await createOrder(formData);
-      clearCart();
-      navigate('/orders');
-    } catch (error) {
-      console.error('Order creation failed:', error);
-    }
-  };
-
-  if (items.length === 0) {
-    navigate('/cart');
-    return null;
-  }
-
-  return (
-    <div className="min-h-screen bg-amber-50 py-8">
+  }, [items, navigate]);
+     
+   return (
+     <div className="min-h-screen bg-amber-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
 
