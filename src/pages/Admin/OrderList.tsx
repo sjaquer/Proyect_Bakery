@@ -36,7 +36,7 @@ const OrderList: React.FC = () => {
     }
     // 3) Ya está todo validado: cargamos pedidos
     fetchOrders();
-  }, [user]);
+  }, [user, navigate]);
 
   const fetchOrders = async () => {
     try {

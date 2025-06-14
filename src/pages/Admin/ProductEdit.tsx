@@ -24,7 +24,7 @@ const ProductEdit: React.FC = () => {
         .then(({ data }) => setForm(data))
         .catch((err) => console.error(err));
     }
-  }, [id]);
+  }, [id, isEdit]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
