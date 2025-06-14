@@ -1,11 +1,14 @@
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import { useAuthStore } from '../store/useAuthStore';
 import { useCartStore } from '../store/useCartStore';
-import type { CheckoutData } from '../types/order';
 import { useOrderStore } from '../store/useOrderStore';
 import { formatPrice } from '../utils/formatters';
 import Input from '../components/shared/Input';
 import Button from '../components/shared/Button';
+import Header from '../components/Layout/Header';
+import ProtectedRoute from '../components/Layout/ProtectedRoute';
+import AdminSidebar from '../components/Layout/AdminSidebar';
 
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
