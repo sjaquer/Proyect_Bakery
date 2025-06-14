@@ -12,7 +12,8 @@ interface FormData {
   phone: string;
   email: string;
   address: string;
-  paymentMethod: string;
+  paymentMethod: 'yape' | 'cash' | '';
+  cashAmount?: string;
 }
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
@@ -27,7 +28,8 @@ const Checkout: React.FC = () => {
       phone: saved.phone || '',
       email: saved.email || '',
       address: saved.address || '',
-      paymentMethod: saved.paymentMethod || '',
+      paymentMethod: (saved.paymentMethod as 'yape' | 'cash') || '',
+      cashAmount: saved.cashAmount || '',
     };
   });
 
@@ -37,7 +39,12 @@ const Checkout: React.FC = () => {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+      ...(name === 'paymentMethod' && value !== 'cash' ? { cashAmount: '' } : {})
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,8 +60,17 @@ const Checkout: React.FC = () => {
         priceUnit: item.price,
         subtotal: item.quantity * item.price,
       })),
-      customerInfo: formData,
+      customerInfo: {
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        address: formData.address,
+      },
       paymentMethod: formData.paymentMethod,
+      total,
+      ...(formData.paymentMethod === 'cash'
+        ? { cashAmount: Number(formData.cashAmount || 0) }
+        : {}),
     };
 
  try {
@@ -62,8 +78,12 @@ const Checkout: React.FC = () => {
       const storedId = localStorage.getItem('guest_customerId');
       const reqData: any = {
         items: payload.items,
-        paymentMethod: payload.paymentMethod
+        paymentMethod: payload.paymentMethod,
+        total: payload.total,
       };
+      if (formData.paymentMethod === 'cash') {
+        reqData.cashAmount = payload.cashAmount;
+      }
       if (storedId) {
         reqData.customerId = Number(storedId);
       } else {
@@ -153,26 +173,37 @@ const Checkout: React.FC = () => {
                   required
                 />
               </div>
-              <div className="md:col-span-2">
-                <label
-                  htmlFor="paymentMethod"
-                  className="block mb-1 text-gray-700"
-                >
-                  Método de pago
-                </label>
-                <select
-                  id="paymentMethod"
-                  name="paymentMethod"
-                  value={formData.paymentMethod}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
-                  required
-                >
-                  <option value="">Selecciona método</option>
-                  <option value="credit_card">Tarjeta de crédito</option>
-                  <option value="cash">Efectivo</option>
-                  <option value="paypal">PayPal</option>
-                </select>
+              <div className="md:col-span-2 space-y-4">
+                <div>
+                  <label
+                    htmlFor="paymentMethod"
+                    className="block mb-1 text-gray-700"
+                  >
+                    Método de pago
+                  </label>
+                  <select
+                    id="paymentMethod"
+                    name="paymentMethod"
+                    value={formData.paymentMethod}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
+                    required
+                  >
+                    <option value="">Selecciona método</option>
+                    <option value="yape">Yape</option>
+                    <option value="cash">Efectivo</option>
+                  </select>
+                </div>
+                {formData.paymentMethod === 'cash' && (
+                  <Input
+                    label="¿Con cuánto paga?"
+                    name="cashAmount"
+                    type="number"
+                    value={formData.cashAmount}
+                    onChange={handleChange}
+                    required
+                  />
+                )}
               </div>
             </div>
           </div>
