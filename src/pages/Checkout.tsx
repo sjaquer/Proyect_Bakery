@@ -204,10 +204,10 @@ const Checkout: React.FC = () => {
             {error && <p className="text-red-500 mb-2">{error}</p>}
             <Button
               type="submit"
-              disabled={loading || items.length === 0}
+              disabled={isLoading || items.length === 0}
               className="w-full"
             >
-              {loading ? 'Procesando...' : 'Realizar Pedido'}
+              {isLoading ? 'Procesando...' : 'Realizar Pedido'}
             </Button>
           </div>
         </form>

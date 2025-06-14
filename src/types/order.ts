@@ -7,6 +7,16 @@ export interface OrderItem {
   price: number;
 }
 
+// Item stored in the shopping cart
+export interface CartItem {
+  id: string;
+  productId: string;
+  name: string;
+  imageUrl: string;
+  price: number;
+  quantity: number;
+}
+
 export interface Order {
   id: string;
   total: number;
