@@ -21,12 +21,12 @@ const Shop: React.FC = () => {
   });
 
   const categories = [
-    { value: 'all', label: 'All Products' },
-    { value: 'bread', label: 'Bread' },
-    { value: 'pastry', label: 'Pastries' },
-    { value: 'cake', label: 'Cakes' },
-    { value: 'cookie', label: 'Cookies' },
-    { value: 'dessert', label: 'Desserts' },
+    { value: 'all', label: 'Todos' },
+    { value: 'bread', label: 'Pan' },
+    { value: 'pastry', label: 'Pasteles' },
+    { value: 'cake', label: 'Tortas' },
+    { value: 'cookie', label: 'Galletas' },
+    { value: 'dessert', label: 'Postres' },
   ];
 
   if (error) {
@@ -34,7 +34,7 @@ const Shop: React.FC = () => {
       <div className="min-h-screen bg-amber-50 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <p className="text-red-600">Error loading products: {error}</p>
+            <p className="text-red-600">Error al cargar productos: {error}</p>
           </div>
         </div>
       </div>
@@ -46,9 +46,9 @@ const Shop: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Our Fresh Bakery</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Nuestra panadería</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover our selection of freshly baked breads, pastries, and desserts made with love and the finest ingredients.
+            Descubre nuestra selección de panes, pasteles y postres recién horneados con los mejores ingredientes.
           </p>
         </div>
 
@@ -57,7 +57,7 @@ const Shop: React.FC = () => {
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Input
-              placeholder="Search products..."
+              placeholder="Buscar productos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -103,7 +103,7 @@ const Shop: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
+            <p className="text-gray-500 text-lg">No se encontraron productos que coincidan con tu búsqueda.</p>
           </div>
         )}
       </div>

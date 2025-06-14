@@ -90,7 +90,7 @@ const Checkout: React.FC = () => {
     <div className="bg-gray-100 min-h-screen">
       {/* Header removido para evitar duplicado; usa el global */}
       <div className="container mx-auto py-12 px-4">
-        <h2 className="text-3xl font-bold mb-6">Checkout</h2>
+        <h2 className="text-3xl font-bold mb-6">Finalizar compra</h2>
         <form
           onSubmit={handleSubmit}
           className="flex flex-col lg:flex-row gap-8"
@@ -194,9 +194,9 @@ const Checkout: React.FC = () => {
               <span>{formatPrice(total)}</span>
             </div>
             <div className="text-sm text-gray-600 mb-4 space-y-2">
-              <p>• Free delivery for orders over $25</p>
+              <p>• Envío gratis para pedidos superiores a $25</p>
               <p>
-                • You'll receive un email confirmation once your order is confirmed
+                • Recibirás un correo de confirmación cuando tu pedido sea procesado
               </p>
             </div>
             {error && <p className="text-red-500 mb-2">{error}</p>}

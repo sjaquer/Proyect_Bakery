@@ -38,7 +38,7 @@ const Header: React.FC = () => {
                 isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
               }
             >
-              Shop
+              Tienda
             </NavLink>
             {user && (
               <NavLink
@@ -47,7 +47,7 @@ const Header: React.FC = () => {
                   isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
                 }
               >
-                My Orders
+                Mis pedidos
               </NavLink>
             )}
             {user?.role === 'admin' && (
@@ -81,7 +81,7 @@ const Header: React.FC = () => {
             {/* User Menu */}
             {user ? (
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-700">Hello, {user.name}</span>
+                <span className="text-sm text-gray-700">Hola, {user.name}</span>
                 <Button
                   variant="outline"
                   size="sm"
@@ -89,14 +89,14 @@ const Header: React.FC = () => {
                   className="flex items-center space-x-1"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
+                  <span>Salir</span>
                 </Button>
               </div>
             ) : (
               <Link to="/login">
                 <Button variant="primary" size="sm" className="flex items-center space-x-1">
                   <User className="h-4 w-4" />
-                  <span>Login</span>
+                  <span>Iniciar sesión</span>
                 </Button>
               </Link>
             )}
@@ -126,7 +126,7 @@ const Header: React.FC = () => {
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Shop
+                Tienda
               </NavLink>
               {user && (
                 <NavLink
@@ -136,7 +136,7 @@ const Header: React.FC = () => {
                   }
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  My Orders
+                  Mis pedidos
                 </NavLink>
               )}
               {user?.role === 'admin' && (
@@ -159,7 +159,7 @@ const Header: React.FC = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  <span>Cart ({cartCount})</span>
+                  <span>Carrito ({cartCount})</span>
                 </Link>
 
                 {user ? (
@@ -173,13 +173,13 @@ const Header: React.FC = () => {
                     className="flex items-center space-x-1"
                   >
                     <LogOut className="h-4 w-4" />
-                    <span>Logout</span>
+                    <span>Salir</span>
                   </Button>
                 ) : (
                   <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button variant="primary" size="sm" className="flex items-center space-x-1">
                       <User className="h-4 w-4" />
-                      <span>Login</span>
+                      <span>Iniciar sesión</span>
                     </Button>
                   </Link>
                 )}

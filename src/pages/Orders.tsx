@@ -46,7 +46,7 @@ const OrdersPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-amber-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">My Orders</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Mis pedidos</h1>
 
         {isLoading && user ? (
           <div className="space-y-4">
@@ -63,19 +63,19 @@ const OrdersPage: React.FC = () => {
           </div>
         ) : error && user ? (
           <div className="text-center py-12">
-            <p className="text-red-600">Error loading orders: {error}</p>
+            <p className="text-red-600">Error al cargar pedidos: {error}</p>
           </div>
         ) : displayOrders.length === 0 ? (
           <div className="text-center py-12">
             <Package className="mx-auto h-16 w-16 text-gray-400 mb-4" />
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              No orders yet
+              Aún no tienes pedidos
             </h2>
             <p className="text-gray-600">
-              When you place your first order, it will appear here.
+              Cuando hagas tu primer pedido aparecerá aquí.
             </p>
             <Button onClick={() => navigate('/shop')} className="mt-6">
-              Go to Shop
+              Ir a la tienda
             </Button>
           </div>
         ) : (
@@ -91,7 +91,7 @@ const OrdersPage: React.FC = () => {
                       {getStatusIcon(order.status)}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900">
-                          Order #{order.id.slice(-8)}
+                          Pedido #{order.id.slice(-8)}
                         </h3>
                         <p className="text-sm text-gray-500">
                           {formatDate(order.createdAt)}
@@ -113,7 +113,7 @@ const OrdersPage: React.FC = () => {
                   </div>
 
                   <div className="border-t border-gray-200 pt-4">
-                    <h4 className="font-medium text-gray-900 mb-3">Items:</h4>
+                    <h4 className="font-medium text-gray-900 mb-3">Artículos:</h4>
                     <div className="space-y-2">
                       {order.OrderItems.map((item) => (
                         <div
@@ -131,7 +131,7 @@ const OrdersPage: React.FC = () => {
                                 {item.name}
                               </p>
                               <p className="text-xs text-gray-500">
-                                Qty: {item.quantity}
+                                Cant: {item.quantity}
                               </p>
                             </div>
                           </div>
@@ -148,14 +148,14 @@ const OrdersPage: React.FC = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
                           <p className="font-medium text-gray-900">
-                            Delivery Address:
+                            Dirección de entrega:
                           </p>
                           <p className="text-gray-600">
                             {order.customerInfo.address || '—'}
                           </p>
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">Contact:</p>
+                          <p className="font-medium text-gray-900">Contacto:</p>
                           <p className="text-gray-600">
                             {order.customerInfo.phone || '—'}
                           </p>
