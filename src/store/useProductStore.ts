@@ -17,7 +17,7 @@ interface ProductState {
 }
 
 
-export const useProductStore = create<ProductState>((set, get) => ({
+export const useProductStore = create<ProductState>((set) => ({
   products: [],
   selectedProduct: null,
   isLoading: false,

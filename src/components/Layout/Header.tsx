@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { ShoppingCart, User, LogOut, Cake, Menu, X } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useCartStore } from '../../store/useCartStore';
@@ -9,7 +9,6 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const { user, logout } = useAuthStore();
   const { getItemCount } = useCartStore();
-  const navigate = useNavigate();
   const cartCount = getItemCount();
 
   const handleLogout = () => {
