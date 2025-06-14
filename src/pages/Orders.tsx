@@ -122,13 +122,13 @@ const OrdersPage: React.FC = () => {
                         >
                           <div className="flex items-center space-x-3">
                             <img
-                              src={item.imageUrl}
-                              alt={item.name}
+                              src={item.Product.imageUrl}
+                              alt={item.Product.name}
                               className="h-10 w-10 object-cover rounded"
                             />
                             <div>
                               <p className="text-sm font-medium text-gray-900">
-                                {item.name}
+                                {item.Product.name}
                               </p>
                               <p className="text-xs text-gray-500">
                                 Cant: {item.quantity}
