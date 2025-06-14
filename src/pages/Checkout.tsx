@@ -210,7 +210,7 @@ const Checkout: React.FC = () => {
               <span>{formatPrice(total)}</span>
             </div>
             <div className="text-sm text-gray-600 mb-4 space-y-2">
-              <p>• Envío gratis para pedidos superiores a $25</p>
+              <p>• Envío gratis para pedidos superiores a S/ 25</p>
               <p>
                 • Recibirás un correo de confirmación cuando tu pedido sea procesado
               </p>
