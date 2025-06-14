@@ -1,3 +1,11 @@
+export interface CartItem {
+  id: string;
+  name: string;
+  imageUrl: string;
+  price: number;
+  quantity: number;
+}
+
 export interface OrderItem {
   id: number;
   productId: number;
@@ -12,6 +20,8 @@ export interface Order {
   total: number;
   status: string;
   createdAt: string;
+  paymentMethod: string;
+  cashAmount?: number;
   // ▶▶▶ Añade esto:
   OrderItems: OrderItem[];
   // Si usas customerInfo:
@@ -23,9 +33,20 @@ export interface Order {
 }
 
 export interface CheckoutData {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  paymentMethod: 'cash' | 'card';
+  items: {
+    productId: string | number;
+    quantity: number;
+    priceUnit: number;
+    subtotal: number;
+  }[];
+  paymentMethod: 'cash' | 'yape';
+  total: number;
+  cashAmount?: number;
+  customerId?: number;
+  customerInfo?: {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+  };
 }
