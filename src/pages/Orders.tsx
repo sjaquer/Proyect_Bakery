@@ -1,4 +1,6 @@
-import React, { useEffect } from 'react';
+// src/pages/Orders.tsx
+
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import { useOrderStore } from '../store/useOrderStore';
@@ -15,14 +17,20 @@ const OrdersPage: React.FC = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const { orders, isLoading, error, fetchOrders } = useOrderStore();
+  const [guestOrders, setGuestOrders] = useState<typeof orders>([]);
 
   useEffect(() => {
-    if (!user) {
-      navigate('/login', { replace: true });
-      return;
+    if (user) {
+      fetchOrders();
+    } else {
+      // Carga los pedidos de invitado desde localStorage
+      const stored = JSON.parse(localStorage.getItem('guest_orders') || '[]');
+      setGuestOrders(stored);
     }
-    fetchOrders();
-  }, [user, navigate, fetchOrders]);
+  }, [user, fetchOrders]);
+
+  // Si hay usuario, muestro orders de la API; si no, los de localStorage
+  const displayOrders = user ? orders : guestOrders;
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -40,7 +48,7 @@ const OrdersPage: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">My Orders</h1>
 
-        {isLoading ? (
+        {isLoading && user ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, idx) => (
               <div
@@ -53,11 +61,11 @@ const OrdersPage: React.FC = () => {
               </div>
             ))}
           </div>
-        ) : error ? (
+        ) : error && user ? (
           <div className="text-center py-12">
             <p className="text-red-600">Error loading orders: {error}</p>
           </div>
-        ) : orders.length === 0 ? (
+        ) : displayOrders.length === 0 ? (
           <div className="text-center py-12">
             <Package className="mx-auto h-16 w-16 text-gray-400 mb-4" />
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
@@ -66,10 +74,13 @@ const OrdersPage: React.FC = () => {
             <p className="text-gray-600">
               When you place your first order, it will appear here.
             </p>
+            <Button onClick={() => navigate('/shop')} className="mt-6">
+              Go to Shop
+            </Button>
           </div>
         ) : (
           <div className="space-y-6">
-            {orders.map((order) => (
+            {displayOrders.map((order) => (
               <div
                 key={order.id}
                 className="bg-white rounded-lg shadow-md overflow-hidden"
