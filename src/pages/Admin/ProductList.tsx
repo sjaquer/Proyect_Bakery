@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axiosConfig';
 import Button from '../../components/shared/Button';
+import { formatPrice } from '../../utils/formatters';
 
 interface Product {
   id: number;
@@ -54,7 +55,7 @@ const ProductList: React.FC = () => {
           {products.map((p) => (
             <tr key={p.id} className="border-t">
               <td className="px-4 py-2">{p.name}</td>
-              <td className="px-4 py-2">${p.price.toFixed(2)}</td>
+              <td className="px-4 py-2">{formatPrice(p.price)}</td>
               <td className="px-4 py-2">{p.stock}</td>
               <td className="px-4 py-2 space-x-2">
                 <Button size="sm" onClick={() => navigate(`/admin/products/edit/${p.id}`)}>

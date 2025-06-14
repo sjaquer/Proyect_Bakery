@@ -4,16 +4,18 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axiosConfig';
 import { useAuthStore } from '../../store/useAuthStore';
-import AdminSidebar from '../../components/Layout/AdminSidebar';
-import ProtectedRoute from '../../components/Layout/ProtectedRoute';
 import Button from '../../components/shared/Button';
+import { formatPrice } from '../../utils/formatters';
 
 interface Order {
   id: number;
-  userId: number;
   total: number;
   status: string;
   createdAt: string;
+  Customer?: {
+    id: number;
+    name?: string;
+  };
 }
 
 const OrderList: React.FC = () => {
@@ -53,10 +55,7 @@ const OrderList: React.FC = () => {
   };
 
   return (
-    <ProtectedRoute requireAdmin>
-      <div className="flex">
-        <AdminSidebar />
-        <div className="flex-1 p-6 bg-white rounded shadow">
+    <div className="p-6 bg-white rounded shadow">
           <h1 className="text-2xl font-semibold mb-4">Pedidos</h1>
 
           {error && (
@@ -83,8 +82,10 @@ const OrderList: React.FC = () => {
                 {orders.map((o) => (
                   <tr key={o.id} className="border-t">
                     <td className="px-4 py-2">{o.id}</td>
-                    <td className="px-4 py-2">{o.userId}</td>
-                    <td className="px-4 py-2">${o.total.toFixed(2)}</td>
+                    <td className="px-4 py-2">
+                      {o.Customer?.name || o.Customer?.id || '—'}
+                    </td>
+                    <td className="px-4 py-2">{formatPrice(o.total)}</td>
                     <td className="px-4 py-2">{o.status}</td>
                     <td className="px-4 py-2">
                       {new Date(o.createdAt).toLocaleString()}
@@ -99,9 +100,7 @@ const OrderList: React.FC = () => {
               </tbody>
             </table>
           )}
-        </div>
       </div>
-    </ProtectedRoute>
   );
 };
 

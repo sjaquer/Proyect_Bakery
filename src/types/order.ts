@@ -9,10 +9,13 @@ export interface CartItem {
 export interface OrderItem {
   id: number;
   productId: number;
-  name: string;
-  imageUrl: string;
   quantity: number;
   price: number;
+  Product: {
+    id: number;
+    name: string;
+    imageUrl: string;
+  };
 }
 
 export interface Order {
@@ -44,13 +47,9 @@ export interface CheckoutData {
   items: {
     productId: string | number;
     quantity: number;
-    priceUnit: number;
-    subtotal: number;
   }[];
   paymentMethod: 'cash' | 'yape';
-  total: number;
   cashAmount?: number;
-  customerId?: number;
   customerInfo?: {
     name: string;
     email: string;

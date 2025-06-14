@@ -64,6 +64,12 @@ export const useOrderStore = create<OrderState>((set) => ({
           'guest_orders',
           JSON.stringify([resp.data, ...prev])
         );
+        if (resp.data.Customer && !localStorage.getItem('guest_customerId')) {
+          localStorage.setItem(
+            'guest_customerId',
+            String(resp.data.Customer.id)
+          );
+        }
       }
 
       return resp.data;

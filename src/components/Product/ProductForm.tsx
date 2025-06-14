@@ -76,7 +76,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         />
 
         <Input
-          label="Precio ($)"
+          label="Precio (S/)"
           name="price"
           type="number"
           step="0.01"
