@@ -30,6 +30,14 @@ export interface Order {
     phone?: string;
     email?: string;
   };
+  // Para invitados, el backend puede devolver el Customer creado
+  Customer?: {
+    id: number;
+    name?: string;
+    phone?: string;
+    email?: string;
+    address?: string;
+  };
 }
 
 export interface CheckoutData {
