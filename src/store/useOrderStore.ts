@@ -46,7 +46,7 @@ export const useOrderStore = create<OrderState>((set) => ({
     }
   },
 
-   createOrder: async (data) => {
+  createOrder: async (data) => {
     set({ isLoading: true, error: null });
     try {
       const resp = await api.post<Order>(ENDPOINTS.orders, data);
@@ -54,6 +54,18 @@ export const useOrderStore = create<OrderState>((set) => ({
         orders: [resp.data, ...st.orders],
         isLoading: false
       }));
+
+      // Si no hay usuario autenticado, persistir en localStorage
+      const user = useAuthStore.getState().user;
+      if (!user) {
+        const raw = localStorage.getItem('guest_orders');
+        const prev: Order[] = raw ? JSON.parse(raw) : [];
+        localStorage.setItem(
+          'guest_orders',
+          JSON.stringify([resp.data, ...prev])
+        );
+      }
+
       return resp.data;
     } catch (err: any) {
       set({
