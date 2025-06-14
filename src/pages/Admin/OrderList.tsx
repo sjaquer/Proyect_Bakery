@@ -86,6 +86,7 @@ const OrderList: React.FC = () => {
                       {o.Customer?.name || o.Customer?.id || '—'}
                     </td>
                     <td className="px-4 py-2">{formatPrice(o.total)}</td>
+                    <td className="px-4 py-2">${o.total.toFixed(2)}</td>
                     <td className="px-4 py-2">{o.status}</td>
                     <td className="px-4 py-2">
                       {new Date(o.createdAt).toLocaleString()}
