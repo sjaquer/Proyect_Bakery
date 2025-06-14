@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Filter } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useProductStore } from '../store/useProductStore';
 import ProductCard from '../components/Product/ProductCard';
 import Input from '../components/shared/Input';
