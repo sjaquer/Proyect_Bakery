@@ -102,23 +102,10 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/login" element={<Login />} />
             
-            {/* Protected Routes */}
-            <Route
-              path="/checkout"
-              element={
-                <ProtectedRoute>
-                  <Checkout />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/orders"
-              element={
-                <ProtectedRoute>
-                  <Orders />
-                </ProtectedRoute>
-              }
-            />
+            {/* Checkout y Orders ya no requieren login */}
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/orders"  element={<Orders  />} />
+            
 {/* Admin: layout con sidebar + contenido anidado */}
             <Route
               path="/admin/*"

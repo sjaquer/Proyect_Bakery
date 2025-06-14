@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { CreditCard, MapPin, Phone, Mail, User } from 'lucide-react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useCartStore } from '../store/useCartStore';
+import type { CheckoutData } from '../types/order';
 import { useOrderStore } from '../store/useOrderStore';
 import { formatPrice } from '../utils/formatters';
 import Input from '../components/shared/Input';
@@ -11,6 +10,7 @@ import Button from '../components/shared/Button';
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const { items, total, clearCart } = useCartStore();
+  const { user } = useAuthStore();
   const { createOrder, isLoading } = useOrderStore();
 
   const [formData, setFormData] = useState({
@@ -23,61 +23,86 @@ const Checkout: React.FC = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
-    if (!formData.address.trim()) newErrors.address = 'Address is required';
-
-    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-     e.preventDefault();
-     
-     if (!validateForm()) return;
-
-     if (items.length === 0) {
-       alert('Tu carrito está vacío. Por favor, agrega productos antes de realizar el pedido.');
-       return;
-     }
-
-     try {
-       //  - items: sólo productId y quantity
-       const orderPayload = {
-         items: items.map(({ productId, quantity }) => ({ productId, quantity })),
-       };
-       // createOrder usa el user del token para customerId
-       await createOrder(orderPayload);
-       // limpia el carrito y redirige
-       clearCart();
-       navigate('/orders', { replace: true });
-     } catch (error) {
-       console.error('Order creation failed:', error);
-     }
-}; // ← Cierre de handleSubmit
-
-  // Si el carrito está vacío, redirigimos en cuanto monte el componente
+    // Si el carrito queda vacío, redirijo a /cart
   useEffect(() => {
     if (items.length === 0) {
       navigate('/cart', { replace: true });
     }
   }, [items, navigate]);
+
+  // Ahora acepta también los <textarea>
+  const handleInputChange = (
+  e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+     const { name, value } = e.target;
+     setFormData(f => ({ ...f, [name]: value }));
+     if (errors[name]) {
+      setErrors(e => ({ ...e, [name]: '' }));
+    }
+  };
+
+const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.name.trim())    newErrors.name    = 'Tu nombre es requerido';
+    if (!formData.email.trim())   newErrors.email   = 'Tu email es requerido';
+    if (!formData.phone.trim())   newErrors.phone   = 'Tu teléfono es requerido';
+    if (!formData.address.trim()) newErrors.address = 'Tu dirección es requerida';
+    if (
+      formData.email &&
+      !/\S+@\S+\.\S+/.test(formData.email)
+    ) {
+      newErrors.email = 'Ingresa un email válido';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+     if (!validateForm()) return;
+     if (items.length === 0) return;
+
+// payload alineado al tipo CheckoutData
+    const payload: CheckoutData = {
+      items: items.map(i => ({
+        productId: i.productId,
+        quantity: i.quantity,
+        price: i.price,
+        name: i.name,
+        imageUrl: i.imageUrl
+      })),
+      customerInfo: {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        paymentMethod: formData.paymentMethod
+      }
+    };
+
+     if (user) {
+      // Usuario autenticado: envío al backend
+      try {
+        await createOrder(payload);
+        clearCart();
+        navigate('/orders', { replace: true });
+      } catch {
+        // error ya está en store.error
+      }
+    } else {
+      // Invitado: guardar orden en localStorage
+      const guestOrders = JSON.parse(localStorage.getItem('guest_orders') || '[]');
+      guestOrders.push({
+        id: Date.now().toString(),
+        ...payload,
+        date: new Date().toISOString(),
+      });
+      localStorage.setItem('guest_orders', JSON.stringify(guestOrders));
+      // Guardar datos de cliente para próxima vez
+      localStorage.setItem('guest_info', JSON.stringify(formData));
+      clearCart();
+      navigate('/orders', { replace: true });
+    }
      
    return (
      <div className="min-h-screen bg-amber-50 py-8">
@@ -88,19 +113,18 @@ const Checkout: React.FC = () => {
           {/* Order Form */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Information</h2>
-            
-            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="bg-white rounded-lg shadow-md p-6"></div>
+                <form onSubmit={handleSubmit} className="space-y-6">
               <Input
-                label="Full Name"
+                label="Nombre completo"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
                 error={errors.name}
                 required
               />
-
               <Input
-                label="Email Address"
+                label="Correo electrónico"
                 name="email"
                 type="email"
                 value={formData.email}
@@ -108,9 +132,8 @@ const Checkout: React.FC = () => {
                 error={errors.email}
                 required
               />
-
               <Input
-                label="Phone Number"
+                label="Teléfono"
                 name="phone"
                 type="tel"
                 value={formData.phone}
@@ -118,13 +141,12 @@ const Checkout: React.FC = () => {
                 error={errors.phone}
                 required
               />
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Delivery Address
                 </label>
                 <textarea
-                  name="address"
+                  name="Direccion"
                   value={formData.address}
                   onChange={handleInputChange}
                   rows={3}
@@ -150,19 +172,23 @@ const Checkout: React.FC = () => {
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                 >
-                  <option value="card">Credit/Debit Card</option>
-                  <option value="cash">Cash on Delivery</option>
+                  <option value="card">Tarjeta de debito o credito / Yape</option>
+                  <option value="cash">Pago en Efectivo (Contraentrega)</option>
                 </select>
               </div>
 
-              <Button
-                type="submit"
-                loading={isLoading}
-                size="lg"
-                className="w-full"
-              >
-                Place Order ({formatPrice(total)})
-              </Button>
+            <Button
+             type="submit"
+             loading={isLoading}
+             size="lg"
+             className="w-full"
+           >
+             Place Order ({formatPrice(total)})
+           </Button>
+           {/* Muestro el error de store (no confundir con errors de validación) */}
+              {error && (
+                <p className="text-red-600 text-sm mt-2">{error}</p>
+              )}
             </form>
           </div>
 
@@ -170,7 +196,7 @@ const Checkout: React.FC = () => {
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>
             
-            <div className="space-y-4 mb-6">
+            <div className="bg-white rounded-lg shadow-md p-6">
               {items.map((item) => (
                 <div key={item.id} className="flex items-center space-x-3">
                   <img

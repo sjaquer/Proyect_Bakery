@@ -1,9 +1,7 @@
-// src/store/useOrderStore.ts
 import { create } from 'zustand';
 import api from '../api/axiosConfig';
 import { ENDPOINTS } from '../api/endpoints';
-import { useAuthStore } from './useAuthStore';  // ▶▶▶ Importa tu store de auth
-
+import { useAuthStore } from './useAuthStore';
 import type { Order, CheckoutData } from '../types/order';
 
 interface OrderState {
@@ -23,18 +21,23 @@ export const useOrderStore = create<OrderState>((set) => ({
 
   fetchOrders: async () => {
     set({ isLoading: true, error: null });
+    const user = useAuthStore.getState().user;
+
+    if (!user) {
+      // Cliente sin sesión → leo pedidos de localStorage
+      const raw = localStorage.getItem('guest_orders');
+      const guestOrders: Order[] = raw ? JSON.parse(raw) : [];
+      set({ orders: guestOrders, isLoading: false });
+      return;
+    }
+
+  // Usuario autenticado → llamo al backend
     try {
-      // ▶▶▶ Toma el user del store, no de localStorage
-      const user = useAuthStore.getState().user;
-      if (!user) throw new Error('No está logueado');
-    // ▶▶▶ Usa el endpoint correcto según tu ENDPOINTS
       const endpoint =
         user.role === 'admin' ? ENDPOINTS.adminOrders : ENDPOINTS.orders;
-      const response = await api.get<Order[]>(endpoint);
-
-      set({ orders: response.data, isLoading: false });
+      const resp = await api.get<Order[]>(endpoint);
+      set({ orders: resp.data, isLoading: false });
     } catch (err: any) {
-      console.error('Error fetching orders:', err);
       set({
         error: err.response?.data?.message || err.message,
         isLoading: false
@@ -44,14 +47,43 @@ export const useOrderStore = create<OrderState>((set) => ({
 
   createOrder: async (data) => {
     set({ isLoading: true, error: null });
+    const user = useAuthStore.getState().user;
+
+    if (!user) {
+      // Cliente sin sesión → guardo en localStorage
+      const raw = localStorage.getItem('guest_orders');
+      const guestOrders: Order[] = raw ? JSON.parse(raw) : [];
+
+      // Calcular total
+      const total = data.items.reduce(
+        (sum, i) => sum + i.price * i.quantity,
+        0
+      );
+
+      const newOrder: Order = {
+        id: crypto.randomUUID(),
+        OrderItems: data.items,
+        total,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        customerInfo: data.customerInfo
+      } as any;
+
+     guestOrders.unshift(newOrder);
+      localStorage.setItem('guest_orders', JSON.stringify(guestOrders));
+      set({ orders: guestOrders, isLoading: false });
+      return newOrder;
+    }
+
+    // Usuario autenticado → envío al backend
     try {
-      // ▶▶▶ Usa siempre ENDPOINTS.orders para crear
-      const response = await api.post<Order>(ENDPOINTS.orders, data);
-      set((state) => ({
-        orders: [response.data, ...state.orders],
+      const resp = await api.post<Order>(ENDPOINTS.orders, data);
+      set((st) => ({
+        orders: [resp.data, ...st.orders],
         isLoading: false
       }));
-      return response.data;
+      return resp.data;
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
@@ -64,14 +96,13 @@ export const useOrderStore = create<OrderState>((set) => ({
   updateOrderStatus: async (id, status) => {
     set({ isLoading: true, error: null });
     try {
-      // ▶▶▶ Si tu backend expone PATCH /orders/:id/status, ajústalo:
       await api.patch(`${ENDPOINTS.orders}/${id}/status`, { status });
-      set((state) => {
-        const orders = state.orders.map((order) =>
-          order.id === id ? { ...order, status } : order
-        );
-        return { orders, isLoading: false };
-      });
+      set((st) => ({
+        orders: st.orders.map(o =>
+          o.id === id ? { ...o, status } : o
+        ),
+        isLoading: false
+      }));
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
@@ -81,5 +112,5 @@ export const useOrderStore = create<OrderState>((set) => ({
     }
   },
 
-  clearError: () => set({ error: null }),
+  clearError: () => set({ error: null })
 }));
