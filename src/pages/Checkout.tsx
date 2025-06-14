@@ -10,7 +10,7 @@ import Header from '../components/Layout/Header';
 import ProtectedRoute from '../components/Layout/ProtectedRoute';
 import AdminSidebar from '../components/Layout/AdminSidebar';
 
-const Checkout: React.FC = () => {
+  const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const { items, total, clearCart } = useCartStore();
   const { user } = useAuthStore();
