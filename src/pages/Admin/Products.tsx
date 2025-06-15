@@ -191,6 +191,11 @@ const Products: React.FC = () => {
                             className="h-10 w-10 rounded object-cover"
                             src={product.imageUrl}
                             alt={product.name}
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              target.onerror = null;
+                              target.src = 'https://via.placeholder.com/100?text=Imagen';
+                            }}
                           />
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900">

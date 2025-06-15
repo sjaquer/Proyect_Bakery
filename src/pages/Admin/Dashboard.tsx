@@ -116,6 +116,11 @@ const Dashboard: React.FC = () => {
                           src={product.imageUrl}
                           alt={product.name}
                           className="h-10 w-10 object-cover rounded"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            target.onerror = null;
+                            target.src = 'https://via.placeholder.com/100?text=Imagen';
+                          }}
                         />
                         <div>
                           <p className="font-medium text-gray-900">{product.name}</p>

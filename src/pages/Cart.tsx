@@ -49,6 +49,11 @@ const Cart: React.FC = () => {
                   src={item.imageUrl}
                   alt={item.name}
                   className="h-20 w-20 object-cover rounded-lg"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.onerror = null;
+                    target.src = 'https://via.placeholder.com/100?text=Imagen';
+                  }}
                 />
                 
                 <div className="flex-1 min-w-0">
