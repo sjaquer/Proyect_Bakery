@@ -4,6 +4,7 @@ import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { formatPrice } from '../utils/formatters';
 import { resolveImageUrl } from '../utils/resolveImageUrl';
+import placeholderImg from '../utils/placeholder';
 import Button from '../components/shared/Button';
 
 const Cart: React.FC = () => {
@@ -54,6 +55,7 @@ const Cart: React.FC = () => {
                     const target = e.currentTarget;
                     target.onerror = null;
                     target.src = 'https://via.placeholder.com/100?text=Imagen';
+                    target.src = placeholderImg;
                   }}
                 />
                 

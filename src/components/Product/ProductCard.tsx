@@ -5,6 +5,7 @@ import { useCartStore } from '../../store/useCartStore';
 import { formatPrice } from '../../utils/formatters';
 import { resolveImageUrl } from '../../utils/resolveImageUrl';
 import Button from '../shared/Button';
+import placeholderImg from '../../utils/placeholder';
 
    interface ProductCardProps {
    product: Product;
@@ -34,6 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             const target = e.currentTarget;
             target.onerror = null;
             target.src = 'https://via.placeholder.com/300?text=Imagen+no+disponible';
+            target.src = placeholderImg;
           }}
         />
 

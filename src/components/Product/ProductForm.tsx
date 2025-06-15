@@ -3,6 +3,7 @@ import { ProductFormData } from '../../types/product';
 import Input from '../shared/Input';
 import Button from '../shared/Button';
 import { resolveImageUrl } from '../../utils/resolveImageUrl';
+import placeholderImg from '../../utils/placeholder';
 
 interface ProductFormProps {
   initialData?: ProductFormData;
@@ -153,6 +154,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 const target = e.currentTarget;
                 target.onerror = null;
                 target.src = 'https://via.placeholder.com/300?text=Imagen+no+disponible';
+                target.src = placeholderImg;
               }}
             />
           </div>
