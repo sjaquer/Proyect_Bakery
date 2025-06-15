@@ -142,7 +142,7 @@ const OrdersPage: React.FC = () => {
                             </div>
                           </div>
                           <p className="text-sm font-medium text-gray-900">
-                            {formatPrice(item.price * item.quantity)}
+                            {formatPrice(item.subtotal)}
                           </p>
                         </div>
                       ))}
