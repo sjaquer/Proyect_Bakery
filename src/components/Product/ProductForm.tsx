@@ -147,7 +147,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
           <div className="w-full h-48 border rounded-md overflow-hidden flex items-center justify-center bg-gray-50">
             <img
               src={resolveImageUrl(formData.imageUrl)}
-              src={formData.imageUrl}
               alt="Vista previa"
               className={`w-full h-full object-${previewFit}`}
               onError={(e) => {
