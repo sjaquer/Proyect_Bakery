@@ -3,6 +3,7 @@ import { Plus} from 'lucide-react';
 import { Product } from '../../types/product';
 import { useCartStore } from '../../store/useCartStore';
 import { formatPrice } from '../../utils/formatters';
+import { resolveImageUrl } from '../../utils/resolveImageUrl';
 import Button from '../shared/Button';
 
    interface ProductCardProps {
@@ -26,6 +27,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
      <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
        <div className="relative overflow-hidden">
         <img
+          src={resolveImageUrl(product.imageUrl)}
           src={product.imageUrl}
           alt={product.name}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ProductFormData } from '../../types/product';
 import Input from '../shared/Input';
 import Button from '../shared/Button';
+import { resolveImageUrl } from '../../utils/resolveImageUrl';
 
 interface ProductFormProps {
   initialData?: ProductFormData;
@@ -145,6 +146,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <div className="space-y-2">
           <div className="w-full h-48 border rounded-md overflow-hidden flex items-center justify-center bg-gray-50">
             <img
+              src={resolveImageUrl(formData.imageUrl)}
               src={formData.imageUrl}
               alt="Vista previa"
               className={`w-full h-full object-${previewFit}`}
