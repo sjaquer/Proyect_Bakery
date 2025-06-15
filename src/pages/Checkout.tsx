@@ -90,7 +90,7 @@ const Checkout: React.FC = () => {
         localStorage.setItem('guest_customerId', String(result.Customer.id));
       }
 
-      navigate('/orders', { replace: true });
+      navigate('/orders', { state: { newOrder: result }, replace: true });
 
     } catch {
       // error manejado en store.error
