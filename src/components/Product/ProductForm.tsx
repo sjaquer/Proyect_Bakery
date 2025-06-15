@@ -22,7 +22,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     price: initialData?.price || 0,
     category: initialData?.category || 'bread',
     imageUrl: initialData?.imageUrl || '',
-    inStock: initialData?.inStock ?? true,
+    stock: initialData?.stock ?? 0,
     ingredients: initialData?.ingredients || [],
     allergens: initialData?.allergens || [],
   });
@@ -54,13 +54,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
     });
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'number' ? Number(value) : 
-               type === 'checkbox' ? (e.target as HTMLInputElement).checked : 
-               value,
+      [name]: type === 'number' ? Number(value) : value,
     }));
   };
 
@@ -81,6 +83,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
           type="number"
           step="0.01"
           value={formData.price}
+          onChange={handleInputChange}
+          required
+        />
+
+        <Input
+          label="Stock"
+          name="stock"
+          type="number"
+          value={formData.stock}
           onChange={handleInputChange}
           required
         />
@@ -141,19 +152,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
         helperText="Introduce los alérgenos separados por comas"
       />
 
-      <div className="flex items-center">
-        <input
-          type="checkbox"
-          name="inStock"
-          id="inStock"
-          checked={formData.inStock}
-          onChange={handleInputChange}
-          className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
-        />
-        <label htmlFor="inStock" className="ml-2 block text-sm text-gray-700">
-          Disponible
-        </label>
-      </div>
 
       <div className="flex justify-end">
         <Button type="submit" loading={isLoading}>
