@@ -16,6 +16,7 @@ const ProductEdit: React.FC = () => {
     price: 0,
     stock: 0,
     description: '',
+    imageUrl: '',
   });
 
   useEffect(() => {
@@ -74,6 +75,13 @@ const ProductEdit: React.FC = () => {
           name="stock"
           type="number"
           value={form.stock}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          label="URL de imagen"
+          name="imageUrl"
+          value={form.imageUrl}
           onChange={handleChange}
           required
         />

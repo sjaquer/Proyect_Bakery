@@ -28,7 +28,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
        <div className="relative overflow-hidden">
         <img
           src={resolveImageUrl(product.imageUrl)}
-          src={product.imageUrl}
           alt={product.name}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           onError={(e) => {
