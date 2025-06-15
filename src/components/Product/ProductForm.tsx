@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ProductFormData } from '../../types/product';
 import Input from '../shared/Input';
 import Button from '../shared/Button';
+import { resolveImageUrl } from '../../utils/resolveImageUrl';
 
 interface ProductFormProps {
   initialData?: ProductFormData;
@@ -26,6 +27,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
     ingredients: initialData?.ingredients || [],
     allergens: initialData?.allergens || [],
   });
+
+  const [previewFit, setPreviewFit] = useState<'cover' | 'contain'>('cover');
 
   const [ingredientsText, setIngredientsText] = useState(
     initialData?.ingredients?.join(', ') || ''
@@ -137,6 +140,37 @@ const ProductForm: React.FC<ProductFormProps> = ({
         onChange={handleInputChange}
         required
       />
+
+      {/* Image preview and fit options */}
+      {formData.imageUrl && (
+        <div className="space-y-2">
+          <div className="w-full h-48 border rounded-md overflow-hidden flex items-center justify-center bg-gray-50">
+            <img
+              src={resolveImageUrl(formData.imageUrl)}
+              alt="Vista previa"
+              className={`w-full h-full object-${previewFit}`}
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.onerror = null;
+                target.src = 'https://via.placeholder.com/300?text=Imagen+no+disponible';
+              }}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Ajuste de imagen
+            </label>
+            <select
+              value={previewFit}
+              onChange={(e) => setPreviewFit(e.target.value as 'cover' | 'contain')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+            >
+              <option value="cover">Recortar (cover)</option>
+              <option value="contain">Contener (contain)</option>
+            </select>
+          </div>
+        </div>
+      )}
 
       <Input
         label="Ingredientes (separados por coma)"
