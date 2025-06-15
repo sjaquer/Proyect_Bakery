@@ -2,7 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/axiosConfig';
+import {
+  fetchProducts,
+  deleteProduct as deleteProductApi,
+} from '../../api/productService';
 import Button from '../../components/shared/Button';
 import { formatPrice } from '../../utils/formatters';
 
@@ -20,7 +23,7 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await api.get<Product[]>('/products');
+        const data = await fetchProducts();
         setProducts(data);
       } catch (err) {
         console.error('Error cargando productos', err);
@@ -30,7 +33,7 @@ const ProductList: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (!confirm('¿Seguro que quieres eliminar este producto?')) return;
-    await api.delete(`/products/${id}`);
+    await deleteProductApi(String(id));
     setProducts((prev) => prev.filter((p) => p.id !== id));
   };
 
