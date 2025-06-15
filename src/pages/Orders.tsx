@@ -1,7 +1,7 @@
 // src/pages/Orders.tsx
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import { useOrderStore } from '../store/useOrderStore';
 import Button from '../components/shared/Button';
@@ -20,6 +20,8 @@ const OrdersPage: React.FC = () => {
   const navigate = useNavigate();
   const { orders, isLoading, error, fetchOrders } = useOrderStore();
   const [guestOrders, setGuestOrders] = useState<typeof orders>([]);
+  const location = useLocation();
+  const [newOrder, setNewOrder] = useState<typeof orders[0] | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -30,6 +32,15 @@ const OrdersPage: React.FC = () => {
       setGuestOrders(stored);
     }
   }, [user, fetchOrders]);
+
+  useEffect(() => {
+    const order = (location.state as any)?.newOrder;
+    if (order) {
+      setNewOrder(order);
+      navigate(location.pathname, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Si hay usuario, muestro orders de la API; si no, los de localStorage
   const displayOrders = user ? orders : guestOrders;
@@ -82,6 +93,20 @@ const OrdersPage: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-6">
+            {newOrder && (
+              <div className="bg-green-50 border border-green-200 rounded p-4">
+                <h2 className="font-semibold text-green-800 mb-1">
+                  ¡Gracias por tu compra!
+                </h2>
+                <p className="text-sm text-green-700">
+                  Pedido #{String(newOrder.id).slice(-8)} por{' '}
+                  {formatPrice(newOrder.total)}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Esperando confirmación de la tienda...
+                </p>
+              </div>
+            )}
             {displayOrders.map((order) => (
               <div
                 key={order.id}
@@ -93,7 +118,7 @@ const OrdersPage: React.FC = () => {
                       {getStatusIcon(order.status)}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900">
-                          Pedido #{order.id.slice(-8)}
+                          Pedido #{String(order.id).slice(-8)}
                         </h3>
                         <p className="text-sm text-gray-500">
                           {formatDate(order.createdAt)}

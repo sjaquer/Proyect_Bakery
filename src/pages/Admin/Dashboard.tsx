@@ -80,7 +80,7 @@ const Dashboard: React.FC = () => {
                   <div key={order.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">
-                        Order #{order.id.slice(-8)}
+                        Order #{String(order.id).slice(-8)}
                       </p>
                       <p className="text-sm text-gray-500">
                         {order.Customer?.name || 'Cliente'}
