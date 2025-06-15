@@ -13,6 +13,7 @@ import {
   getStatusColor
 } from '../utils/formatters';
 import { resolveImageUrl } from '../utils/resolveImageUrl';
+import placeholderImg from '../utils/placeholder';
 
 const OrdersPage: React.FC = () => {
   const { user } = useAuthStore();
@@ -130,6 +131,7 @@ const OrdersPage: React.FC = () => {
                                 const target = e.currentTarget;
                                 target.onerror = null;
                                 target.src = 'https://via.placeholder.com/100?text=Imagen';
+                                target.src = placeholderImg;
                               }}
                             />
                             <div>

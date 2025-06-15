@@ -7,6 +7,7 @@ import Button from '../../components/shared/Button';
 import Input from '../../components/shared/Input';
 import ProductForm from '../../components/Product/ProductForm';
 import { resolveImageUrl } from '../../utils/resolveImageUrl';
+import placeholderImg from '../../utils/placeholder';
 
 const Products: React.FC = () => {
   const {
@@ -196,6 +197,7 @@ const Products: React.FC = () => {
                               const target = e.currentTarget;
                               target.onerror = null;
                               target.src = 'https://via.placeholder.com/100?text=Imagen';
+                              target.src = placeholderImg;
                             }}
                           />
                           <div className="ml-4">

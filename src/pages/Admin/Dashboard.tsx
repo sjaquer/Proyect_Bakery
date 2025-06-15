@@ -4,6 +4,7 @@ import { useProductStore } from '../../store/useProductStore';
 import { useOrderStore } from '../../store/useOrderStore';
 import { formatPrice } from '../../utils/formatters';
 import { resolveImageUrl } from '../../utils/resolveImageUrl';
+import placeholderImg from '../../utils/placeholder';
 
 const Dashboard: React.FC = () => {
   const { products, fetchProducts } = useProductStore();
@@ -121,6 +122,7 @@ const Dashboard: React.FC = () => {
                             const target = e.currentTarget;
                             target.onerror = null;
                             target.src = 'https://via.placeholder.com/100?text=Imagen';
+                            target.src = placeholderImg;
                           }}
                         />
                         <div>

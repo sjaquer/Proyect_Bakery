@@ -71,6 +71,12 @@ const Checkout: React.FC = () => {
         address: formData.address,
       };
     }
+    payload.customerInfo = {
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      address: formData.address,
+    };
 
  try {
       const result = await createOrder(payload);
