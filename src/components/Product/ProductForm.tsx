@@ -152,7 +152,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               onError={(e) => {
                 const target = e.currentTarget;
                 target.onerror = null;
-                target.src = 'https://via.placeholder.com/300?text=Imagen+no+disponible';
+                target.src = '/placeholder.svg';
               }}
             />
           </div>

@@ -33,7 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           onError={(e) => {
             const target = e.currentTarget;
             target.onerror = null;
-            target.src = 'https://via.placeholder.com/300?text=Imagen+no+disponible';
+            target.src = '/placeholder.svg';
           }}
         />
 
