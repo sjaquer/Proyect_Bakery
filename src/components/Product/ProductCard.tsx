@@ -28,13 +28,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
        <div className="relative overflow-hidden">
         <img
           src={resolveImageUrl(product.imageUrl)}
-          src={product.imageUrl}
           alt={product.name}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           onError={(e) => {
             const target = e.currentTarget;
             target.onerror = null;
-            target.src = 'https://via.placeholder.com/300?text=Imagen+no+disponible';
+            target.src = '/placeholder.svg';
           }}
         />
 

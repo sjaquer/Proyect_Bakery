@@ -2,7 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../api/axiosConfig';
+import {
+  fetchProduct,
+  createProduct as createProductApi,
+  updateProduct as updateProductApi,
+} from '../../api/productService';
 import Input from '../../components/shared/Input';
 import Button from '../../components/shared/Button';
 
@@ -16,12 +20,13 @@ const ProductEdit: React.FC = () => {
     price: 0,
     stock: 0,
     description: '',
+    imageUrl: '',
   });
 
   useEffect(() => {
-    if (isEdit) {
-      api.get(`/products/${id}`)
-        .then(({ data }) => setForm(data))
+    if (isEdit && id) {
+      fetchProduct(id)
+        .then((data) => setForm(data))
         .catch((err) => console.error(err));
     }
   }, [id, isEdit]);
@@ -37,10 +42,10 @@ const ProductEdit: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (isEdit) {
-        await api.put(`/products/${id}`, form);
+      if (isEdit && id) {
+        await updateProductApi(id, form);
       } else {
-        await api.post('/products', form);
+        await createProductApi(form);
       }
       navigate('/admin/products');
     } catch (err) {
@@ -74,6 +79,13 @@ const ProductEdit: React.FC = () => {
           name="stock"
           type="number"
           value={form.stock}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          label="URL de imagen"
+          name="imageUrl"
+          value={form.imageUrl}
           onChange={handleChange}
           required
         />

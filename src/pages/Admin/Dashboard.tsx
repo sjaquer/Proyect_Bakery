@@ -120,7 +120,7 @@ const Dashboard: React.FC = () => {
                           onError={(e) => {
                             const target = e.currentTarget;
                             target.onerror = null;
-                            target.src = 'https://via.placeholder.com/100?text=Imagen';
+                            target.src = '/placeholder.svg';
                           }}
                         />
                         <div>
