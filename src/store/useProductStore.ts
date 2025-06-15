@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import api from '../api/axiosConfig';
 import { ENDPOINTS } from '../api/endpoints';
 import type { Product, ProductFormData } from '../types/product';
+import { mapApiProduct } from '../utils/mapApiProduct';
 
 interface ProductState {
   products: Product[];
@@ -27,11 +28,7 @@ export const useProductStore = create<ProductState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.get<Product[]>(ENDPOINTS.products);
-      // ▶▶▶ Mapear stock → inStock
-      const mapped = response.data.map(p => ({
-        ...p,
-        inStock: p.stock > 0
-      }));
+      const mapped = response.data.map(mapApiProduct);
       set({ products: mapped, isLoading: false });
     } catch (error: any) {
       set({ 
@@ -46,10 +43,7 @@ export const useProductStore = create<ProductState>((set) => ({
     try {
       const response = await api.get<Product>(ENDPOINTS.productById(id));
       set({
-        selectedProduct: {
-          ...response.data,
-          inStock: response.data.stock > 0
-        },
+        selectedProduct: mapApiProduct(response.data),
         isLoading: false
       });
     } catch (error: any) {
@@ -64,10 +58,7 @@ export const useProductStore = create<ProductState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.post<Product>(ENDPOINTS.adminProducts, data);
-      const newProduct = {
-        ...response.data,
-        inStock: response.data.stock > 0
-      };
+      const newProduct = mapApiProduct(response.data);
       set(state => ({ 
         products: [...state.products, newProduct],
         isLoading: false 
@@ -85,10 +76,7 @@ export const useProductStore = create<ProductState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.put<Product>(ENDPOINTS.productById(id), data);
-      const updated = {
-        ...response.data,
-        inStock: response.data.stock > 0
-      };
+      const updated = mapApiProduct(response.data);
       set(state => ({ 
         products: state.products.map(p => p.id === id ? updated : p),
         isLoading: false 
