@@ -10,7 +10,8 @@ export interface OrderItem {
   id: number;
   productId: number;
   quantity: number;
-  price: number;
+  priceUnit: number;
+  subtotal: number;
   Product: {
     id: number;
     name: string;
