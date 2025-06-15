@@ -12,6 +12,7 @@ import {
   formatOrderStatus,
   getStatusColor
 } from '../utils/formatters';
+import { resolveImageUrl } from '../utils/resolveImageUrl';
 
 const OrdersPage: React.FC = () => {
   const { user } = useAuthStore();
@@ -122,9 +123,14 @@ const OrdersPage: React.FC = () => {
                         >
                           <div className="flex items-center space-x-3">
                             <img
-                              src={item.Product.imageUrl}
+                              src={resolveImageUrl(item.Product.imageUrl)}
                               alt={item.Product.name}
                               className="h-10 w-10 object-cover rounded"
+                              onError={(e) => {
+                                const target = e.currentTarget;
+                                target.onerror = null;
+                                target.src = 'https://via.placeholder.com/100?text=Imagen';
+                              }}
                             />
                             <div>
                               <p className="text-sm font-medium text-gray-900">

@@ -3,6 +3,7 @@ import { Plus} from 'lucide-react';
 import { Product } from '../../types/product';
 import { useCartStore } from '../../store/useCartStore';
 import { formatPrice } from '../../utils/formatters';
+import { resolveImageUrl } from '../../utils/resolveImageUrl';
 import Button from '../shared/Button';
 
    interface ProductCardProps {
@@ -25,11 +26,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
      <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
        <div className="relative overflow-hidden">
-         <img
-           src={product.imageUrl}
-           alt={product.name}
-           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-         />
+        <img
+          src={resolveImageUrl(product.imageUrl)}
+          alt={product.name}
+          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          onError={(e) => {
+            const target = e.currentTarget;
+            target.onerror = null;
+            target.src = 'https://via.placeholder.com/300?text=Imagen+no+disponible';
+          }}
+        />
 
         {product.stock <= 0 && (
            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
