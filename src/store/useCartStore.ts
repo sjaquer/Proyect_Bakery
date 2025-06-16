@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { CartItem } from '../types/order';
+import { useProductStore } from './useProductStore';
 
 interface CartState {
   items: CartItem[];
@@ -19,21 +20,27 @@ export const useCartStore = create<CartState>()(
       total: 0,
 
       addItem: (newItem) => {
+        const stock = useProductStore
+          .getState()
+          .products.find(p => String(p.id) === String(newItem.id))?.stock ?? Infinity;
+
         set((state) => {
           const existingItem = state.items.find(item => item.id === newItem.id);
-          
-          let updatedItems;
+
+          let updatedItems = state.items;
           if (existingItem) {
+            if (existingItem.quantity >= stock) return state;
             updatedItems = state.items.map(item =>
               item.id === newItem.id
-                ? { ...item, quantity: item.quantity + 1 }
+                ? { ...item, quantity: Math.min(item.quantity + 1, stock) }
                 : item
             );
           } else {
+            if (stock <= 0) return state;
             updatedItems = [...state.items, { ...newItem, quantity: 1 }];
           }
 
-          const total = updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+          const total = updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
           return { items: updatedItems, total };
         });
       },
@@ -52,11 +59,17 @@ export const useCartStore = create<CartState>()(
           return;
         }
 
+        const stock = useProductStore
+          .getState()
+          .products.find(p => String(p.id) === String(id))?.stock ?? Infinity;
+
+        const newQty = quantity > stock ? stock : quantity;
+
         set((state) => {
           const updatedItems = state.items.map(item =>
-            item.id === id ? { ...item, quantity } : item
+            item.id === id ? { ...item, quantity: newQty } : item
           );
-          const total = updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+          const total = updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
           return { items: updatedItems, total };
         });
       },

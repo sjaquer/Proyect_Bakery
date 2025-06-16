@@ -10,17 +10,7 @@ import {
   formatOrderStatus,
   getStatusColor,
 } from '../../utils/formatters';
-
-interface Order {
-  id: number;
-  total: number;
-  status: string;
-  createdAt: string;
-  Customer?: {
-    id: number;
-    name?: string;
-  };
-}
+import type { Order } from '../../types/order';
 
 const OrderList: React.FC = () => {
   const { user } = useAuthStore();
@@ -58,7 +48,7 @@ const OrderList: React.FC = () => {
     }
   };
 
-  const advanceStatus = async (orderId: number, current: string) => {
+  const advanceStatus = async (orderId: string, current: string) => {
     const idx = statuses.indexOf(current);
     if (idx === -1 || idx === statuses.length - 1) return;
     const next = statuses[idx + 1];
@@ -73,14 +63,13 @@ const OrderList: React.FC = () => {
     }
   };
 
-  const cancelOrder = async (orderId: number) => {
+  const deleteOrder = async (orderId: string) => {
+    if (!window.confirm('Eliminar la orden definitivamente?')) return;
     try {
-      await api.patch(`/orders/${orderId}/status`, { status: 'cancelled' });
-      setOrders((prev) =>
-        prev.map((o) => (o.id === orderId ? { ...o, status: 'cancelled' } : o))
-      );
+      await api.delete(`/orders/${orderId}`);
+      setOrders((prev) => prev.filter((o) => o.id !== orderId));
     } catch (err: any) {
-      console.error('Error cancelling order', err);
+      console.error('Error deleting order', err);
       setError(err.response?.data?.message || err.message);
     }
   };
@@ -139,7 +128,7 @@ const OrderList: React.FC = () => {
                         </span>
                         <div className="flex gap-2">
                           {o.status === 'pending' && (
-                            <Button size="xs" variant="danger" onClick={() => cancelOrder(o.id)}>
+                            <Button size="xs" variant="danger" onClick={() => deleteOrder(o.id)}>
                               Rechazar
                             </Button>
                           )}
