@@ -114,12 +114,12 @@ const OrderList: React.FC = () => {
                     >
                       <div className="text-sm font-medium">#{String(o.id).slice(-8)}</div>
                       <div className="text-xs text-gray-500">
-                        {o.customer.name || o.customer.id}
+                        {o.customer?.name || o.customer?.id || '—'}
                       </div>
                       <div className="flex items-center gap-1 text-xs text-gray-500">
-                        <span>{o.customer.phone}</span>
+                        <span>{o.customer?.phone || '—'}</span>
                         <a
-                          href={`https://wa.me/${o.customer.phone}`}
+                          href={`https://wa.me/${o.customer?.phone || ''}`}
                           target="_blank"
                           rel="noopener"
                           aria-label="Message customer on WhatsApp"
@@ -128,12 +128,12 @@ const OrderList: React.FC = () => {
                         </a>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {o.customer.address || '—'}
+                        {o.customer?.address || '—'}
                       </div>
                       <ul className="text-xs text-gray-700 list-disc pl-4">
                         {o.items?.map(item => (
                           <li key={item.id}>
-                            {item.Product.name} x {item.quantity}
+                            {item.Product?.name || '—'} x {item.quantity}
                           </li>
                         ))}
                       </ul>
