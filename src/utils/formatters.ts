@@ -24,6 +24,7 @@ export const formatOrderStatus = (status: string): string => {
     ready: 'Listo para recoger',
     delivered: 'Entregado',
     cancelled: 'Cancelado',
+    rejected: 'Rechazado',
   };
   return statusMap[status] || status;
 };
@@ -36,6 +37,7 @@ export const getStatusColor = (status: string): string => {
     ready: 'bg-green-100 text-green-800',
     delivered: 'bg-gray-100 text-gray-800',
     cancelled: 'bg-red-100 text-red-800',
+    rejected: 'bg-red-100 text-red-800',
   };
   return colorMap[status] || 'bg-gray-100 text-gray-800';
 };

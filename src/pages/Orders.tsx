@@ -34,6 +34,12 @@ const OrdersPage: React.FC = () => {
   }, [user, fetchOrders]);
 
   useEffect(() => {
+    const handler = () => fetchOrders();
+    window.addEventListener('orders:updated', handler);
+    return () => window.removeEventListener('orders:updated', handler);
+  }, [fetchOrders]);
+
+  useEffect(() => {
     const order = (location.state as any)?.newOrder;
     if (order) {
       setNewOrder(order);
@@ -154,7 +160,7 @@ const OrdersPage: React.FC = () => {
                   <div className="border-t border-gray-200 pt-4">
                     <h4 className="font-medium text-gray-900 mb-3">Artículos:</h4>
                     <div className="space-y-2">
-                      {order.OrderItems.map((item) => (
+                      {order.items.map((item) => (
                         <div
                           key={item.id}
                           className="flex items-center justify-between"
@@ -187,7 +193,7 @@ const OrdersPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {order.customerInfo && (
+                  {order.customer && (
                     <div className="border-t border-gray-200 pt-4 mt-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
@@ -195,16 +201,16 @@ const OrdersPage: React.FC = () => {
                             Dirección de entrega:
                           </p>
                           <p className="text-gray-600">
-                            {order.customerInfo.address || '—'}
+                            {order.customer.address || '—'}
                           </p>
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">Contacto:</p>
                           <p className="text-gray-600">
-                            {order.customerInfo.phone || '—'}
+                            {order.customer.phone || '—'}
                           </p>
                           <p className="text-gray-600">
-                            {order.customerInfo.email || '—'}
+                            {order.customer.email || '—'}
                           </p>
                         </div>
                       </div>

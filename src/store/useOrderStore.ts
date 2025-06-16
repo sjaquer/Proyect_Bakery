@@ -1,6 +1,11 @@
 import { create } from 'zustand';
 import api from '../api/axiosConfig';
 import { ENDPOINTS } from '../api/endpoints';
+import {
+  createOrder as apiCreateOrder,
+  updateOrderStatus as apiUpdateStatus,
+  deleteOrder as apiDeleteOrder,
+} from '../api/orderService';
 import { useAuthStore } from './useAuthStore';
 import { useProductStore } from './useProductStore';
 import type { Order, CheckoutData } from '../types/order';
@@ -38,7 +43,7 @@ export const useOrderStore = create<OrderState>((set) => ({
     try {
       const endpoint =
         user.role === 'admin' ? ENDPOINTS.adminOrders : ENDPOINTS.orders;
-      const resp = await api.get<Order[]>(endpoint);
+      const resp = await api.get<Order[]>(`${endpoint}?expand=customer`);
       set({ orders: resp.data, isLoading: false });
     } catch (err: any) {
       set({
@@ -51,7 +56,7 @@ export const useOrderStore = create<OrderState>((set) => ({
   createOrder: async (data) => {
     set({ isLoading: true, error: null });
     try {
-      const resp = await api.post<Order>(ENDPOINTS.orders, data);
+      const resp = await apiCreateOrder(data);
       set((st) => ({
         orders: [resp.data, ...st.orders],
         isLoading: false
@@ -73,10 +78,10 @@ export const useOrderStore = create<OrderState>((set) => ({
           'guest_orders',
           JSON.stringify([resp.data, ...prev])
         );
-        if (resp.data.Customer && !localStorage.getItem('guest_customerId')) {
+        if (resp.data.customer && !localStorage.getItem('guest_customerId')) {
           localStorage.setItem(
             'guest_customerId',
-            String(resp.data.Customer.id)
+            String(resp.data.customer.id)
           );
         }
       }
@@ -94,13 +99,12 @@ export const useOrderStore = create<OrderState>((set) => ({
   updateOrderStatus: async (id, status) => {
     set({ isLoading: true, error: null });
     try {
-      await api.patch(`${ENDPOINTS.orders}/${id}/status`, { status });
+      await apiUpdateStatus(id, status);
       set((st) => ({
-        orders: st.orders.map(o =>
-          o.id === id ? { ...o, status } : o
-        ),
+        orders: st.orders.map(o => (o.id === id ? { ...o, status } : o)),
         isLoading: false
       }));
+      window.dispatchEvent(new CustomEvent('orders:updated'));
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
@@ -114,7 +118,7 @@ export const useOrderStore = create<OrderState>((set) => ({
     set({ isLoading: true, error: null });
     const user = useAuthStore.getState().user;
     try {
-      await api.delete(`${ENDPOINTS.orders}/${id}`);
+      await apiDeleteOrder(id);
       set((st) => ({
         orders: st.orders.filter(o => o.id !== id),
         isLoading: false
@@ -127,6 +131,7 @@ export const useOrderStore = create<OrderState>((set) => ({
           JSON.stringify(prev.filter(o => o.id !== id))
         );
       }
+      window.dispatchEvent(new CustomEvent('orders:updated'));
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,

@@ -3,8 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axiosConfig';
+import { updateOrderStatus } from '../../api/orderService';
+import { useOrderStore } from '../../store/useOrderStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import Button from '../../components/shared/Button';
+import WhatsAppIcon from '../../components/shared/WhatsAppIcon';
 import {
   formatPrice,
   formatOrderStatus,
@@ -16,9 +19,10 @@ const OrderList: React.FC = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
+  const { fetchOrders: refreshStore } = useOrderStore();
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const statuses = ['pending', 'confirmed', 'preparing', 'ready', 'delivered', 'cancelled'];
+  const statuses = ['pending', 'confirmed', 'preparing', 'ready', 'delivered', 'cancelled', 'rejected'];
 
   useEffect(() => {
     // 1) Si no hay usuario, lo mandamos a login
@@ -38,7 +42,7 @@ const OrderList: React.FC = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const { data } = await api.get<Order[]>('/orders/all');
+      const { data } = await api.get<Order[]>('/orders/all?expand=customer');
       setOrders(data);
     } catch (err: any) {
       console.error('Error fetching orders', err);
@@ -53,23 +57,25 @@ const OrderList: React.FC = () => {
     if (idx === -1 || idx === statuses.length - 1) return;
     const next = statuses[idx + 1];
     try {
-      await api.patch(`/orders/${orderId}/status`, { status: next });
-      setOrders((prev) =>
-        prev.map((o) => (o.id === orderId ? { ...o, status: next } : o))
-      );
+      await updateOrderStatus(orderId, next as Order['status']);
+      await refreshStore();
+      fetchOrders();
+      window.dispatchEvent(new CustomEvent('orders:updated'));
     } catch (err: any) {
       console.error('Error updating status', err);
       setError(err.response?.data?.message || err.message);
     }
   };
 
-  const deleteOrder = async (orderId: number) => {
-  if (!window.confirm('Eliminar la orden definitivamente?')) return;
+  const rejectOrder = async (orderId: string) => {
+    if (!window.confirm('¿Rechazar este pedido?')) return;
     try {
-      await api.delete(`/orders/${orderId}`);
-      setOrders((prev) => prev.filter((o) => o.id !== orderId));
+      await updateOrderStatus(orderId, 'rejected');
+      await refreshStore();
+      fetchOrders();
+      window.dispatchEvent(new CustomEvent('orders:updated'));
     } catch (err: any) {
-      console.error('Error deleting order', err);
+      console.error('Error rejecting order', err);
       setError(err.response?.data?.message || err.message);
     }
   };
@@ -102,16 +108,24 @@ const OrderList: React.FC = () => {
                     >
                       <div className="text-sm font-medium">#{String(o.id).slice(-8)}</div>
                       <div className="text-xs text-gray-500">
-                        {o.Customer?.name || o.customerInfo?.name || o.Customer?.id || '—'}
+                        {o.customer.name || o.customer.id}
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <span>{o.customer.phone}</span>
+                        <a
+                          href={`https://wa.me/${o.customer.phone}`}
+                          target="_blank"
+                          rel="noopener"
+                          aria-label="Message customer on WhatsApp"
+                        >
+                          <WhatsAppIcon className="w-4 h-4 text-green-600" />
+                        </a>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {o.Customer?.phone || o.customerInfo?.phone || '—'}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {o.Customer?.address || o.customerInfo?.address || '—'}
+                        {o.customer.address || '—'}
                       </div>
                       <ul className="text-xs text-gray-700 list-disc pl-4">
-                        {o.OrderItems.map(item => (
+                        {o.items.map(item => (
                           <li key={item.id}>
                             {item.Product.name} x {item.quantity}
                           </li>
@@ -128,14 +142,14 @@ const OrderList: React.FC = () => {
                         </span>
                         <div className="flex gap-2">
                           {o.status === 'pending' && (
-                            <Button size="xs" variant="danger" onClick={() => deleteOrder(o.id)}>
+                            <Button size="xs" variant="danger" onClick={() => rejectOrder(o.id)}>
                               Rechazar
                             </Button>
                           )}
                           <Button
                             size="xs"
                             onClick={() => advanceStatus(o.id, o.status)}
-                            disabled={o.status === 'delivered' || o.status === 'cancelled'}
+                            disabled={o.status === 'delivered' || o.status === 'cancelled' || o.status === 'rejected'}
                           >
                             Avanzar
                           </Button>

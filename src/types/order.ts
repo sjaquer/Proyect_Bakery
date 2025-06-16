@@ -1,3 +1,12 @@
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'preparing'
+  | 'ready'
+  | 'delivered'
+  | 'cancelled'
+  | 'rejected';
+
 export interface CartItem {
   id: string;
   name: string;
@@ -19,29 +28,23 @@ export interface OrderItem {
   };
 }
 
+export interface Customer {
+  id: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+}
+
 export interface Order {
   id: string;
-  total: number;
-  status: string;
+  status: OrderStatus;
+  items: OrderItem[];
+  customer: Customer;
   createdAt: string;
-  paymentMethod: string;
+  total?: number;
+  paymentMethod?: string;
   cashAmount?: number;
-  // ▶▶▶ Añade esto:
-  OrderItems: OrderItem[];
-  // Si usas customerInfo:
-  customerInfo?: {
-    address?: string;
-    phone?: string;
-    email?: string;
-  };
-  // Para invitados, el backend puede devolver el Customer creado
-  Customer?: {
-    id: number;
-    name?: string;
-    phone?: string;
-    email?: string;
-    address?: string;
-  };
 }
 
 export interface CheckoutData {
