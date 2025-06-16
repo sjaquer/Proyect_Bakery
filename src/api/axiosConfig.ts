@@ -6,9 +6,11 @@ const API_URL =
 console.log('🔎 [axiosConfig] baseURL =', API_URL);
 
 const base = API_URL.replace(/\/$/, '');
+// Avoid duplicating the `/api` segment if provided in VITE_API_URL
+const apiBaseURL = base.endsWith('/api') ? base : `${base}/api`;
 
 const api = axios.create({
-  baseURL: `${base}/api`,
+  baseURL: apiBaseURL,
   headers: {
     'Content-Type': 'application/json',
   },

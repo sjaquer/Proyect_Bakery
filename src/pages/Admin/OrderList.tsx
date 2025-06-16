@@ -73,6 +73,18 @@ const OrderList: React.FC = () => {
     }
   };
 
+  const cancelOrder = async (orderId: number) => {
+    try {
+      await api.patch(`/orders/${orderId}/status`, { status: 'cancelled' });
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, status: 'cancelled' } : o))
+      );
+    } catch (err: any) {
+      console.error('Error cancelling order', err);
+      setError(err.response?.data?.message || err.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -97,13 +109,26 @@ const OrderList: React.FC = () => {
                   {orders.filter((o) => o.status === st).map((o) => (
                     <div
                       key={o.id}
-                      className="bg-gray-50 rounded p-3 shadow border"
+                      className="bg-gray-50 rounded p-3 shadow border space-y-2"
                     >
                       <div className="text-sm font-medium">#{String(o.id).slice(-8)}</div>
                       <div className="text-xs text-gray-500">
-                        {o.Customer?.name || o.Customer?.id || '—'}
+                        {o.Customer?.name || o.customerInfo?.name || o.Customer?.id || '—'}
                       </div>
-                      <div className="text-sm font-semibold mb-2">
+                      <div className="text-xs text-gray-500">
+                        {o.Customer?.phone || o.customerInfo?.phone || '—'}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {o.Customer?.address || o.customerInfo?.address || '—'}
+                      </div>
+                      <ul className="text-xs text-gray-700 list-disc pl-4">
+                        {o.OrderItems.map(item => (
+                          <li key={item.id}>
+                            {item.Product.name} x {item.quantity}
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="text-sm font-semibold">
                         {formatPrice(o.total)}
                       </div>
                       <div className="flex justify-between items-center">
@@ -112,13 +137,20 @@ const OrderList: React.FC = () => {
                         >
                           {formatOrderStatus(o.status)}
                         </span>
-                        <Button
-                          size="xs"
-                          onClick={() => advanceStatus(o.id, o.status)}
-                          disabled={o.status === 'delivered' || o.status === 'cancelled'}
-                        >
-                          Avanzar
-                        </Button>
+                        <div className="flex gap-2">
+                          {o.status === 'pending' && (
+                            <Button size="xs" variant="danger" onClick={() => cancelOrder(o.id)}>
+                              Rechazar
+                            </Button>
+                          )}
+                          <Button
+                            size="xs"
+                            onClick={() => advanceStatus(o.id, o.status)}
+                            disabled={o.status === 'delivered' || o.status === 'cancelled'}
+                          >
+                            Avanzar
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}
