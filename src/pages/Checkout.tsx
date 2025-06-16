@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { formatPrice } from '../utils/formatters';
 import Input from '../components/shared/Input';
 import Button from '../components/shared/Button';
-import yapeQr from '../assets/yape-qr.svg';
+import yapeQr from '../assets/yape-qr.png';
 
 interface FormData {
   name: string;
