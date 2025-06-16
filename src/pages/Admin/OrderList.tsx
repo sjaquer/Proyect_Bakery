@@ -1,9 +1,7 @@
 // src/pages/Admin/OrderList.tsx
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/axiosConfig';
-import { updateOrderStatus } from '../../api/orderService';
 import { useOrderStore } from '../../store/useOrderStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import Button from '../../components/shared/Button';
@@ -18,10 +16,13 @@ import type { Order } from '../../types/order';
 const OrderList: React.FC = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const { fetchOrders: refreshStore } = useOrderStore();
-  const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const {
+    orders,
+    fetchOrders,
+    updateOrderStatus,
+    isLoading: loading,
+    error,
+  } = useOrderStore();
   const statuses = ['pending', 'confirmed', 'preparing', 'ready', 'delivered', 'cancelled', 'rejected'];
 
   useEffect(() => {
@@ -37,26 +38,13 @@ const OrderList: React.FC = () => {
     }
     // 3) Ya está todo validado: cargamos pedidos
     fetchOrders();
-  }, [user, navigate]);
-
-  const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      const { data } = await api.get<Order[]>('/orders/all?expand=customer,items');
-      setOrders(data);
-    } catch (err: any) {
-      console.error('Error fetching orders', err);
-      setError(err.response?.data?.message || err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [user, navigate, fetchOrders]);
 
   useEffect(() => {
     const handler = () => fetchOrders();
     window.addEventListener('orders-updated', handler);
     return () => window.removeEventListener('orders-updated', handler);
-  }, []);
+  }, [fetchOrders]);
 
   const advanceStatus = async (orderId: string, current: string) => {
     const idx = statuses.indexOf(current);
@@ -64,12 +52,10 @@ const OrderList: React.FC = () => {
     const next = statuses[idx + 1];
     try {
       await updateOrderStatus(orderId, next as Order['status']);
-      await refreshStore();
-      fetchOrders();
+      await fetchOrders();
       window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
       console.error('Error updating status', err);
-      setError(err.response?.data?.message || err.message);
     }
   };
 
@@ -77,12 +63,10 @@ const OrderList: React.FC = () => {
     if (!window.confirm('¿Rechazar este pedido?')) return;
     try {
       await updateOrderStatus(orderId, 'rejected');
-      await refreshStore();
-      fetchOrders();
+      await fetchOrders();
       window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
       console.error('Error rejecting order', err);
-      setError(err.response?.data?.message || err.message);
     }
   };
 
