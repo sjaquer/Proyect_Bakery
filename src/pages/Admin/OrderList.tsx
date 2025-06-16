@@ -64,6 +64,7 @@ const OrderList: React.FC = () => {
     if (!window.confirm('¿Rechazar este pedido?')) return;
     try {
       await deleteOrder(orderId);
+      await updateOrderStatus(orderId, 'rejected');
       await fetchOrders();
       window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
