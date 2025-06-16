@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from './components/Layout/AdminSidebar';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -88,6 +88,18 @@ const HomePage: React.FC = () => {
 };
 
 function App() {
+  // Subscribe to order update events via SSE
+  useEffect(() => {
+    const es = new EventSource('/api/orders/stream');
+    const handler = () => {
+      window.dispatchEvent(new CustomEvent('orders-updated'));
+    };
+    es.addEventListener('orders-updated', handler);
+    return () => {
+      es.removeEventListener('orders-updated', handler);
+      es.close();
+    };
+  }, []);
 
   return (
     <Router>
