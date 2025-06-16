@@ -13,6 +13,7 @@ import Orders from './pages/Orders';
 import Login from './pages/Auth/Login';
 import Dashboard from './pages/Admin/Dashboard';
 import OrderList from './pages/Admin/OrderList';
+import { useAuthStore } from './store/useAuthStore';
 
 
 const HomePage: React.FC = () => {
@@ -88,8 +89,11 @@ const HomePage: React.FC = () => {
 };
 
 function App() {
-  // Subscribe to order update events via SSE
+  const { user } = useAuthStore();
+
+  // Subscribe to order update events via SSE only when logged in
   useEffect(() => {
+    if (!user) return;
     const es = new EventSource('/api/orders/stream');
     const handler = () => {
       window.dispatchEvent(new CustomEvent('orders-updated'));
@@ -99,7 +103,7 @@ function App() {
       es.removeEventListener('orders-updated', handler);
       es.close();
     };
-  }, []);
+  }, [user]);
 
   return (
     <Router>
