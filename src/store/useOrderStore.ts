@@ -85,9 +85,7 @@ export const useOrderStore = create<OrderState>((set) => ({
   updateOrderStatus: async (id, status) => {
     set({ isLoading: true, error: null });
     try {
-      const user = useAuthStore.getState().user;
-      const base = user?.role === 'admin' ? ENDPOINTS.adminOrders : ENDPOINTS.orders;
-      await api.patch(`${base}/${id}/status`, { status });
+      await api.patch(`${ENDPOINTS.orders}/${id}/status`, { status });
       set((st) => ({
         orders: st.orders.map(o =>
           o.id === id ? { ...o, status } : o

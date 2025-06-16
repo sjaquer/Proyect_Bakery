@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axiosConfig';
-import { ENDPOINTS } from '../../api/endpoints';
 import { useAuthStore } from '../../store/useAuthStore';
 import Button from '../../components/shared/Button';
 import {
@@ -49,7 +48,7 @@ const OrderList: React.FC = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const { data } = await api.get<Order[]>(ENDPOINTS.adminOrders);
+      const { data } = await api.get<Order[]>('/orders/all');
       setOrders(data);
     } catch (err: any) {
       console.error('Error fetching orders', err);
@@ -64,7 +63,7 @@ const OrderList: React.FC = () => {
     if (idx === -1 || idx === statuses.length - 1) return;
     const next = statuses[idx + 1];
     try {
-      await api.patch(`${ENDPOINTS.adminOrders}/${orderId}/status`, { status: next });
+      await api.patch(`/orders/${orderId}/status`, { status: next });
       setOrders((prev) =>
         prev.map((o) => (o.id === orderId ? { ...o, status: next } : o))
       );
