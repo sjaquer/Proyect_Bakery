@@ -160,7 +160,7 @@ const OrdersPage: React.FC = () => {
                   <div className="border-t border-gray-200 pt-4">
                     <h4 className="font-medium text-gray-900 mb-3">Artículos:</h4>
                     <div className="space-y-2">
-                      {order.items.map((item) => (
+                      {order.items?.map((item) => (
                         <div
                           key={item.id}
                           className="flex items-center justify-between"

@@ -125,7 +125,7 @@ const OrderList: React.FC = () => {
                         {o.customer.address || '—'}
                       </div>
                       <ul className="text-xs text-gray-700 list-disc pl-4">
-                        {o.items.map(item => (
+                        {o.items?.map(item => (
                           <li key={item.id}>
                             {item.Product.name} x {item.quantity}
                           </li>
