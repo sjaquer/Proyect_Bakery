@@ -20,6 +20,7 @@ const OrderList: React.FC = () => {
     orders,
     fetchOrders,
     updateOrderStatus,
+    deleteOrder,
     isLoading: loading,
     error,
   } = useOrderStore();
@@ -62,6 +63,7 @@ const OrderList: React.FC = () => {
   const rejectOrder = async (orderId: string) => {
     if (!window.confirm('¿Rechazar este pedido?')) return;
     try {
+      await deleteOrder(orderId);
       await updateOrderStatus(orderId, 'rejected');
       await fetchOrders();
       window.dispatchEvent(new CustomEvent('orders-updated'));
@@ -114,6 +116,14 @@ const OrderList: React.FC = () => {
                       <div className="text-xs text-gray-500">
                         {o.customer?.address || '—'}
                       </div>
+                      {o.paymentMethod && (
+                        <div className="text-xs text-gray-500">
+                          Pago: {o.paymentMethod}
+                          {o.paymentMethod === 'cash' && o.cashAmount
+                            ? ` (S/ ${o.cashAmount})`
+                            : ''}
+                        </div>
+                      )}
                       <ul className="text-xs text-gray-700 list-disc pl-4">
                         {o.items?.map(item => (
                           <li key={item.id}>
