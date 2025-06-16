@@ -42,7 +42,7 @@ const OrderList: React.FC = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const { data } = await api.get<Order[]>('/orders/all?expand=customer');
+      const { data } = await api.get<Order[]>('/orders/all?expand=customer,items');
       setOrders(data);
     } catch (err: any) {
       console.error('Error fetching orders', err);
