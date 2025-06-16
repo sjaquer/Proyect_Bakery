@@ -117,7 +117,7 @@ export const useOrderStore = create<OrderState>((set) => ({
         orders: st.orders.map(o => (o.id === id ? { ...o, status } : o)),
         isLoading: false
       }));
-      window.dispatchEvent(new CustomEvent('orders:updated'));
+      window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
@@ -144,7 +144,7 @@ export const useOrderStore = create<OrderState>((set) => ({
           JSON.stringify(prev.filter(o => o.id !== id))
         );
       }
-      window.dispatchEvent(new CustomEvent('orders:updated'));
+      window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,

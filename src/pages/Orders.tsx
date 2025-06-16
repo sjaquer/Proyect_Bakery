@@ -35,8 +35,8 @@ const OrdersPage: React.FC = () => {
 
   useEffect(() => {
     const handler = () => fetchOrders();
-    window.addEventListener('orders:updated', handler);
-    return () => window.removeEventListener('orders:updated', handler);
+    window.addEventListener('orders-updated', handler);
+    return () => window.removeEventListener('orders-updated', handler);
   }, [fetchOrders]);
 
   useEffect(() => {
