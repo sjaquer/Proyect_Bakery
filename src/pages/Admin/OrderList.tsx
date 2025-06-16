@@ -10,17 +10,7 @@ import {
   formatOrderStatus,
   getStatusColor,
 } from '../../utils/formatters';
-
-interface Order {
-  id: number;
-  total: number;
-  status: string;
-  createdAt: string;
-  Customer?: {
-    id: number;
-    name?: string;
-  };
-}
+import type { Order } from '../../types/order';
 
 const OrderList: React.FC = () => {
   const { user } = useAuthStore();
@@ -58,7 +48,7 @@ const OrderList: React.FC = () => {
     }
   };
 
-  const advanceStatus = async (orderId: number, current: string) => {
+  const advanceStatus = async (orderId: string, current: string) => {
     const idx = statuses.indexOf(current);
     if (idx === -1 || idx === statuses.length - 1) return;
     const next = statuses[idx + 1];
@@ -74,7 +64,7 @@ const OrderList: React.FC = () => {
   };
 
   const deleteOrder = async (orderId: number) => {
-    if (!window.confirm('Eliminar la orden definitivamente?')) return;
+  if (!window.confirm('Eliminar la orden definitivamente?')) return;
     try {
       await api.delete(`/orders/${orderId}`);
       setOrders((prev) => prev.filter((o) => o.id !== orderId));
