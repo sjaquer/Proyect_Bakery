@@ -10,17 +10,7 @@ import {
   formatOrderStatus,
   getStatusColor,
 } from '../../utils/formatters';
-
-interface Order {
-  id: string;
-  total: number;
-  status: string;
-  createdAt: string;
-  Customer?: {
-    id: number;
-    name?: string;
-  };
-}
+import type { Order } from '../../types/order';
 
 const OrderList: React.FC = () => {
   const { user } = useAuthStore();
