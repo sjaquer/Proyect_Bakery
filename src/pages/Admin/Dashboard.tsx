@@ -15,11 +15,7 @@ const Dashboard: React.FC = () => {
     fetchOrders();
   }, [fetchProducts, fetchOrders]);
 
-  useEffect(() => {
-    const handler = () => fetchOrders();
-    window.addEventListener('orders-updated', handler);
-    return () => window.removeEventListener('orders-updated', handler);
-  }, [fetchOrders]);
+
 
   const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
   const pendingOrders = orders.filter(order => order.status === 'pending').length;

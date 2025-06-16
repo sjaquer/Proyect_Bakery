@@ -52,12 +52,6 @@ const OrderList: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const handler = () => fetchOrders();
-    window.addEventListener('orders-updated', handler);
-    return () => window.removeEventListener('orders-updated', handler);
-  }, []);
-
   const advanceStatus = async (orderId: string, current: string) => {
     const idx = statuses.indexOf(current);
     if (idx === -1 || idx === statuses.length - 1) return;
@@ -66,7 +60,7 @@ const OrderList: React.FC = () => {
       await updateOrderStatus(orderId, next as Order['status']);
       await refreshStore();
       fetchOrders();
-      window.dispatchEvent(new CustomEvent('orders-updated'));
+      window.dispatchEvent(new CustomEvent('orders:updated'));
     } catch (err: any) {
       console.error('Error updating status', err);
       setError(err.response?.data?.message || err.message);
@@ -79,7 +73,7 @@ const OrderList: React.FC = () => {
       await updateOrderStatus(orderId, 'rejected');
       await refreshStore();
       fetchOrders();
-      window.dispatchEvent(new CustomEvent('orders-updated'));
+      window.dispatchEvent(new CustomEvent('orders:updated'));
     } catch (err: any) {
       console.error('Error rejecting order', err);
       setError(err.response?.data?.message || err.message);
