@@ -5,6 +5,7 @@ import {
   createOrder as apiCreateOrder,
   updateOrderStatus as apiUpdateStatus,
   deleteOrder as apiDeleteOrder,
+  getOrderById,
 } from '../api/orderService';
 import { useAuthStore } from './useAuthStore';
 import { useProductStore } from './useProductStore';
@@ -33,7 +34,12 @@ export const useOrderStore = create<OrderState>((set) => ({
     if (!user) {
       // Cliente sin sesión → leo pedidos de localStorage
       const raw = localStorage.getItem('guest_orders');
-      const guestOrders: Order[] = raw ? JSON.parse(raw) : [];
+      const stored: any[] = raw ? JSON.parse(raw) : [];
+      const guestOrders: Order[] = stored.map((o) => ({
+        ...o,
+        items: o.items ?? o.OrderItems ?? [],
+        customer: o.customer ?? o.Customer,
+      }));
       set({ orders: guestOrders, isLoading: false });
       return;
     }
@@ -43,7 +49,7 @@ export const useOrderStore = create<OrderState>((set) => ({
     try {
       const endpoint =
         user.role === 'admin' ? ENDPOINTS.adminOrders : ENDPOINTS.orders;
-      const resp = await api.get<Order[]>(`${endpoint}?expand=customer`);
+      const resp = await api.get<Order[]>(`${endpoint}?expand=customer,items`);
       set({ orders: resp.data, isLoading: false });
     } catch (err: any) {
       set({
@@ -57,8 +63,15 @@ export const useOrderStore = create<OrderState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const resp = await apiCreateOrder(data);
+      let order = resp.data;
+      try {
+        const full = await getOrderById(order.id);
+        order = full.data;
+      } catch {
+        // ignore if details fetch fails
+      }
       set((st) => ({
-        orders: [resp.data, ...st.orders],
+        orders: [order, ...st.orders],
         isLoading: false
       }));
 
@@ -76,17 +89,17 @@ export const useOrderStore = create<OrderState>((set) => ({
         const prev: Order[] = raw ? JSON.parse(raw) : [];
         localStorage.setItem(
           'guest_orders',
-          JSON.stringify([resp.data, ...prev])
+          JSON.stringify([order, ...prev])
         );
-        if (resp.data.customer && !localStorage.getItem('guest_customerId')) {
+        if (order.customer && !localStorage.getItem('guest_customerId')) {
           localStorage.setItem(
             'guest_customerId',
-            String(resp.data.customer.id)
+            String(order.customer.id)
           );
         }
       }
 
-      return resp.data;
+      return order;
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
