@@ -10,6 +10,7 @@ import {
 import { useAuthStore } from './useAuthStore';
 import { useProductStore } from './useProductStore';
 import type { Order, CheckoutData } from '../types/order';
+import { mapApiOrder } from '../utils/mapApiOrder';
 
 interface OrderState {
   orders: Order[];
@@ -35,11 +36,7 @@ export const useOrderStore = create<OrderState>((set) => ({
       // Cliente sin sesión → leo pedidos de localStorage
       const raw = localStorage.getItem('guest_orders');
       const stored: any[] = raw ? JSON.parse(raw) : [];
-      const guestOrders: Order[] = stored.map((o) => ({
-        ...o,
-        items: o.items ?? o.OrderItems ?? [],
-        customer: o.customer ?? o.Customer,
-      }));
+      const guestOrders: Order[] = stored.map(mapApiOrder);
       set({ orders: guestOrders, isLoading: false });
       return;
     }
@@ -50,7 +47,7 @@ export const useOrderStore = create<OrderState>((set) => ({
       const endpoint =
         user.role === 'admin' ? ENDPOINTS.adminOrders : ENDPOINTS.orders;
       const resp = await api.get<Order[]>(`${endpoint}?expand=customer,items`);
-      set({ orders: resp.data, isLoading: false });
+      set({ orders: resp.data.map(mapApiOrder), isLoading: false });
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
@@ -63,10 +60,10 @@ export const useOrderStore = create<OrderState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const resp = await apiCreateOrder(data);
-      let order = resp.data;
+      let order = mapApiOrder(resp.data);
       try {
         const full = await getOrderById(order.id);
-        order = full.data;
+        order = mapApiOrder(full.data);
       } catch {
         // ignore if details fetch fails
       }
