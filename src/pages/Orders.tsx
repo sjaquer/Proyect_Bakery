@@ -18,7 +18,7 @@ import placeholderImg from '../utils/placeholder';
 const OrdersPage: React.FC = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const { orders, isLoading, error, fetchOrders } = useOrderStore();
+  const { orders, isLoading, error, fetchOrders, deleteOrder } = useOrderStore();
   const [guestOrders, setGuestOrders] = useState<typeof orders>([]);
   const location = useLocation();
   const [newOrder, setNewOrder] = useState<typeof orders[0] | null>(null);
@@ -53,6 +53,18 @@ const OrdersPage: React.FC = () => {
         return <XCircle className="h-5 w-5 text-red-500" />;
       default:
         return <Clock className="h-5 w-5 text-amber-500" />;
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('¿Cancelar este pedido?')) return;
+    try {
+      await deleteOrder(id);
+      if (!user) {
+        setGuestOrders(prev => prev.filter(o => o.id !== id));
+      }
+    } catch {
+      // Error handled in store
     }
   };
 
@@ -196,6 +208,17 @@ const OrdersPage: React.FC = () => {
                           </p>
                         </div>
                       </div>
+                    </div>
+                  )}
+                  {order.status === 'pending' && (
+                    <div className="mt-4">
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        onClick={() => handleDelete(order.id)}
+                      >
+                        Cancelar pedido
+                      </Button>
                     </div>
                   )}
                 </div>
