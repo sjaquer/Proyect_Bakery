@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_URL =
   (import.meta.env.VITE_API_URL as string | undefined) ||
-  (typeof window !== 'undefined' ? window.location.origin : '');
+  'http://localhost:3000';
 console.log('🔎 [axiosConfig] baseURL =', API_URL);
 
 const base = API_URL.replace(/\/$/, '');
