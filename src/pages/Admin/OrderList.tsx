@@ -72,8 +72,8 @@ const OrderList: React.FC = () => {
       setError(err.response?.data?.message || err.message);
     }
   };
-
   const deleteOrder = async (orderId: string) => {
+  const deleteOrder = async (orderId: number) => {
     if (!window.confirm('Eliminar la orden definitivamente?')) return;
     try {
       await api.delete(`/orders/${orderId}`);
