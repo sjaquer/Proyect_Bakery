@@ -12,6 +12,7 @@ interface OrderState {
   fetchOrders: () => Promise<void>;
   createOrder: (data: CheckoutData) => Promise<Order>;
   updateOrderStatus: (id: string, status: Order['status']) => Promise<void>;
+  deleteOrder: (id: string) => Promise<void>;
   clearError: () => void;
 }
 
@@ -100,6 +101,32 @@ export const useOrderStore = create<OrderState>((set) => ({
         ),
         isLoading: false
       }));
+    } catch (err: any) {
+      set({
+        error: err.response?.data?.message || err.message,
+        isLoading: false
+      });
+      throw err;
+    }
+  },
+
+  deleteOrder: async (id) => {
+    set({ isLoading: true, error: null });
+    const user = useAuthStore.getState().user;
+    try {
+      await api.delete(`${ENDPOINTS.orders}/${id}`);
+      set((st) => ({
+        orders: st.orders.filter(o => o.id !== id),
+        isLoading: false
+      }));
+      if (!user) {
+        const raw = localStorage.getItem('guest_orders');
+        const prev: Order[] = raw ? JSON.parse(raw) : [];
+        localStorage.setItem(
+          'guest_orders',
+          JSON.stringify(prev.filter(o => o.id !== id))
+        );
+      }
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
