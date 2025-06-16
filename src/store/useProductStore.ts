@@ -14,6 +14,7 @@ interface ProductState {
   createProduct: (data: ProductFormData) => Promise<void>;
   updateProduct: (id: string, data: ProductFormData) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
+  adjustStock: (items: { productId: number; quantity: number }[]) => void;
   clearError: () => void;
 }
 
@@ -94,17 +95,26 @@ export const useProductStore = create<ProductState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       await api.delete(ENDPOINTS.productById(id));
-      set(state => ({ 
+      set(state => ({
         products: state.products.filter(p => p.id !== id),
-        isLoading: false 
+        isLoading: false
       }));
     } catch (error: any) {
-      set({ 
+      set({
         error: error.response?.data?.message || 'Failed to delete product',
-        isLoading: false 
+        isLoading: false
       });
       throw error;
     }
+  },
+
+  adjustStock: (items) => {
+    set(state => ({
+      products: state.products.map(p => {
+        const item = items.find(i => String(i.productId) === String(p.id));
+        return item ? { ...p, stock: p.stock - item.quantity } : p;
+      })
+    }));
   },
 
   clearError: () => set({ error: null })

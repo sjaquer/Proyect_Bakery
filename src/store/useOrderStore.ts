@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import api from '../api/axiosConfig';
 import { ENDPOINTS } from '../api/endpoints';
 import { useAuthStore } from './useAuthStore';
+import { useProductStore } from './useProductStore';
 import type { Order, CheckoutData } from '../types/order';
 
 interface OrderState {
@@ -54,6 +55,13 @@ export const useOrderStore = create<OrderState>((set) => ({
         orders: [resp.data, ...st.orders],
         isLoading: false
       }));
+
+      // Update stock locally based on ordered items
+      const adjustStock = useProductStore.getState().adjustStock;
+      adjustStock(data.items.map(i => ({
+        productId: Number(i.productId),
+        quantity: i.quantity
+      })));
 
       // Si no hay usuario autenticado, persistir en localStorage
       const user = useAuthStore.getState().user;
