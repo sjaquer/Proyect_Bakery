@@ -12,7 +12,7 @@ import {
 } from '../../utils/formatters';
 
 interface Order {
-  id: number;
+  id: string;
   total: number;
   status: string;
   createdAt: string;
@@ -58,7 +58,7 @@ const OrderList: React.FC = () => {
     }
   };
 
-  const advanceStatus = async (orderId: number, current: string) => {
+  const advanceStatus = async (orderId: string, current: string) => {
     const idx = statuses.indexOf(current);
     if (idx === -1 || idx === statuses.length - 1) return;
     const next = statuses[idx + 1];
@@ -73,7 +73,10 @@ const OrderList: React.FC = () => {
     }
   };
 
+
+  const deleteOrder = async (orderId: string) => {
   const deleteOrder = async (orderId: number) => {
+main
     if (!window.confirm('Eliminar la orden definitivamente?')) return;
     try {
       await api.delete(`/orders/${orderId}`);
