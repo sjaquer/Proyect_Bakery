@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axiosConfig';
+import { ENDPOINTS } from '../../api/endpoints';
 import { useAuthStore } from '../../store/useAuthStore';
 import Button from '../../components/shared/Button';
 import {
@@ -48,8 +49,7 @@ const OrderList: React.FC = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      // Como es admin, pedimos /orders/all
-      const { data } = await api.get<Order[]>('/orders/all');
+      const { data } = await api.get<Order[]>(ENDPOINTS.adminOrders);
       setOrders(data);
     } catch (err: any) {
       console.error('Error fetching orders', err);
@@ -64,7 +64,7 @@ const OrderList: React.FC = () => {
     if (idx === -1 || idx === statuses.length - 1) return;
     const next = statuses[idx + 1];
     try {
-      await api.patch(`/orders/${orderId}/status`, { status: next });
+      await api.patch(`${ENDPOINTS.adminOrders}/${orderId}/status`, { status: next });
       setOrders((prev) =>
         prev.map((o) => (o.id === orderId ? { ...o, status: next } : o))
       );
@@ -75,63 +75,61 @@ const OrderList: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded shadow">
-          <h1 className="text-2xl font-semibold mb-4">Pedidos</h1>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Gestión de Pedidos</h1>
 
-          {error && (
-            <p className="text-red-500 mb-4">
-              Error loading orders: {error}
-            </p>
-          )}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-sm text-red-600">Error loading orders: {error}</p>
+          </div>
+        )}
 
-          {loading ? (
-            <p>Cargando pedidos…</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <div className="flex gap-4 min-w-max">
-                {statuses.map((st) => (
-                  <div key={st} className="w-72 bg-gray-50 rounded-lg p-3 shadow">
-                    <h3 className="text-sm font-semibold text-center mb-2">
-                      {formatOrderStatus(st)}
-                    </h3>
-                    <div className="space-y-2">
-                      {orders.filter((o) => o.status === st).map((o) => (
-                        <div
-                          key={o.id}
-                          className="bg-white rounded p-3 shadow border"
+        {loading ? (
+          <p>Cargando pedidos…</p>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+            {statuses.map((st) => (
+              <div key={st} className="bg-white rounded-lg p-4 shadow">
+                <h3 className="text-sm font-semibold text-center mb-2">
+                  {formatOrderStatus(st)}
+                </h3>
+                <div className="space-y-2">
+                  {orders.filter((o) => o.status === st).map((o) => (
+                    <div
+                      key={o.id}
+                      className="bg-gray-50 rounded p-3 shadow border"
+                    >
+                      <div className="text-sm font-medium">#{String(o.id).slice(-8)}</div>
+                      <div className="text-xs text-gray-500">
+                        {o.Customer?.name || o.Customer?.id || '—'}
+                      </div>
+                      <div className="text-sm font-semibold mb-2">
+                        {formatPrice(o.total)}
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span
+                          className={`inline-flex px-2 py-0.5 text-xs rounded-full ${getStatusColor(o.status)}`}
                         >
-                          <div className="text-sm font-medium">
-                            #{String(o.id).slice(-8)}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            {o.Customer?.name || o.Customer?.id || '—'}
-                          </div>
-                          <div className="text-sm font-semibold mb-2">
-                            {formatPrice(o.total)}
-                          </div>
-                          <div className="flex justify-between items-center">
-                            <span
-                              className={`inline-flex px-2 py-0.5 text-xs rounded-full ${getStatusColor(o.status)}`}
-                            >
-                              {formatOrderStatus(o.status)}
-                            </span>
-                            <Button
-                              size="xs"
-                              onClick={() => advanceStatus(o.id, o.status)}
-                              disabled={o.status === 'delivered' || o.status === 'cancelled'}
-                            >
-                              Avanzar
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
+                          {formatOrderStatus(o.status)}
+                        </span>
+                        <Button
+                          size="xs"
+                          onClick={() => advanceStatus(o.id, o.status)}
+                          disabled={o.status === 'delivered' || o.status === 'cancelled'}
+                        >
+                          Avanzar
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
+        )}
       </div>
+    </div>
   );
 };
 
