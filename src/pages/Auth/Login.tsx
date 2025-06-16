@@ -81,12 +81,6 @@ const Login: React.FC = () => {
           </Button>
         </form>
 
-        {/* Pie */}
-        <div className="text-center">
-          <p className="text-xs text-gray-500">
-            Credenciales de demo: admin@bakery.com / password
-          </p>
-        </div>
       </div>
     </div>
   );

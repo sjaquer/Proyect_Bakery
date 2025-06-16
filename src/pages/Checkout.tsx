@@ -6,6 +6,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { formatPrice } from '../utils/formatters';
 import Input from '../components/shared/Input';
 import Button from '../components/shared/Button';
+import yapeQr from '../assets/yape-qr.svg';
 
 interface FormData {
   name: string;
@@ -181,6 +182,20 @@ const Checkout: React.FC = () => {
                     onChange={handleChange}
                     required
                   />
+                )}
+                {formData.paymentMethod === 'yape' && (
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={yapeQr}
+                      alt="QR Yape"
+                      className="w-40 h-40 object-cover mx-auto"
+                    />
+                    <p className="text-center text-sm text-gray-700 mt-2">
+                      Realiza tu pago al{' '}
+                      <span className="font-semibold">928527185</span> y envía la
+                      constancia a este mismo número.
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
