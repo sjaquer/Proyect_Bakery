@@ -42,7 +42,7 @@ const OrderList: React.FC = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const { data } = await api.get<Order[]>('/orders/all?expand=customer');
+      const { data } = await api.get<Order[]>('/orders/all?expand=customer,items');
       setOrders(data);
     } catch (err: any) {
       console.error('Error fetching orders', err);
@@ -125,7 +125,7 @@ const OrderList: React.FC = () => {
                         {o.customer.address || '—'}
                       </div>
                       <ul className="text-xs text-gray-700 list-disc pl-4">
-                        {o.items.map(item => (
+                        {o.items?.map(item => (
                           <li key={item.id}>
                             {item.Product.name} x {item.quantity}
                           </li>
