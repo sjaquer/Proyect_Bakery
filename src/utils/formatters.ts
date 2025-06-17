@@ -19,6 +19,7 @@ export const formatDate = (date: string): string => {
 export const formatOrderStatus = (status: string): string => {
   const statusMap: Record<string, string> = {
     pending: 'Pendiente',
+    received: 'Recibido',
     confirmed: 'Confirmado',
     preparing: 'Preparando',
     ready: 'Listo para recoger',
@@ -32,6 +33,7 @@ export const formatOrderStatus = (status: string): string => {
 export const getStatusColor = (status: string): string => {
   const colorMap: Record<string, string> = {
     pending: 'bg-yellow-100 text-yellow-800',
+    received: 'bg-blue-100 text-blue-800',
     confirmed: 'bg-blue-100 text-blue-800',
     preparing: 'bg-orange-100 text-orange-800',
     ready: 'bg-green-100 text-green-800',

@@ -23,7 +23,7 @@ const OrderList: React.FC = () => {
     isLoading: loading,
     error,
   } = useOrderStore();
-  const statuses = ['pending', 'confirmed', 'preparing', 'ready', 'delivered', 'cancelled', 'rejected'];
+  const statuses = ['pending', 'received', 'delivered', 'cancelled', 'rejected'];
 
   useEffect(() => {
     // 1) Si no hay usuario, lo mandamos a login
@@ -85,7 +85,7 @@ const OrderList: React.FC = () => {
         {loading ? (
           <p>Cargando pedidos…</p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-7">
             {statuses.map((st) => (
               <div key={st} className="bg-white rounded-lg p-4 shadow">
                 <h3 className="text-sm font-semibold text-center mb-2">
@@ -136,13 +136,13 @@ const OrderList: React.FC = () => {
                       <div className="text-sm font-semibold">
                         {formatPrice(o.total)}
                       </div>
-                      <div className="flex justify-between items-center">
+                      <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
                         <span
                           className={`inline-flex px-2 py-0.5 text-xs rounded-full ${getStatusColor(o.status)}`}
                         >
                           {formatOrderStatus(o.status)}
                         </span>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap justify-center">
                           {o.status === 'pending' && (
                             <Button size="xs" variant="danger" onClick={() => rejectOrder(o.id)}>
                               Rechazar
