@@ -23,13 +23,16 @@ const OrdersPage: React.FC = () => {
   const [newOrder, setNewOrder] = useState<typeof orders[0] | null>(null);
 
   useEffect(() => {
-    if (user) {
-      fetchOrders();
-    } else {
-      // Carga los pedidos de invitado desde localStorage
-      const stored = JSON.parse(localStorage.getItem('guest_orders') || '[]');
-      setGuestOrders(stored);
-    }
+    const load = async () => {
+      await fetchOrders();
+      if (!user) {
+        // Carga los pedidos de invitado desde localStorage para reflejar
+        // la respuesta más reciente de la API o el respaldo local
+        const stored = JSON.parse(localStorage.getItem('guest_orders') || '[]');
+        setGuestOrders(stored);
+      }
+    };
+    load();
   }, [user, fetchOrders]);
 
   useEffect(() => {
