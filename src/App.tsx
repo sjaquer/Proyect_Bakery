@@ -11,6 +11,8 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import Login from './pages/Auth/Login';
+import Register from './pages/Auth/Register';
+import Profile from './pages/Profile';
 import Dashboard from './pages/Admin/Dashboard';
 import OrderList from './pages/Admin/OrderList';
 import { useAuthStore } from './store/useAuthStore';
@@ -115,6 +117,15 @@ function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
             
             {/* Checkout y Orders ya no requieren login */}
             <Route path="/checkout" element={<Checkout />} />

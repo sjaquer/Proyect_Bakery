@@ -4,6 +4,9 @@ export const ENDPOINTS = {
   login:    '/auth/login',
   register: '/auth/register',
 
+  // Perfil de usuario
+  userProfile: '/users/profile',
+
   // Productos
   products:    '/products',
   productById: (id: string) => `/products/${id}`,

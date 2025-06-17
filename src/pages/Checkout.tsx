@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/useCartStore';
 import { useOrderStore } from '../store/useOrderStore';
-import { useAuthStore } from '../store/useAuthStore';
 import { formatPrice } from '../utils/formatters';
 import Input from '../components/shared/Input';
 import Button from '../components/shared/Button';
@@ -18,7 +17,6 @@ interface FormData {
 }
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
   const { items, total, clearCart } = useCartStore();
   const { createOrder, error, isLoading } = useOrderStore();
 
@@ -64,14 +62,6 @@ const Checkout: React.FC = () => {
         ? { cashAmount: Number(formData.cashAmount || 0) }
         : {}),
     };
-    if (!user) {
-      payload.customerInfo = {
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        address: formData.address,
-      };
-    }
     payload.customerInfo = {
       name: formData.name,
       phone: formData.phone,
