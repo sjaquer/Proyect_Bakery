@@ -20,7 +20,6 @@ const OrderList: React.FC = () => {
     orders,
     fetchOrders,
     updateOrderStatus,
-    deleteOrder,
     isLoading: loading,
     error,
   } = useOrderStore();
@@ -61,10 +60,10 @@ const OrderList: React.FC = () => {
   };
 
   const rejectOrder = async (orderId: string) => {
-    if (!window.confirm('¿Rechazar este pedido?')) return;
+    const reason = window.prompt('¿Rechazar este pedido? Indica la razón:');
+    if (reason === null) return;
     try {
-      await deleteOrder(orderId);
-      await updateOrderStatus(orderId, 'rejected');
+      await updateOrderStatus(orderId, 'rejected', reason);
       await fetchOrders();
       window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
@@ -112,6 +111,9 @@ const OrderList: React.FC = () => {
                         >
                           <WhatsAppIcon className="w-4 h-4 text-green-600" />
                         </a>
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {o.customer?.email || '—'}
                       </div>
                       <div className="text-xs text-gray-500">
                         {o.customer?.address || '—'}
