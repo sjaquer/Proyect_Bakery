@@ -9,6 +9,7 @@ import {
 } from '../../api/productService';
 import Input from '../../components/shared/Input';
 import Button from '../../components/shared/Button';
+import ImageEditor from '../../components/shared/ImageEditor';
 
 const ProductEdit: React.FC = () => {
   const { id } = useParams<{ id?: string }>();
@@ -20,6 +21,7 @@ const ProductEdit: React.FC = () => {
     price: 0,
     stock: 0,
     description: '',
+    imageUrl: '',
   });
 
   useEffect(() => {
@@ -31,6 +33,7 @@ const ProductEdit: React.FC = () => {
             price: data.price,
             stock: data.stock,
             description: data.description,
+            imageUrl: data.imageUrl || '',
           })
         )
         .catch((err) => console.error(err));
@@ -95,6 +98,19 @@ const ProductEdit: React.FC = () => {
           value={form.description}
           onChange={handleChange}
         />
+        <Input
+          label="Imagen URL"
+          name="imageUrl"
+          value={form.imageUrl}
+          onChange={handleChange}
+          helperText="Opcional"
+        />
+        {form.imageUrl && (
+          <ImageEditor
+            imageUrl={form.imageUrl}
+            onChange={(url) => setForm((f) => ({ ...f, imageUrl: url }))}
+          />
+        )}
         <Button type="submit" size="lg">
           Guardar
         </Button>

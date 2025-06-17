@@ -3,7 +3,6 @@ import { Plus} from 'lucide-react';
 import { Product } from '../../types/product';
 import { useCartStore } from '../../store/useCartStore';
 import { formatPrice } from '../../utils/formatters';
-import { getProductImage } from '../../utils/productImages';
 import Button from '../shared/Button';
 import placeholderImg from '../../utils/placeholder';
 
@@ -19,6 +18,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         id: product.id,
         productId: product.id,
         name: product.name,
+        imageUrl: product.imageUrl,
         price: product.price,
       });
    };
@@ -27,7 +27,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
      <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
        <div className="relative overflow-hidden">
         <img
-          src={getProductImage(product.name)}
+          src={product.imageUrl || placeholderImg}
           alt={product.name}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           onError={(e) => {

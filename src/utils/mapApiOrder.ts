@@ -11,6 +11,14 @@ export function mapApiOrder(apiOrder: any): Order {
     apiOrder.Orderitems ??
     [];
 
+  const mappedItems = items.map((it: any) => ({
+    ...it,
+    Product: {
+      ...it.Product,
+      imageUrl: it.Product?.imageUrl ?? it.Product?.image_url ?? '',
+    },
+  }));
+
   const customer =
     apiOrder.customer ??
     apiOrder.Customer ??
@@ -22,7 +30,7 @@ export function mapApiOrder(apiOrder: any): Order {
 
   return {
     ...apiOrder,
-    items,
+    items: mappedItems,
     customer,
     createdAt,
     total:

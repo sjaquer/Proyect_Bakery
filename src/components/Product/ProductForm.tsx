@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ProductFormData } from '../../types/product';
 import Input from '../shared/Input';
 import Button from '../shared/Button';
+import ImageEditor from '../shared/ImageEditor';
 
 interface ProductFormProps {
   initialData?: ProductFormData;
@@ -19,6 +20,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [formData, setFormData] = useState<ProductFormData>({
     name: initialData?.name || '',
     description: initialData?.description || '',
+    imageUrl: initialData?.imageUrl || '',
     price: initialData?.price || 0,
     category: initialData?.category || 'bread',
     stock: initialData?.stock ?? 0,
@@ -128,6 +130,30 @@ const ProductForm: React.FC<ProductFormProps> = ({
           required
         />
       </div>
+
+      <Input
+        label="Imagen URL"
+        name="imageUrl"
+        value={formData.imageUrl}
+        onChange={handleInputChange}
+        helperText="Opcional: enlace a la imagen del producto"
+      />
+
+      {formData.imageUrl && (
+        <>
+          <ImageEditor
+            imageUrl={formData.imageUrl}
+            onChange={(url) =>
+              setFormData((prev) => ({ ...prev, imageUrl: url }))
+            }
+          />
+          <img
+            src={formData.imageUrl}
+            alt="Vista previa"
+            className="mt-4 h-32 w-32 object-cover rounded"
+          />
+        </>
+      )}
 
 
       <Input

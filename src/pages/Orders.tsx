@@ -12,7 +12,6 @@ import {
   formatOrderStatus,
   getStatusColor
 } from '../utils/formatters';
-import { getProductImage } from '../utils/productImages';
 import placeholderImg from '../utils/placeholder';
 
 const OrdersPage: React.FC = () => {
@@ -167,7 +166,7 @@ const OrdersPage: React.FC = () => {
                         >
                           <div className="flex items-center space-x-3">
                             <img
-                              src={getProductImage(item.Product.name)}
+                              src={item.Product.imageUrl || placeholderImg}
                               alt={item.Product.name}
                               className="h-10 w-10 object-cover rounded"
                               onError={(e) => {

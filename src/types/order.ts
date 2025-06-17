@@ -19,6 +19,7 @@ export const ORDER_STATUSES: OrderStatus[] = [
 export interface CartItem {
   id: string;
   name: string;
+  imageUrl?: string;
   price: number;
   quantity: number;
 }
@@ -32,6 +33,7 @@ export interface OrderItem {
   Product: {
     id: number;
     name: string;
+    imageUrl?: string;
   };
 }
 
