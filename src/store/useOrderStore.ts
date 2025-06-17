@@ -50,7 +50,7 @@ export const useOrderStore = create<OrderState>((set) => ({
     try {
       const endpoint =
         user.role === 'admin' ? ENDPOINTS.adminOrders : ENDPOINTS.orders;
-      const resp = await api.get<Order[]>(`${endpoint}?expand=customer,items`);
+      const resp = await api.get<Order[]>(`${endpoint}?expand=customer`);
       set({ orders: resp.data.map(mapApiOrder), isLoading: false });
     } catch (err: any) {
       set({
