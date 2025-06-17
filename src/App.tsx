@@ -127,9 +127,16 @@ function App() {
               }
             />
             
-            {/* Checkout y Orders ya no requieren login */}
+            {/* Checkout disponible sin iniciar sesión */}
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/orders"  element={<Orders  />} />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <Orders />
+                </ProtectedRoute>
+              }
+            />
             
 {/* Admin: layout con sidebar + contenido anidado */}
             <Route

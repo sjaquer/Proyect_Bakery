@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '../store/useAuthStore';
 import { useOrderStore } from '../store/useOrderStore';
 import Button from '../components/shared/Button';
 import { Package, Clock, CheckCircle, XCircle } from 'lucide-react';
@@ -15,25 +14,17 @@ import {
 import placeholderImg from '../utils/placeholder';
 
 const OrdersPage: React.FC = () => {
-  const { user } = useAuthStore();
   const navigate = useNavigate();
   const { orders, isLoading, error, fetchOrders, deleteOrder } = useOrderStore();
-  const [guestOrders, setGuestOrders] = useState<typeof orders>([]);
   const location = useLocation();
   const [newOrder, setNewOrder] = useState<typeof orders[0] | null>(null);
 
   useEffect(() => {
     const load = async () => {
       await fetchOrders();
-      if (!user) {
-        // Carga los pedidos de invitado desde localStorage para reflejar
-        // la respuesta más reciente de la API o el respaldo local
-        const stored = JSON.parse(localStorage.getItem('guest_orders') || '[]');
-        setGuestOrders(stored);
-      }
     };
     load();
-  }, [user, fetchOrders]);
+  }, [fetchOrders]);
 
   useEffect(() => {
     const handler = () => fetchOrders();
@@ -50,8 +41,7 @@ const OrdersPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Si hay usuario, muestro orders de la API; si no, los de localStorage
-  const displayOrders = user ? orders : guestOrders;
+  const displayOrders = orders;
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -68,9 +58,6 @@ const OrdersPage: React.FC = () => {
     if (!window.confirm('¿Cancelar este pedido?')) return;
     try {
       await deleteOrder(id);
-      if (!user) {
-        setGuestOrders(prev => prev.filter(o => o.id !== id));
-      }
     } catch {
       // Error handled in store
     }
@@ -81,7 +68,7 @@ const OrdersPage: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Mis pedidos</h1>
 
-        {isLoading && user ? (
+        {isLoading ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, idx) => (
               <div
@@ -94,7 +81,7 @@ const OrdersPage: React.FC = () => {
               </div>
             ))}
           </div>
-        ) : error && user ? (
+        ) : error ? (
           <div className="text-center py-12">
             <p className="text-red-600">Error al cargar pedidos: {error}</p>
           </div>
