@@ -6,7 +6,7 @@ import { formatPrice } from '../../utils/formatters';
 import Button from '../../components/shared/Button';
 import Input from '../../components/shared/Input';
 import ProductForm from '../../components/Product/ProductForm';
-import { resolveImageUrl } from '../../utils/resolveImageUrl';
+import { getProductImage } from '../../utils/productImages';
 import placeholderImg from '../../utils/placeholder';
 
 const Products: React.FC = () => {
@@ -191,7 +191,7 @@ const Products: React.FC = () => {
                         <div className="flex items-center">
                           <img
                             className="h-10 w-10 rounded object-cover"
-                            src={resolveImageUrl(product.imageUrl)}
+                            src={getProductImage(product.name)}
                             alt={product.name}
                             onError={(e) => {
                               const target = e.currentTarget;

@@ -3,7 +3,7 @@ import { Package, ShoppingCart, Users, DollarSign } from 'lucide-react';
 import { useProductStore } from '../../store/useProductStore';
 import { useOrderStore } from '../../store/useOrderStore';
 import { formatPrice } from '../../utils/formatters';
-import { resolveImageUrl } from '../../utils/resolveImageUrl';
+import { getProductImage } from '../../utils/productImages';
 import placeholderImg from '../../utils/placeholder';
 
 const Dashboard: React.FC = () => {
@@ -121,7 +121,7 @@ const Dashboard: React.FC = () => {
                     <div key={product.id} className="flex items-center justify-between p-4 border border-red-200 rounded-lg bg-red-50">
                       <div className="flex items-center space-x-3">
                         <img
-                          src={resolveImageUrl(product.imageUrl)}
+                          src={getProductImage(product.name)}
                           alt={product.name}
                           className="h-10 w-10 object-cover rounded"
                           onError={(e) => {

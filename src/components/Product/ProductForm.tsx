@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { ProductFormData } from '../../types/product';
 import Input from '../shared/Input';
 import Button from '../shared/Button';
-import { resolveImageUrl } from '../../utils/resolveImageUrl';
-import placeholderImg from '../../utils/placeholder';
 
 interface ProductFormProps {
   initialData?: ProductFormData;
@@ -23,13 +21,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
     description: initialData?.description || '',
     price: initialData?.price || 0,
     category: initialData?.category || 'bread',
-    imageUrl: initialData?.imageUrl || '',
     stock: initialData?.stock ?? 0,
     ingredients: initialData?.ingredients || [],
     allergens: initialData?.allergens || [],
   });
-
-  const [previewFit, setPreviewFit] = useState<'cover' | 'contain'>('cover');
 
   const [ingredientsText, setIngredientsText] = useState(
     initialData?.ingredients?.join(', ') || ''
@@ -134,44 +129,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
         />
       </div>
 
-      <Input
-        label="URL de imagen"
-        name="imageUrl"
-        value={formData.imageUrl}
-        onChange={handleInputChange}
-        required
-      />
-
-      {/* Image preview and fit options */}
-      {formData.imageUrl && (
-        <div className="space-y-2">
-          <div className="w-full h-48 border rounded-md overflow-hidden flex items-center justify-center bg-gray-50">
-            <img
-              src={resolveImageUrl(formData.imageUrl)}
-              alt="Vista previa"
-              className={`w-full h-full object-${previewFit}`}
-              onError={(e) => {
-                const target = e.currentTarget;
-                target.onerror = null;
-                target.src = placeholderImg;
-              }}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Ajuste de imagen
-            </label>
-            <select
-              value={previewFit}
-              onChange={(e) => setPreviewFit(e.target.value as 'cover' | 'contain')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-            >
-              <option value="cover">Recortar (cover)</option>
-              <option value="contain">Contener (contain)</option>
-            </select>
-          </div>
-        </div>
-      )}
 
       <Input
         label="Ingredientes (separados por coma)"

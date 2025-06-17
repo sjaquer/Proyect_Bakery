@@ -6,7 +6,6 @@ export interface Product {
   description: string;
   price: number;
   category: string;
-  imageUrl: string;
   stock: number;    // ← refleja el stock real de la BD
   inStock: boolean; // ← lo calcularemos en el store
   ingredients?: string[];
@@ -20,7 +19,6 @@ export interface ProductFormData {
   description: string;
   price: number;
   category: string;
-  imageUrl: string;
   stock: number;    // ← formulario de admin debe enviar stock
   ingredients?: string[];
   allergens?: string[];

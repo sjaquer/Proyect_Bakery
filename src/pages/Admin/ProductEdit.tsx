@@ -20,13 +20,19 @@ const ProductEdit: React.FC = () => {
     price: 0,
     stock: 0,
     description: '',
-    imageUrl: '',
   });
 
   useEffect(() => {
     if (isEdit && id) {
       fetchProduct(id)
-        .then((data) => setForm(data))
+        .then((data) =>
+          setForm({
+            name: data.name,
+            price: data.price,
+            stock: data.stock,
+            description: data.description,
+          })
+        )
         .catch((err) => console.error(err));
     }
   }, [id, isEdit]);
@@ -79,13 +85,6 @@ const ProductEdit: React.FC = () => {
           name="stock"
           type="number"
           value={form.stock}
-          onChange={handleChange}
-          required
-        />
-        <Input
-          label="URL de imagen"
-          name="imageUrl"
-          value={form.imageUrl}
           onChange={handleChange}
           required
         />

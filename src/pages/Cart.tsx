@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { formatPrice } from '../utils/formatters';
-import { resolveImageUrl } from '../utils/resolveImageUrl';
+import { getProductImage } from '../utils/productImages';
 import placeholderImg from '../utils/placeholder';
 import Button from '../components/shared/Button';
 
@@ -48,7 +48,7 @@ const Cart: React.FC = () => {
             {items.map((item) => (
               <div key={item.id} className="p-6 flex items-center space-x-4">
                 <img
-                  src={resolveImageUrl(item.imageUrl)}
+                  src={getProductImage(item.name)}
                   alt={item.name}
                   className="h-20 w-20 object-cover rounded-lg"
                   onError={(e) => {
