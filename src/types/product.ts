@@ -4,6 +4,7 @@ export interface Product {
   id: string;
   name: string;
   description: string;
+  imageUrl?: string;
   price: number;
   category: string;
   stock: number;    // ← refleja el stock real de la BD
@@ -17,6 +18,7 @@ export interface Product {
 export interface ProductFormData {
   name: string;
   description: string;
+  imageUrl?: string;
   price: number;
   category: string;
   stock: number;    // ← formulario de admin debe enviar stock
