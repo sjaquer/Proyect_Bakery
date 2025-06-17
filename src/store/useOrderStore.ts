@@ -18,7 +18,11 @@ interface OrderState {
   error: string | null;
   fetchOrders: () => Promise<void>;
   createOrder: (data: CheckoutData) => Promise<Order>;
-  updateOrderStatus: (id: string, status: Order['status']) => Promise<void>;
+  updateOrderStatus: (
+    id: string,
+    status: Order['status'],
+    reason?: string
+  ) => Promise<void>;
   deleteOrder: (id: string) => Promise<void>;
   clearError: () => void;
 }
@@ -96,6 +100,8 @@ export const useOrderStore = create<OrderState>((set) => ({
         }
       }
 
+      window.dispatchEvent(new CustomEvent('orders-updated'));
+
       return order;
     } catch (err: any) {
       set({
@@ -106,19 +112,30 @@ export const useOrderStore = create<OrderState>((set) => ({
     }
   },
 
-  updateOrderStatus: async (id, status) => {
+  updateOrderStatus: async (id, status, reason?) => {
     set({ isLoading: true, error: null });
     try {
-      await apiUpdateStatus(id, status);
+      await apiUpdateStatus(id, status, reason);
+      let updated: Order | null = null;
+      try {
+        const resp = await getOrderById(id);
+        updated = mapApiOrder(resp.data);
+      } catch {
+        // ignore if details fetch fails
+      }
       set((st) => ({
-        orders: st.orders.map(o => (o.id === id ? { ...o, status } : o)),
-        isLoading: false
+        orders: st.orders.map((o) =>
+          o.id === id
+            ? { ...o, status, ...(reason ? { reason } : {}), ...(updated || {}) }
+            : o
+        ),
+        isLoading: false,
       }));
       window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
-        isLoading: false
+        isLoading: false,
       });
       throw err;
     }
