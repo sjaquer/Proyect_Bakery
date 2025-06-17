@@ -94,7 +94,7 @@ const Header: React.FC = () => {
               <Link to="/login">
                 <Button variant="primary" size="sm" className="flex items-center space-x-1">
                   <User className="h-4 w-4" />
-                  <span>Iniciar sesión</span>
+                  <span>Acceso admin</span>
                 </Button>
               </Link>
             )}
@@ -188,7 +188,7 @@ const Header: React.FC = () => {
                   <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button variant="primary" size="sm" className="flex items-center space-x-1">
                       <User className="h-4 w-4" />
-                      <span>Iniciar sesión</span>
+                      <span>Acceso admin</span>
                     </Button>
                   </Link>
                 )}
