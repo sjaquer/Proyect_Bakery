@@ -44,6 +44,7 @@ const Login: React.FC = () => {
             <Cake className="h-12 w-12 text-amber-600" />
             <h2 className="text-2xl font-extrabold text-gray-900">Digital Bakery</h2>
           </Link>
+          <p className="text-center text-gray-600">Acceso solo para administradores</p>
         </div>
 
         {/* Formulario */}
