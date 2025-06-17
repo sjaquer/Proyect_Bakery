@@ -112,52 +112,62 @@ export const useOrderStore = create<OrderState>((set) => ({
     }
   },
 
-  updateOrderStatus: async (id, status, reason?) => {
+
+  updateOrderStatus: async (id: string, status: Order['status'], reason?: string) => {
     set({ isLoading: true, error: null });
     try {
       await apiUpdateStatus(id, status, reason);
+      let updated: Order | null = null;
+      try {
+        const resp = await getOrderById(id);
+        updated = mapApiOrder(resp.data);
+      } catch {
+        // ignore if details fetch fails
+      }
       set((st) => ({
-        orders: st.orders.map(o =>
-          o.id === id ? { ...o, status, ...(reason ? { reason } : {}) } : o
+        orders: st.orders.map((o) =>
+          o.id === id
+            ? { ...o, status, ...(reason ? { reason } : {}), ...(updated || {}) }
+            : o
         ),
-        isLoading: false
+        isLoading: false,
       }));
       window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
-        isLoading: false
+        isLoading: false,
       });
       throw err;
     }
   },
 
-  deleteOrder: async (id) => {
+  deleteOrder: async (id: string) => {
     set({ isLoading: true, error: null });
     const user = useAuthStore.getState().user;
     try {
       await apiDeleteOrder(id);
       set((st) => ({
-        orders: st.orders.filter(o => o.id !== id),
-        isLoading: false
+        orders: st.orders.filter((o) => o.id !== id),
+        isLoading: false,
       }));
       if (!user) {
         const raw = localStorage.getItem('guest_orders');
         const prev: Order[] = raw ? JSON.parse(raw) : [];
         localStorage.setItem(
           'guest_orders',
-          JSON.stringify(prev.filter(o => o.id !== id))
+          JSON.stringify(prev.filter((o) => o.id !== id))
         );
       }
       window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
-        isLoading: false
+        isLoading: false,
       });
       throw err;
     }
   },
 
-  clearError: () => set({ error: null })
+  clearError: () => set({ error: null }),
 }));
