@@ -12,6 +12,7 @@ import {
   getStatusColor,
 } from '../../utils/formatters';
 import type { Order } from '../../types/order';
+import { ORDER_STATUSES } from '../../types/order';
 
 const OrderList: React.FC = () => {
   const { user } = useAuthStore();
@@ -23,7 +24,9 @@ const OrderList: React.FC = () => {
     isLoading: loading,
     error,
   } = useOrderStore();
-  const statuses = ['pending', 'received', 'delivered', 'cancelled', 'rejected'];
+  const statuses = ORDER_STATUSES.filter((st) =>
+    orders.some((o) => o.status === st)
+  );
 
   useEffect(() => {
     // 1) Si no hay usuario, lo mandamos a login
@@ -85,9 +88,9 @@ const OrderList: React.FC = () => {
         {loading ? (
           <p>Cargando pedidos…</p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-7">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 overflow-x-auto pb-4">
             {statuses.map((st) => (
-              <div key={st} className="bg-white rounded-lg p-4 shadow">
+              <div key={st} className="bg-white rounded-lg p-4 shadow min-w-[16rem]">
                 <h3 className="text-sm font-semibold text-center mb-2">
                   {formatOrderStatus(st)}
                 </h3>
@@ -136,6 +139,11 @@ const OrderList: React.FC = () => {
                       <div className="text-sm font-semibold">
                         {formatPrice(o.total)}
                       </div>
+                      {o.status === 'rejected' && o.reason && (
+                        <div className="text-xs text-red-600">
+                          Motivo: {o.reason}
+                        </div>
+                      )}
                       <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
                         <span
                           className={`inline-flex px-2 py-0.5 text-xs rounded-full ${getStatusColor(o.status)}`}

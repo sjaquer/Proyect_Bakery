@@ -8,6 +8,14 @@ export type OrderStatus =
   | 'cancelled'
   | 'rejected';
 
+export const ORDER_STATUSES: OrderStatus[] = [
+  'pending',
+  'received',
+  'delivered',
+  'cancelled',
+  'rejected',
+];
+
 export interface CartItem {
   id: string;
   name: string;

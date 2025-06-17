@@ -134,8 +134,12 @@ export const useOrderStore = create<OrderState>((set) => ({
       }));
       window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
+      const message =
+        err.response?.status === 400
+          ? err.response?.data?.message || 'Estado inválido'
+          : err.response?.data?.message || err.message;
       set({
-        error: err.response?.data?.message || err.message,
+        error: message,
         isLoading: false,
       });
       throw err;
