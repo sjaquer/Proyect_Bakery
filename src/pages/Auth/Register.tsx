@@ -13,6 +13,8 @@ const Register: React.FC = () => {
     name: '',
     email: '',
     password: '',
+    phone: '',
+    address: '',
   });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -51,6 +53,22 @@ const Register: React.FC = () => {
             required
           />
           <Input
+            label="Teléfono"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            required
+          />
+          <div>
+            <label htmlFor="address" className="block text-sm font-medium text-gray-700">Dirección</label>
+            <textarea
+              id="address"
+              value={formData.address}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+              required
+            />
+          </div>
+          <Input
             label="Contraseña"
             type={showPassword ? 'text' : 'password'}
             value={formData.password}
@@ -66,6 +84,12 @@ const Register: React.FC = () => {
           <Button type="submit" loading={isLoading} size="lg" className="w-full">
             Registrarse
           </Button>
+          <p className="text-center text-sm text-gray-600">
+            ¿Ya tienes cuenta?{' '}
+            <a href="/login" className="text-amber-600 hover:underline">
+              Inicia sesión
+            </a>
+          </p>
         </form>
       </div>
     </div>

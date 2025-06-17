@@ -21,7 +21,7 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   // **IMPORTANTE**: definimos always un “from” por defecto
-  const from = location.state?.from?.pathname || '/admin';
+  const from = location.state?.from?.pathname || '/orders';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +44,7 @@ const Login: React.FC = () => {
             <Cake className="h-12 w-12 text-amber-600" />
             <h2 className="text-2xl font-extrabold text-gray-900">Digital Bakery</h2>
           </Link>
-          <p className="text-center text-gray-600">Acceso solo para administradores</p>
+          <p className="text-center text-gray-600">Inicia sesión para continuar</p>
         </div>
 
         {/* Formulario */}
@@ -80,6 +80,12 @@ const Login: React.FC = () => {
           >
             Entrar
           </Button>
+          <p className="text-center text-sm text-gray-600">
+            ¿No tienes cuenta?{' '}
+            <Link to="/register" className="text-amber-600 hover:underline">
+              Crea una aquí
+            </Link>
+          </p>
         </form>
 
       </div>
