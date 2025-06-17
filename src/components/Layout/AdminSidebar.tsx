@@ -11,7 +11,7 @@ const AdminSidebar: React.FC = () => (
         isActive ? 'block font-semibold text-amber-600' : 'block text-gray-700'
       }
     >
-      Dashboard
+      Panel
     </NavLink>
     <NavLink
       to="/admin/products"
