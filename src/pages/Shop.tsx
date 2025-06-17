@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import { useProductStore } from '../store/useProductStore';
 import ProductCard from '../components/Product/ProductCard';
@@ -14,20 +14,39 @@ const Shop: React.FC = () => {
   }, [fetchProducts]);
 
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const productCategory = product.category?.toLowerCase() || '';
+    const matchesCategory =
+      selectedCategory === 'all' || productCategory === selectedCategory;
+
     return matchesSearch && matchesCategory;
   });
 
-  const categories = [
-    { value: 'all', label: 'Todos' },
-    { value: 'bread', label: 'Pan' },
-    { value: 'pastry', label: 'Pasteles' },
-    { value: 'cake', label: 'Tortas' },
-    { value: 'cookie', label: 'Galletas' },
-    { value: 'dessert', label: 'Postres' },
-  ];
+  const categories = useMemo(() => {
+    const labelMap: Record<string, string> = {
+      bread: 'Pan',
+      pastry: 'Pasteles',
+      cake: 'Tortas',
+      cookie: 'Galletas',
+      dessert: 'Postres',
+    };
+
+    const unique = Array.from(
+      new Set(
+        products
+          .map(p => p.category?.toLowerCase())
+          .filter((c): c is string => Boolean(c))
+      )
+    );
+
+    return [
+      { value: 'all', label: 'Todos' },
+      ...unique.map(c => ({ value: c, label: labelMap[c] || c })),
+    ];
+  }, [products]);
 
   if (error) {
     return (
