@@ -111,7 +111,7 @@ export const useOrderStore = create<OrderState>((set) => ({
       throw err;
     }
   },
-
+  
   updateOrderStatus: async (
     id: string,
     status: Order['status'],
@@ -134,6 +134,15 @@ export const useOrderStore = create<OrderState>((set) => ({
             : o
         ),
         isLoading: false,
+  updateOrderStatus: async (id, status, reason?) => {
+    set({ isLoading: true, error: null });
+    try {
+      await apiUpdateStatus(id, status, reason);
+      set((st) => ({
+        orders: st.orders.map(o =>
+          o.id === id ? { ...o, status, ...(reason ? { reason } : {}) } : o
+        ),
+        isLoading: false
       }));
       window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
