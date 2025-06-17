@@ -6,6 +6,7 @@ import {
   updateOrderStatus as apiUpdateStatus,
   deleteOrder as apiDeleteOrder,
   getOrderById,
+  getOrdersByCustomer,
 } from '../api/orderService';
 import { useAuthStore } from './useAuthStore';
 import { useProductStore } from './useProductStore';
@@ -37,7 +38,19 @@ export const useOrderStore = create<OrderState>((set) => ({
     const user = useAuthStore.getState().user;
 
     if (!user) {
-      // Cliente sin sesión → leo pedidos de localStorage
+      const clientId = localStorage.getItem('guest_customerId');
+      if (clientId) {
+        try {
+          const resp = await getOrdersByCustomer(clientId);
+          const orders = resp.data.map(mapApiOrder);
+          set({ orders, isLoading: false });
+          localStorage.setItem('guest_orders', JSON.stringify(orders));
+          return;
+        } catch {
+          // ignore and fallback to localStorage
+        }
+      }
+
       const raw = localStorage.getItem('guest_orders');
       const stored: any[] = raw ? JSON.parse(raw) : [];
       const guestOrders: Order[] = stored.map(mapApiOrder);
