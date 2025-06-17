@@ -79,7 +79,9 @@ const Header: React.FC = () => {
             {/* User Menu */}
             {user ? (
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-700">Hola, {user.name}</span>
+                <Link to="/profile" className="text-sm text-gray-700 hover:text-amber-600">
+                  Hola, {user.name}
+                </Link>
                 <Button
                   variant="outline"
                   size="sm"
@@ -172,18 +174,27 @@ const Header: React.FC = () => {
                 </Link>
 
                 {user ? (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      handleLogout();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="flex items-center space-x-1"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span>Salir</span>
-                  </Button>
+                  <div className="flex items-center space-x-2">
+                    <Link
+                      to="/profile"
+                      className="text-sm text-gray-700 hover:text-amber-600"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Mi perfil
+                    </Link>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="flex items-center space-x-1"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Salir</span>
+                    </Button>
+                  </div>
                 ) : (
                   <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button variant="primary" size="sm" className="flex items-center space-x-1">
