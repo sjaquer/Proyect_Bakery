@@ -210,17 +210,22 @@ const OrdersPage: React.FC = () => {
                             {order.customer.phone || '—'}
                           </p>
                           <p className="text-gray-600">
-                            {order.customer.email || '—'}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {order.status === 'pending' && (
-                    <div className="mt-4">
-                      <Button
-                        size="sm"
-                        variant="danger"
+                  {order.customer.email || '—'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          {order.status === 'rejected' && order.reason && (
+            <div className="border-t border-gray-200 pt-4 mt-4">
+              <p className="text-sm text-red-600">Pedido rechazado: {order.reason}</p>
+            </div>
+          )}
+          {order.status === 'pending' && (
+            <div className="mt-4">
+              <Button
+                size="sm"
+                variant="danger"
                         onClick={() => handleDelete(order.id)}
                       >
                         Cancelar pedido
