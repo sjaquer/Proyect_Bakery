@@ -30,5 +30,6 @@ export function mapApiOrder(apiOrder: any): Order {
     paymentMethod:
       apiOrder.paymentMethod ?? apiOrder.payment_method ?? undefined,
     cashAmount: apiOrder.cashAmount ?? apiOrder.cash_amount ?? undefined,
+    reason: apiOrder.reason ?? apiOrder.rejectionReason ?? apiOrder.rejection_reason ?? undefined,
   } as Order;
 }

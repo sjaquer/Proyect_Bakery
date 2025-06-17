@@ -18,7 +18,11 @@ interface OrderState {
   error: string | null;
   fetchOrders: () => Promise<void>;
   createOrder: (data: CheckoutData) => Promise<Order>;
-  updateOrderStatus: (id: string, status: Order['status']) => Promise<void>;
+  updateOrderStatus: (
+    id: string,
+    status: Order['status'],
+    reason?: string
+  ) => Promise<void>;
   deleteOrder: (id: string) => Promise<void>;
   clearError: () => void;
 }
@@ -96,6 +100,8 @@ export const useOrderStore = create<OrderState>((set) => ({
         }
       }
 
+      window.dispatchEvent(new CustomEvent('orders-updated'));
+
       return order;
     } catch (err: any) {
       set({
@@ -106,12 +112,14 @@ export const useOrderStore = create<OrderState>((set) => ({
     }
   },
 
-  updateOrderStatus: async (id, status) => {
+  updateOrderStatus: async (id, status, reason?) => {
     set({ isLoading: true, error: null });
     try {
-      await apiUpdateStatus(id, status);
+      await apiUpdateStatus(id, status, reason);
       set((st) => ({
-        orders: st.orders.map(o => (o.id === id ? { ...o, status } : o)),
+        orders: st.orders.map(o =>
+          o.id === id ? { ...o, status, ...(reason ? { reason } : {}) } : o
+        ),
         isLoading: false
       }));
       window.dispatchEvent(new CustomEvent('orders-updated'));

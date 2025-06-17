@@ -14,5 +14,8 @@ export const createOrder = (data: CheckoutData) =>
 export const deleteOrder = (id: string) =>
   api.delete(`${ENDPOINTS.orders}/${id}`);
 
-export const updateOrderStatus = (orderId: string, status: OrderStatus) =>
-  api.patch(`${ENDPOINTS.orders}/${orderId}`, { status });
+export const updateOrderStatus = (
+  orderId: string,
+  status: OrderStatus,
+  reason?: string
+) => api.patch(`${ENDPOINTS.orders}/${orderId}`, reason ? { status, reason } : { status });

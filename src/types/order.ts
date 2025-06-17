@@ -45,6 +45,7 @@ export interface Order {
   total?: number;
   paymentMethod?: string;
   cashAmount?: number;
+  reason?: string;
 }
 
 export interface CheckoutData {
