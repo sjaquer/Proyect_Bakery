@@ -111,7 +111,29 @@ export const useOrderStore = create<OrderState>((set) => ({
       throw err;
     }
   },
-
+ 
+  updateOrderStatus: async (
+    id: string,
+    status: Order['status'],
+    reason?: string
+  ) => {
+    set({ isLoading: true, error: null });
+    try {
+      await apiUpdateStatus(id, status, reason);
+      let updated: Order | null = null;
+      try {
+        const resp = await getOrderById(id);
+        updated = mapApiOrder(resp.data);
+      } catch {
+        // ignore if details fetch fails
+      }
+      set((st) => ({
+        orders: st.orders.map((o) =>
+          o.id === id
+            ? { ...o, status, ...(reason ? { reason } : {}), ...(updated || {}) }
+            : o
+        ),
+        isLoading: false,
   updateOrderStatus: async (id, status, reason?) => {
     set({ isLoading: true, error: null });
     try {
@@ -126,7 +148,7 @@ export const useOrderStore = create<OrderState>((set) => ({
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
-        isLoading: false
+        isLoading: false,
       });
       throw err;
     }
