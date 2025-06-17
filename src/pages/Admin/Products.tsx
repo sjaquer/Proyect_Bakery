@@ -249,7 +249,7 @@ const Products: React.FC = () => {
                 ) : (
                   <tr>
                     <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                      No products found
+                      No se encontraron productos
                     </td>
                   </tr>
                 )}

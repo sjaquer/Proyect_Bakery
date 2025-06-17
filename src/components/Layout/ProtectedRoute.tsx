@@ -19,7 +19,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const location = useLocation();
 
   if (isLoading) {
-    return <div>Loading authentication...</div>;
+    return <div>Cargando autenticación...</div>;
   }
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;

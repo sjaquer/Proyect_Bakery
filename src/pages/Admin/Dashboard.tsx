@@ -27,25 +27,25 @@ const Dashboard: React.FC = () => {
 
   const stats = [
     {
-      title: 'Total Products',
+      title: 'Total de Productos',
       value: products.length,
       icon: Package,
       color: 'bg-blue-500',
     },
     {
-      title: 'Total Orders',
+      title: 'Total de Pedidos',
       value: orders.length,
       icon: ShoppingCart,
       color: 'bg-green-500',
     },
     {
-      title: 'Pending Orders',
+      title: 'Pedidos Pendientes',
       value: pendingOrders,
       icon: Users,
       color: 'bg-yellow-500',
     },
     {
-      title: 'Total Revenue',
+      title: 'Ingresos Totales',
       value: formatPrice(totalRevenue),
       icon: DollarSign,
       color: 'bg-purple-500',
@@ -57,7 +57,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Panel de Administración</h1>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -77,16 +77,16 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Orders */}
+          {/* Pedidos Recientes */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Orders</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Pedidos Recientes</h2>
             <div className="space-y-4">
               {recentOrders.length > 0 ? (
                 recentOrders.map((order) => (
                   <div key={order.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">
-                        Order #{String(order.id).slice(-8)}
+                        Pedido #{String(order.id).slice(-8)}
                       </p>
                       <p className="text-sm text-gray-500">
                         {order.Customer?.name || 'Cliente'}
@@ -103,19 +103,19 @@ const Dashboard: React.FC = () => {
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500">No orders yet</p>
+                <p className="text-gray-500">Aún no hay pedidos</p>
               )}
             </div>
           </div>
 
-          {/* Low Stock Products */}
+          {/* Productos sin stock */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Stock Status</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Estado de Stock</h2>
             <div className="space-y-4">
               {outOfStockProducts.length > 0 ? (
                 <>
                   <div className="text-sm text-red-600 font-medium mb-2">
-                    Out of Stock ({outOfStockProducts.length})
+                    Sin stock ({outOfStockProducts.length})
                   </div>
                   {outOfStockProducts.slice(0, 5).map((product) => (
                     <div key={product.id} className="flex items-center justify-between p-4 border border-red-200 rounded-lg bg-red-50">
@@ -136,7 +136,7 @@ const Dashboard: React.FC = () => {
                         </div>
                       </div>
                       <span className="text-sm text-red-600 font-medium">
-                        Out of Stock
+                        Sin stock
                       </span>
                     </div>
                   ))}
@@ -144,7 +144,7 @@ const Dashboard: React.FC = () => {
               ) : (
                 <div className="text-center py-8">
                   <Package className="mx-auto h-12 w-12 text-green-500 mb-2" />
-                  <p className="text-green-600 font-medium">All products in stock!</p>
+                  <p className="text-green-600 font-medium">¡Todos los productos en stock!</p>
                 </div>
               )}
             </div>

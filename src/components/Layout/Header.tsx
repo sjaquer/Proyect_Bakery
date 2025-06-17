@@ -56,7 +56,7 @@ const Header: React.FC = () => {
                   isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
                 }
               >
-                Admin
+                Administración
               </NavLink>
             )}
           </nav>
@@ -157,7 +157,7 @@ const Header: React.FC = () => {
                   }
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Admin
+                  Administración
                 </NavLink>
               )}
 
