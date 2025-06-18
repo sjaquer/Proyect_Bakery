@@ -113,12 +113,12 @@ const OrderManagement: React.FC = () => {
 
         {loading ? (
           <p>Cargando pedidos…</p>
-        ) : (
-          <div className="flex gap-6 overflow-x-auto pb-4">
+          ) : (
+          <div className="flex flex-col gap-6 md:flex-row md:overflow-x-auto pb-4">
             {activeStatuses.map((st) => (
               <div
                 key={st}
-                className={`rounded-lg p-4 shadow min-w-[16rem] ${columnColors[st]}`}
+                className={`rounded-lg p-4 shadow w-full md:min-w-[16rem] ${columnColors[st]}`}
               >
                 <h3 className="text-sm font-semibold text-center mb-2">
                   {formatOrderStatus(st)}
