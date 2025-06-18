@@ -14,7 +14,6 @@ import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import Profile from './pages/Profile';
 import Dashboard from './pages/Admin/Dashboard';
-import OrderList from './pages/Admin/OrderList';
 import OrderManagement from './pages/Admin/OrderManagement';
 import { useAuthStore } from './store/useAuthStore';
 
@@ -157,7 +156,6 @@ function App() {
               <Route path="products" element={<Products />} />
               <Route path="products/create" element={<ProductEdit />} />
               <Route path="products/edit/:id" element={<ProductEdit />} />
-              <Route path="orders" element={<OrderList />} />
               <Route path="manage-orders" element={<OrderManagement />} />
             </Route>
        </Routes>
