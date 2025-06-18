@@ -130,8 +130,85 @@ const Products: React.FC = () => {
           </div>
         </div>
 
-         {/* Products Table */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        {/* Products List for mobile */}
+        <div className="space-y-4 md:hidden">
+          {isLoading ? (
+            [...Array(5)].map((_, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg shadow p-4 animate-pulse"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="h-10 w-10 bg-gray-200 rounded" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-gray-200 rounded w-3/4" />
+                    <div className="h-3 bg-gray-200 rounded w-1/2" />
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <div
+                key={product.id}
+                className="bg-white rounded-lg shadow p-4 space-y-2"
+              >
+                <div className="flex items-center">
+                  <img
+                    className="h-10 w-10 rounded object-cover"
+                    src={product.imageUrl || placeholderImg}
+                    alt={product.name}
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.onerror = null;
+                      target.src = placeholderImg;
+                    }}
+                  />
+                  <div className="ml-4 flex-1">
+                    <p className="font-medium text-gray-900">{product.name}</p>
+                    <p className="text-sm text-gray-500 line-clamp-1">
+                      {product.description}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleEdit(product)}
+                    className="text-amber-600 hover:text-amber-900 p-1 rounded"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteProduct(product.id)}
+                    className="text-red-600 hover:text-red-900 p-1 rounded"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 capitalize">
+                    {product.category}
+                  </span>
+                  <span>{formatPrice(product.price)}</span>
+                  <span
+                    className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                      product.stock > 0
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {product.stock}
+                  </span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">
+              No se encontraron productos
+            </p>
+          )}
+        </div>
+
+        {/* Products Table */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden hidden md:block">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
