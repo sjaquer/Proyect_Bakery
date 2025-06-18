@@ -24,7 +24,14 @@ const OrderManagement: React.FC = () => {
     isLoading: loading,
     error,
   } = useOrderStore();
-  const statuses = ORDER_STATUSES;
+  const activeStatuses = ORDER_STATUSES.filter(
+    (s) => s !== "cancelled" && s !== "rejected"
+  );
+  const columnColors: Record<string, string> = {
+    pending: "bg-yellow-50",
+    received: "bg-blue-50",
+    delivered: "bg-green-50",
+  };
 
   useEffect(() => {
     // 1) Si no hay usuario, lo mandamos a login
@@ -48,9 +55,9 @@ const OrderManagement: React.FC = () => {
   }, [fetchOrders]);
 
   const advanceStatus = async (orderId: string, current: string) => {
-    const idx = statuses.indexOf(current);
-    if (idx === -1 || idx === statuses.length - 1) return;
-    const next = statuses[idx + 1];
+    const idx = activeStatuses.indexOf(current as Order["status"]);
+    if (idx === -1 || idx === activeStatuses.length - 1) return;
+    const next = activeStatuses[idx + 1];
     try {
       await updateOrderStatus(orderId, next as Order["status"]);
       await fetchOrders();
@@ -60,15 +67,22 @@ const OrderManagement: React.FC = () => {
     }
   };
 
-  const changeStatus = async (orderId: string, newStatus: Order["status"]) => {
+  const retreatStatus = async (orderId: string, current: string) => {
+    const idx = activeStatuses.indexOf(current as Order["status"]);
+    if (idx <= 0) return;
+    const prev = activeStatuses[idx - 1];
     try {
-      await updateOrderStatus(orderId, newStatus);
+      await updateOrderStatus(orderId, prev as Order["status"]);
       await fetchOrders();
       window.dispatchEvent(new CustomEvent("orders-updated"));
     } catch (err: any) {
       console.error("Error updating status", err);
     }
   };
+
+  const cancelledOrders = orders.filter((o) => o.status === "cancelled");
+  const rejectedOrders = orders.filter((o) => o.status === "rejected");
+
 
   const rejectOrder = async (orderId: string) => {
     const reason = window.prompt("¿Rechazar este pedido? Indica la razón:");
@@ -101,10 +115,10 @@ const OrderManagement: React.FC = () => {
           <p>Cargando pedidos…</p>
         ) : (
           <div className="flex gap-6 overflow-x-auto pb-4">
-            {statuses.map((st) => (
+            {activeStatuses.map((st) => (
               <div
                 key={st}
-                className="bg-white rounded-lg p-4 shadow min-w-[16rem]"
+                className={`rounded-lg p-4 shadow min-w-[16rem] ${columnColors[st]}`}
               >
                 <h3 className="text-sm font-semibold text-center mb-2">
                   {formatOrderStatus(st)}
@@ -179,22 +193,19 @@ const OrderManagement: React.FC = () => {
                                 Rechazar
                               </Button>
                             )}
-                            <select
-                              className="text-xs border border-gray-300 rounded p-1"
-                              value={o.status}
-                              onChange={(e) =>
-                                changeStatus(
-                                  o.id,
-                                  e.target.value as Order["status"],
-                                )
+                            <Button
+                              size="xs"
+                              onClick={() =>
+                                retreatStatus(o.id, o.status)
+                              }
+                              disabled={
+                                o.status === "pending" ||
+                                o.status === "cancelled" ||
+                                o.status === "rejected"
                               }
                             >
-                              {ORDER_STATUSES.map((statusOpt) => (
-                                <option key={statusOpt} value={statusOpt}>
-                                  {formatOrderStatus(statusOpt)}
-                                </option>
-                              ))}
-                            </select>
+                              Retroceder
+                            </Button>
                             <Button
                               size="xs"
                               onClick={() => advanceStatus(o.id, o.status)}
@@ -213,6 +224,37 @@ const OrderManagement: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+        {(cancelledOrders.length > 0 || rejectedOrders.length > 0) && (
+          <div className="mt-8">
+            {cancelledOrders.length > 0 && (
+              <>
+                <h2 className="text-sm font-semibold mb-2">Cancelados</h2>
+                <ul className="text-sm space-y-1 mb-4">
+                  {cancelledOrders.map((o) => (
+                    <li key={o.id} className="border rounded p-2 bg-gray-50">
+                      #{String(o.id).slice(-8)} - {o.customer?.name || "—"}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {rejectedOrders.length > 0 && (
+              <>
+                <h2 className="text-sm font-semibold mb-2">Rechazados</h2>
+                <ul className="text-sm space-y-1">
+                  {rejectedOrders.map((o) => (
+                    <li key={o.id} className="border rounded p-2 bg-gray-50">
+                      #{String(o.id).slice(-8)} - {o.customer?.name || "—"}
+                      {o.reason && (
+                        <span className="ml-2 text-red-600">({o.reason})</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
         )}
       </div>
