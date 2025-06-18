@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useProductStore } from '../../store/useProductStore';
 import { Product, ProductFormData } from '../../types/product';
 import { formatPrice } from '../../utils/formatters';
@@ -19,8 +18,6 @@ const Products: React.FC = () => {
     isLoading,
     error,
   } = useProductStore();
-
-  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
@@ -105,21 +102,13 @@ const Products: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Gestión de Productos</h1>
-          <div className="flex space-x-2">
-            <Button
-              onClick={() => setShowForm(true)}
-              className="flex items-center space-x-2"
-            >
-              <Plus className="h-5 w-5" />
-              <span>Agregar Producto</span>
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => navigate('/admin/update-stock')}
-            >
-              Actualizar Stock
-            </Button>
-          </div>
+          <Button
+            onClick={() => setShowForm(true)}
+            className="flex items-center space-x-2"
+          >
+            <Plus className="h-5 w-5" />
+            <span>Agregar Producto</span>
+          </Button>
         </div>
 
         {error && (

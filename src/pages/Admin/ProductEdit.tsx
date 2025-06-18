@@ -87,7 +87,6 @@ const ProductEdit: React.FC = () => {
           label="Stock"
           name="stock"
           type="number"
-          min={0}
           value={form.stock}
           onChange={handleChange}
           required

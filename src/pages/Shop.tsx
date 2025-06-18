@@ -32,9 +32,6 @@ const Shop: React.FC = () => {
       cake: 'Tortas',
       cookie: 'Galletas',
       dessert: 'Postres',
-      general: 'General',
-      sweet: 'Dulces',
-      special: 'Especiales',
     };
 
     const unique = Array.from(
