@@ -22,6 +22,14 @@ const AdminSidebar: React.FC = () => (
       Productos
     </NavLink>
     <NavLink
+      to="/admin/orders"
+      className={({ isActive }) =>
+        isActive ? 'block font-semibold text-amber-600' : 'block text-gray-700'
+      }
+    >
+      Pedidos
+    </NavLink>
+    <NavLink
       to="/admin/manage-orders"
       className={({ isActive }) =>
         isActive ? 'block font-semibold text-amber-600' : 'block text-gray-700'

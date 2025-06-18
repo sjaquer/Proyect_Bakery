@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Layout/Header';
 import Products from './pages/Admin/Products';
 import ProductEdit from './pages/Admin/ProductEdit';
+import UpdateStock from './pages/Admin/UpdateStock';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 import Shop from './pages/Shop';
 import Cart from './pages/Cart';
@@ -14,6 +15,7 @@ import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import Profile from './pages/Profile';
 import Dashboard from './pages/Admin/Dashboard';
+import OrderList from './pages/Admin/OrderList';
 import OrderManagement from './pages/Admin/OrderManagement';
 import { useAuthStore } from './store/useAuthStore';
 
@@ -156,6 +158,8 @@ function App() {
               <Route path="products" element={<Products />} />
               <Route path="products/create" element={<ProductEdit />} />
               <Route path="products/edit/:id" element={<ProductEdit />} />
+              <Route path="update-stock" element={<UpdateStock />} />
+              <Route path="orders" element={<OrderList />} />
               <Route path="manage-orders" element={<OrderManagement />} />
             </Route>
        </Routes>
