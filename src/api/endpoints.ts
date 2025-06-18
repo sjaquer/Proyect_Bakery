@@ -14,6 +14,7 @@ export const ENDPOINTS = {
   // Órdenes (cliente)
   orders:           '/orders',
   customerOrders:   (clientId: string) => `/orders?clientId=${clientId}`,
+  orderStatus:      (id: string) => `/orders/${id}/status`,
 
   // Órdenes (admin)
   adminOrders:     '/orders/all',
