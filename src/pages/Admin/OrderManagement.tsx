@@ -30,7 +30,9 @@ const OrderManagement: React.FC = () => {
   const columnColors: Record<string, string> = {
     pending: "bg-yellow-50",
     received: "bg-blue-50",
-    delivered: "bg-green-50",
+    preparing: "bg-orange-50",
+    ready: "bg-green-50",
+    delivered: "bg-gray-50",
   };
 
   useEffect(() => {
