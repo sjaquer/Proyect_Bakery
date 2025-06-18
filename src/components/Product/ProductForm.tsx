@@ -92,6 +92,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           label="Stock"
           name="stock"
           type="number"
+          min={0}
           value={formData.stock}
           onChange={handleInputChange}
           required
