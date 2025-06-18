@@ -21,4 +21,8 @@ export const updateOrderStatus = (
   orderId: string,
   status: OrderStatus,
   reason?: string
-) => api.patch(`${ENDPOINTS.orders}/${orderId}`, reason ? { status, reason } : { status });
+) =>
+  api.put(
+    `${ENDPOINTS.orderStatus(orderId)}`,
+    reason ? { status, reason } : { status }
+  );
