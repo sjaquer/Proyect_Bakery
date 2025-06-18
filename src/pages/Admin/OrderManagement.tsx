@@ -1,23 +1,26 @@
-// src/pages/Admin/OrderList.tsx
+// src/pages/Admin/OrderManagement.tsx
 
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useOrderStore } from "../../store/useOrderStore";
 import { useAuthStore } from "../../store/useAuthStore";
+import Button from "../../components/shared/Button";
 import WhatsAppIcon from "../../components/shared/WhatsAppIcon";
 import {
   formatPrice,
   formatOrderStatus,
   getStatusColor,
 } from "../../utils/formatters";
+import type { Order } from "../../types/order";
 import { ORDER_STATUSES } from "../../types/order";
 
-const OrderList: React.FC = () => {
+const OrderManagement: React.FC = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const {
     orders,
     fetchOrders,
+    updateOrderStatus,
     isLoading: loading,
     error,
   } = useOrderStore();
@@ -44,14 +47,46 @@ const OrderList: React.FC = () => {
     return () => window.removeEventListener("orders-updated", handler);
   }, [fetchOrders]);
 
-  // Página de solo lectura: las acciones de cambio de estado
-  // se manejan en la vista de gestión
+  const advanceStatus = async (orderId: string, current: string) => {
+    const idx = statuses.indexOf(current);
+    if (idx === -1 || idx === statuses.length - 1) return;
+    const next = statuses[idx + 1];
+    try {
+      await updateOrderStatus(orderId, next as Order["status"]);
+      await fetchOrders();
+      window.dispatchEvent(new CustomEvent("orders-updated"));
+    } catch (err: any) {
+      console.error("Error updating status", err);
+    }
+  };
+
+  const changeStatus = async (orderId: string, newStatus: Order["status"]) => {
+    try {
+      await updateOrderStatus(orderId, newStatus);
+      await fetchOrders();
+      window.dispatchEvent(new CustomEvent("orders-updated"));
+    } catch (err: any) {
+      console.error("Error updating status", err);
+    }
+  };
+
+  const rejectOrder = async (orderId: string) => {
+    const reason = window.prompt("¿Rechazar este pedido? Indica la razón:");
+    if (reason === null) return;
+    try {
+      await updateOrderStatus(orderId, "rejected", reason);
+      await fetchOrders();
+      window.dispatchEvent(new CustomEvent("orders-updated"));
+    } catch (err: any) {
+      console.error("Error rejecting order", err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">
-          Lista de Pedidos
+          Gestión de Pedidos
         </h1>
 
         {error && (
@@ -65,7 +100,7 @@ const OrderList: React.FC = () => {
         {loading ? (
           <p>Cargando pedidos…</p>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 overflow-x-auto pb-4">
+          <div className="flex gap-6 overflow-x-auto pb-4">
             {statuses.map((st) => (
               <div
                 key={st}
@@ -134,6 +169,44 @@ const OrderList: React.FC = () => {
                           >
                             {formatOrderStatus(o.status)}
                           </span>
+                          <div className="flex gap-2 flex-wrap justify-center">
+                            {o.status === "pending" && (
+                              <Button
+                                size="xs"
+                                variant="danger"
+                                onClick={() => rejectOrder(o.id)}
+                              >
+                                Rechazar
+                              </Button>
+                            )}
+                            <select
+                              className="text-xs border border-gray-300 rounded p-1"
+                              value={o.status}
+                              onChange={(e) =>
+                                changeStatus(
+                                  o.id,
+                                  e.target.value as Order["status"],
+                                )
+                              }
+                            >
+                              {ORDER_STATUSES.map((statusOpt) => (
+                                <option key={statusOpt} value={statusOpt}>
+                                  {formatOrderStatus(statusOpt)}
+                                </option>
+                              ))}
+                            </select>
+                            <Button
+                              size="xs"
+                              onClick={() => advanceStatus(o.id, o.status)}
+                              disabled={
+                                o.status === "delivered" ||
+                                o.status === "cancelled" ||
+                                o.status === "rejected"
+                              }
+                            >
+                              Avanzar
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -147,4 +220,4 @@ const OrderList: React.FC = () => {
   );
 };
 
-export default OrderList;
+export default OrderManagement;
