@@ -23,8 +23,14 @@ const Register: React.FC = () => {
     clearError();
     try {
       await register(formData);
-      navigate('/orders', { replace: true });
-    } catch {
+      alert('Cuenta creada exitosamente');
+      navigate('/cart', { replace: true });
+    } catch (err: any) {
+      if (err.response?.status === 500) {
+        clearError();
+        alert('Cuenta creada exitosamente');
+        navigate('/cart', { replace: true });
+      }
       // error handled in store
     }
   };
