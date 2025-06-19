@@ -136,6 +136,9 @@ const OrderManagement: React.FC = () => {
                         <div className="text-sm font-medium">
                           #{String(o.id).slice(-8)}
                         </div>
+                        <div className="text-xs text-gray-400">
+                          {formatDate(o.createdAt)}
+                        </div>
                         <div className="text-xs text-gray-500">
                           {o.customer?.name || o.customer?.id || "—"}
                         </div>
