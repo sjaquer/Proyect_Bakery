@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import api from '../api/axiosConfig';
 import { ENDPOINTS } from '../api/endpoints';
 import type { Customer } from '../types/order';
@@ -12,10 +13,12 @@ interface ProfileState {
   clearError: () => void;
 }
 
-export const useProfileStore = create<ProfileState>((set) => ({
-  profile: null,
-  isLoading: false,
-  error: null,
+export const useProfileStore = create<ProfileState>()(
+  persist(
+    (set) => ({
+      profile: null,
+      isLoading: false,
+      error: null,
 
       fetchProfile: async () => {
         set({ isLoading: true, error: null });
@@ -33,6 +36,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
             },
             isLoading: false,
           });
+          set({ profile: resp.data, isLoading: false });
         } catch (err: any) {
           set({
             error: err.response?.data?.message || err.message,
@@ -57,6 +61,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
             },
             isLoading: false,
           });
+          set({ profile: resp.data, isLoading: false });
         } catch (err: any) {
           set({
             error: err.response?.data?.message || err.message,
@@ -66,5 +71,11 @@ export const useProfileStore = create<ProfileState>((set) => ({
         }
       },
 
-  clearError: () => set({ error: null }),
-}));
+      clearError: () => set({ error: null }),
+    }),
+    {
+      name: 'profile-storage',
+      partialize: (state) => ({ profile: state.profile }),
+    }
+  )
+);
