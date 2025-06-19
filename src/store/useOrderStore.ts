@@ -45,29 +45,13 @@ export const useOrderStore = create<OrderState>((set) => ({
 
    // Usuario autenticado → llamo al backend
     try {
-      let ordersResp: Order[] = [];
       if (user.role === 'admin') {
-        const resp = await api.get<Order[]>(`${ENDPOINTS.adminOrders}?expand=user,customerInfo`);
-        ordersResp = resp.data;
+        const resp = await api.get<Order[]>(`${ENDPOINTS.adminOrders}?expand=user`);
+        set({ orders: resp.data.map(mapApiOrder), isLoading: false });
       } else {
         const resp = await getOrdersByUser(user.id);
-        ordersResp = resp.data;
+        set({ orders: resp.data.map(mapApiOrder), isLoading: false });
       }
-      let orders = ordersResp.map(mapApiOrder);
-      orders = await Promise.all(
-        orders.map(async (o) => {
-          if (!o.customer?.phone || !o.customer?.address) {
-            try {
-              const full = await getOrderById(o.id);
-              return mapApiOrder(full.data);
-            } catch {
-              return o;
-            }
-          }
-          return o;
-        })
-      );
-      set({ orders, isLoading: false });
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
