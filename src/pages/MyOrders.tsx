@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
-import { getOrdersByCustomer } from '../api/orderService';
+import { getOrdersByUser } from '../api/orderService';
 import { mapApiOrder } from '../utils/mapApiOrder';
 import type { Order } from '../types/order';
 import { formatPrice, formatDate, formatOrderStatus } from '../utils/formatters';
@@ -20,7 +20,7 @@ const MyOrders: React.FC = () => {
     }
     const fetchOrders = async () => {
       try {
-        const resp = await getOrdersByCustomer(user.id);
+        const resp = await getOrdersByUser(user.id);
         setOrders(resp.data.map(mapApiOrder));
       } catch (err: any) {
         setError(err.response?.data?.message || err.message);

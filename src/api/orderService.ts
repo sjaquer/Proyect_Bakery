@@ -8,8 +8,8 @@ export const getOrders = () =>
 export const getOrderById = (id: string) =>
   api.get<Order>(`${ENDPOINTS.orders}/${id}?expand=user`);
 
-export const getOrdersByCustomer = (customerId: string) =>
-  api.get<Order[]>(`${ENDPOINTS.customerOrders(customerId)}&expand=user`);
+export const getOrdersByUser = (userId: string) =>
+  api.get<Order[]>(`${ENDPOINTS.userOrders(userId)}&expand=user`);
 
 export const createOrder = (data: CheckoutData) =>
   api.post<Order>(ENDPOINTS.orders, data);

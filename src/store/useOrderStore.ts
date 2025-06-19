@@ -6,7 +6,7 @@ import {
   updateOrderStatus as apiUpdateStatus,
   deleteOrder as apiDeleteOrder,
   getOrderById,
-  getOrdersByCustomer,
+  getOrdersByUser,
 } from '../api/orderService';
 import { useAuthStore } from './useAuthStore';
 import { useProductStore } from './useProductStore';
@@ -49,7 +49,7 @@ export const useOrderStore = create<OrderState>((set) => ({
         const resp = await api.get<Order[]>(`${ENDPOINTS.adminOrders}?expand=user`);
         set({ orders: resp.data.map(mapApiOrder), isLoading: false });
       } else {
-        const resp = await getOrdersByCustomer(user.id);
+        const resp = await getOrdersByUser(user.id);
         set({ orders: resp.data.map(mapApiOrder), isLoading: false });
       }
     } catch (err: any) {
