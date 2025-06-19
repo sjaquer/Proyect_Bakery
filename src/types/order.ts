@@ -42,6 +42,9 @@ export interface Customer {
   id: string;
   name?: string;
   email?: string;
+  role?: string;
+  createdAt?: string;
+  updatedAt?: string;
   phone?: string;
   address?: string;
 }
