@@ -12,9 +12,9 @@ export const ENDPOINTS = {
   productById: (id: string) => `/products/${id}`,
 
   // Órdenes (cliente)
-  orders:           '/orders',
-  customerOrders:   (customerId: string) => `/orders?userId=${customerId}`,
-  orderStatus:      (id: string) => `/orders/${id}/status`,
+  orders: '/orders',
+  userOrders: (userId: string) => `/orders?userId=${userId}`,
+  orderStatus: (id: string) => `/orders/${id}/status`,
 
   // Órdenes (admin)
   adminOrders:     '/orders/all',
