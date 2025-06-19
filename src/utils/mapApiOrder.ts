@@ -25,6 +25,9 @@ export function mapApiOrder(apiOrder: any): Order {
     apiOrder.User ??
     apiOrder.customerInfo ??
     apiOrder.CustomerInfo ??
+    apiOrder.customer_info ??
+    apiOrder.Customer_Info ??
+    apiOrder.Customerinfo ??
     null;
 
   let customer = customerRaw
