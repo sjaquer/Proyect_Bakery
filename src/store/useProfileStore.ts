@@ -24,6 +24,18 @@ export const useProfileStore = create<ProfileState>()(
         set({ isLoading: true, error: null });
         try {
           const resp = await api.get<Customer>(ENDPOINTS.userProfile);
+          const data: any = resp.data;
+          set({
+            profile: {
+              ...resp.data,
+              phone: data.phone ?? data.Phone ?? '',
+              address: data.address ?? data.Address ?? '',
+              role: data.role ?? data.Role,
+              createdAt: data.createdAt ?? data.created_at,
+              updatedAt: data.updatedAt ?? data.updated_at,
+            },
+            isLoading: false,
+          });
           set({ profile: resp.data, isLoading: false });
         } catch (err: any) {
           set({
@@ -37,6 +49,18 @@ export const useProfileStore = create<ProfileState>()(
         set({ isLoading: true, error: null });
         try {
           const resp = await api.put<Customer>(ENDPOINTS.userProfile, data);
+          const resData: any = resp.data;
+          set({
+            profile: {
+              ...resp.data,
+              phone: resData.phone ?? resData.Phone ?? '',
+              address: resData.address ?? resData.Address ?? '',
+              role: resData.role ?? resData.Role,
+              createdAt: resData.createdAt ?? resData.created_at,
+              updatedAt: resData.updatedAt ?? resData.updated_at,
+            },
+            isLoading: false,
+          });
           set({ profile: resp.data, isLoading: false });
         } catch (err: any) {
           set({

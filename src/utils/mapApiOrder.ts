@@ -19,13 +19,23 @@ export function mapApiOrder(apiOrder: any): Order {
     },
   }));
 
-  const customer =
+  const customerRaw =
     apiOrder.customer ??
     apiOrder.Customer ??
     apiOrder.User ??
     apiOrder.customerInfo ??
     apiOrder.CustomerInfo ??
     null;
+  const customer = customerRaw
+    ? {
+        ...customerRaw,
+        phone: customerRaw.phone ?? customerRaw.Phone ?? '',
+        address: customerRaw.address ?? customerRaw.Address ?? '',
+        role: customerRaw.role ?? customerRaw.Role,
+        createdAt: customerRaw.createdAt ?? customerRaw.created_at,
+        updatedAt: customerRaw.updatedAt ?? customerRaw.updated_at,
+      }
+    : customerRaw;
 
   const createdAt = apiOrder.createdAt ?? apiOrder.created_at ?? '';
 
