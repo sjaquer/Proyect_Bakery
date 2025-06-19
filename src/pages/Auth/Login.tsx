@@ -28,6 +28,7 @@ const Login: React.FC = () => {
     clearError();
     try {
       await login(formData);
+      alert('Inicio de sesión exitoso');
       // Ahora sí navega al /admin (o la ruta que venías)
       navigate(from, { replace: true });
     } catch {
