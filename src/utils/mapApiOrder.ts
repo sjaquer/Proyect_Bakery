@@ -29,8 +29,25 @@ export function mapApiOrder(apiOrder: any): Order {
   const customer = customerRaw
     ? {
         ...customerRaw,
-        phone: customerRaw.phone ?? customerRaw.Phone ?? '',
-        address: customerRaw.address ?? customerRaw.Address ?? '',
+        name:
+          customerRaw.name ??
+          customerRaw.Name ??
+          customerRaw.fullName ??
+          customerRaw.full_name ??
+          '',
+        email: customerRaw.email ?? customerRaw.Email ?? '',
+        phone:
+          customerRaw.phone ??
+          customerRaw.Phone ??
+          customerRaw.phoneNumber ??
+          customerRaw.phone_number ??
+          '',
+        address:
+          customerRaw.address ??
+          customerRaw.Address ??
+          customerRaw.addressLine ??
+          customerRaw.address_line ??
+          '',
         role: customerRaw.role ?? customerRaw.Role,
         createdAt: customerRaw.createdAt ?? customerRaw.created_at,
         updatedAt: customerRaw.updatedAt ?? customerRaw.updated_at,

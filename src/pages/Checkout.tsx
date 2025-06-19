@@ -89,12 +89,22 @@ const Checkout: React.FC = () => {
       ...(formData.paymentMethod === 'cash'
         ? { cashAmount: Number(formData.cashAmount || 0) }
         : {}),
+      // Enviar la información de contacto tanto de manera anidada
+      // como en la raíz para maximizar compatibilidad con la API
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
     };
     payload.customerInfo = {
       name: formData.name,
       phone: formData.phone,
       email: formData.email,
       address: formData.address,
+      Name: formData.name,
+      Email: formData.email,
+      Phone: formData.phone,
+      Address: formData.address,
     };
 
  try {
