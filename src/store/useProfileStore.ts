@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import api from '../api/axiosConfig';
 import { ENDPOINTS } from '../api/endpoints';
 import type { Customer } from '../types/order';
@@ -12,37 +13,45 @@ interface ProfileState {
   clearError: () => void;
 }
 
-export const useProfileStore = create<ProfileState>((set) => ({
-  profile: null,
-  isLoading: false,
-  error: null,
+export const useProfileStore = create<ProfileState>()(
+  persist(
+    (set) => ({
+      profile: null,
+      isLoading: false,
+      error: null,
 
-  fetchProfile: async () => {
-    set({ isLoading: true, error: null });
-    try {
-      const resp = await api.get<Customer>(ENDPOINTS.userProfile);
-      set({ profile: resp.data, isLoading: false });
-    } catch (err: any) {
-      set({
-        error: err.response?.data?.message || err.message,
-        isLoading: false,
-      });
+      fetchProfile: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          const resp = await api.get<Customer>(ENDPOINTS.userProfile);
+          set({ profile: resp.data, isLoading: false });
+        } catch (err: any) {
+          set({
+            error: err.response?.data?.message || err.message,
+            isLoading: false,
+          });
+        }
+      },
+
+      updateProfile: async (data) => {
+        set({ isLoading: true, error: null });
+        try {
+          const resp = await api.put<Customer>(ENDPOINTS.userProfile, data);
+          set({ profile: resp.data, isLoading: false });
+        } catch (err: any) {
+          set({
+            error: err.response?.data?.message || err.message,
+            isLoading: false,
+          });
+          throw err;
+        }
+      },
+
+      clearError: () => set({ error: null }),
+    }),
+    {
+      name: 'profile-storage',
+      partialize: (state) => ({ profile: state.profile }),
     }
-  },
-
-  updateProfile: async (data) => {
-    set({ isLoading: true, error: null });
-    try {
-      const resp = await api.put<Customer>(ENDPOINTS.userProfile, data);
-      set({ profile: resp.data, isLoading: false });
-    } catch (err: any) {
-      set({
-        error: err.response?.data?.message || err.message,
-        isLoading: false,
-      });
-      throw err;
-    }
-  },
-
-  clearError: () => set({ error: null }),
-}));
+  )
+);
