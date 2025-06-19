@@ -38,10 +38,10 @@ export const useOrderStore = create<OrderState>((set) => ({
     const user = useAuthStore.getState().user;
 
     if (!user) {
-      const clientId = localStorage.getItem('guest_customerId');
-      if (clientId) {
+      const customerId = localStorage.getItem('guest_customerId');
+      if (customerId) {
         try {
-          const resp = await getOrdersByCustomer(clientId);
+          const resp = await getOrdersByCustomer(customerId);
           const orders = resp.data.map(mapApiOrder);
           set({ orders, isLoading: false });
           localStorage.setItem('guest_orders', JSON.stringify(orders));
@@ -61,10 +61,13 @@ export const useOrderStore = create<OrderState>((set) => ({
 
    // Usuario autenticado → llamo al backend
     try {
-      const endpoint =
-        user.role === 'admin' ? ENDPOINTS.adminOrders : ENDPOINTS.orders;
-      const resp = await api.get<Order[]>(`${endpoint}?expand=customer`);
-      set({ orders: resp.data.map(mapApiOrder), isLoading: false });
+      if (user.role === 'admin') {
+        const resp = await api.get<Order[]>(`${ENDPOINTS.adminOrders}?expand=customer`);
+        set({ orders: resp.data.map(mapApiOrder), isLoading: false });
+      } else {
+        const resp = await getOrdersByCustomer(user.id);
+        set({ orders: resp.data.map(mapApiOrder), isLoading: false });
+      }
     } catch (err: any) {
       set({
         error: err.response?.data?.message || err.message,
