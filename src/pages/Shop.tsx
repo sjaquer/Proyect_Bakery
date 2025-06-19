@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, Menu } from 'lucide-react';
 import { useProductStore } from '../store/useProductStore';
 import ProductCard from '../components/Product/ProductCard';
 import Input from '../components/shared/Input';
@@ -32,6 +32,9 @@ const Shop: React.FC = () => {
       cake: 'Tortas',
       cookie: 'Galletas',
       dessert: 'Postres',
+      sweet: 'Dulces',
+      special: 'Especial',
+      general: 'General',
     };
 
     const unique = Array.from(
@@ -44,7 +47,10 @@ const Shop: React.FC = () => {
 
     return [
       { value: 'all', label: 'Todos' },
-      ...unique.map(c => ({ value: c, label: labelMap[c] || c })),
+      ...unique.map(c => ({
+        value: c,
+        label: labelMap[c] || c.charAt(0).toUpperCase() + c.slice(1),
+      })),
     ];
   }, [products]);
 
@@ -82,11 +88,12 @@ const Shop: React.FC = () => {
               className="pl-10"
             />
           </div>
-          <div className="md:w-64">
+          <div className="md:w-64 relative">
+            <Menu className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 pointer-events-none" />
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className="w-full pl-10 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
             >
               {categories.map(category => (
                 <option key={category.value} value={category.value}>
