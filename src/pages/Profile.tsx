@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useProfileStore } from '../store/useProfileStore';
 import Input from '../components/shared/Input';
 import Button from '../components/shared/Button';
@@ -71,6 +72,11 @@ const Profile: React.FC = () => {
           <Button type="submit" loading={isLoading} className="w-full">
             Guardar cambios
           </Button>
+          <Link to="/orders" className="block mt-4">
+            <Button type="button" variant="secondary" className="w-full">
+              Ver mis pedidos
+            </Button>
+          </Link>
         </form>
       </div>
     </div>
