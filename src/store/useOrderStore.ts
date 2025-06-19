@@ -38,23 +38,7 @@ export const useOrderStore = create<OrderState>((set) => ({
     const user = useAuthStore.getState().user;
 
     if (!user) {
-      const customerId = localStorage.getItem('guest_customerId');
-      if (customerId) {
-        try {
-          const resp = await getOrdersByCustomer(customerId);
-          const orders = resp.data.map(mapApiOrder);
-          set({ orders, isLoading: false });
-          localStorage.setItem('guest_orders', JSON.stringify(orders));
-          return;
-        } catch {
-          // ignore and fallback to localStorage
-        }
-      }
-
-      const raw = localStorage.getItem('guest_orders');
-      const stored: any[] = raw ? JSON.parse(raw) : [];
-      const guestOrders: Order[] = stored.map(mapApiOrder);
-      set({ orders: guestOrders, isLoading: false });
+      set({ orders: [], isLoading: false });
       return;
     }
 
@@ -91,31 +75,14 @@ export const useOrderStore = create<OrderState>((set) => ({
         orders: [order, ...st.orders],
         isLoading: false
       }));
-
       // Update stock locally based on ordered items
       const adjustStock = useProductStore.getState().adjustStock;
-      adjustStock(data.items.map(i => ({
-        productId: Number(i.productId),
-        quantity: i.quantity
-      })));
-
-      // Si no hay usuario autenticado, persistir en localStorage
-      const user = useAuthStore.getState().user;
-      if (!user) {
-        const raw = localStorage.getItem('guest_orders');
-        const prev: Order[] = raw ? JSON.parse(raw) : [];
-        localStorage.setItem(
-          'guest_orders',
-          JSON.stringify([order, ...prev])
-        );
-        if (order.customer && !localStorage.getItem('guest_customerId')) {
-          localStorage.setItem(
-            'guest_customerId',
-            String(order.customer.id)
-          );
-        }
-      }
-
+      adjustStock(
+        data.items.map(i => ({
+          productId: Number(i.productId),
+          quantity: i.quantity,
+        }))
+      );
       window.dispatchEvent(new CustomEvent('orders-updated'));
 
       return order;
@@ -164,21 +131,12 @@ export const useOrderStore = create<OrderState>((set) => ({
 
   deleteOrder: async (id: string) => {
     set({ isLoading: true, error: null });
-    const user = useAuthStore.getState().user;
     try {
       await apiDeleteOrder(id);
       set((st) => ({
         orders: st.orders.filter((o) => o.id !== id),
         isLoading: false,
       }));
-      if (!user) {
-        const raw = localStorage.getItem('guest_orders');
-        const prev: Order[] = raw ? JSON.parse(raw) : [];
-        localStorage.setItem(
-          'guest_orders',
-          JSON.stringify(prev.filter((o) => o.id !== id))
-        );
-      }
       window.dispatchEvent(new CustomEvent('orders-updated'));
     } catch (err: any) {
       set({
