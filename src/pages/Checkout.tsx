@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/useCartStore';
 import { useOrderStore } from '../store/useOrderStore';
+import { useAuthStore } from '../store/useAuthStore';
+import { getUserProfile } from '../api/userService';
 import { formatPrice } from '../utils/formatters';
 import Input from '../components/shared/Input';
 import Button from '../components/shared/Button';
@@ -19,17 +21,38 @@ const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const { items, total, clearCart } = useCartStore();
   const { createOrder, error, isLoading } = useOrderStore();
+  const { user } = useAuthStore();
 
-  const [formData, setFormData] = useState<FormData>(() => {
-    const saved = JSON.parse(localStorage.getItem('guest_info') || '{}');
-    return {
-      name: saved.name || '',
-      phone: saved.phone || '',
-      email: saved.email || '',
-      address: saved.address || '',
-      paymentMethod: (saved.paymentMethod as 'yape' | 'cash') || '',
-      cashAmount: saved.cashAmount || '',
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { replace: true });
+      return;
+    }
+    const load = async () => {
+      try {
+        const resp = await getUserProfile();
+        const info = resp.data;
+        setFormData(prev => ({
+          ...prev,
+          name: info.name || '',
+          phone: info.phone || '',
+          email: info.email || '',
+          address: info.address || '',
+        }));
+      } catch {
+        // ignore profile errors
+      }
     };
+    load();
+  }, [user, navigate]);
+
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    paymentMethod: '',
+    cashAmount: '',
   });
 
 
@@ -72,14 +95,7 @@ const Checkout: React.FC = () => {
  try {
       const result = await createOrder(payload);
 
-      // Guardar info del formulario para siguientes compras
-      localStorage.setItem('guest_info', JSON.stringify(formData));
-
       clearCart();
-
-      if (result.Customer) {
-        localStorage.setItem('guest_customerId', String(result.Customer.id));
-      }
 
       navigate('/orders', { state: { newOrder: result }, replace: true });
 
