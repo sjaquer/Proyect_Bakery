@@ -43,3 +43,10 @@ export const getStatusColor = (status: string): string => {
   };
   return colorMap[status] || 'bg-gray-100 text-gray-800';
 };
+export const formatPaymentMethod = (method: string): string => {
+  const map: Record<string, string> = {
+    yape: 'Yape',
+    cash: 'Efectivo',
+  };
+  return map[method] || method;
+};
