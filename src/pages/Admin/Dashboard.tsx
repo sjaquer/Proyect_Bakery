@@ -20,7 +20,9 @@ const Dashboard: React.FC = () => {
     return () => window.removeEventListener('orders-updated', handler);
   }, [fetchOrders]);
 
-  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+  const totalRevenue = orders
+    .filter((order) => order.status === 'delivered')
+    .reduce((sum, order) => sum + (order.total ?? 0), 0);
   const pendingOrders = orders.filter(order => order.status === 'pending').length;
   const outOfStockProducts = products.filter(product => !product.inStock).length;
 
