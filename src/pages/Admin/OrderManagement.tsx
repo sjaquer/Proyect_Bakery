@@ -6,11 +6,13 @@ import { useOrderStore } from "../../store/useOrderStore";
 import { useAuthStore } from "../../store/useAuthStore";
 import Button from "../../components/shared/Button";
 import WhatsAppIcon from "../../components/shared/WhatsAppIcon";
+import PaymentMethodIcon from "../../components/shared/PaymentMethodIcon";
 import {
   formatPrice,
   formatDate,
   formatOrderStatus,
   getStatusColor,
+  formatPaymentMethod,
 } from "../../utils/formatters";
 import type { Order } from "../../types/order";
 import { ORDER_STATUSES } from "../../types/order";
@@ -161,11 +163,17 @@ const OrderManagement: React.FC = () => {
                           {o.customer?.address || "—"}
                         </div>
                         {o.paymentMethod && (
-                          <div className="text-xs text-gray-500">
-                            Pago: {o.paymentMethod}
-                            {o.paymentMethod === "cash" && o.cashAmount
-                              ? ` (S/ ${o.cashAmount})`
-                              : ""}
+                          <div className="flex items-center gap-1 text-xs text-gray-500">
+                            <PaymentMethodIcon
+                              method={o.paymentMethod}
+                              className="w-4 h-4 inline"
+                            />
+                            <span>
+                              Pago: {formatPaymentMethod(o.paymentMethod)}
+                              {o.paymentMethod === "cash" && o.cashAmount
+                                ? ` (S/ ${o.cashAmount})`
+                                : ""}
+                            </span>
                           </div>
                         )}
                         <ul className="text-xs text-gray-700 list-disc pl-4">
