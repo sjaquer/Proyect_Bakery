@@ -8,6 +8,7 @@ import Button from "../../components/shared/Button";
 import WhatsAppIcon from "../../components/shared/WhatsAppIcon";
 import {
   formatPrice,
+  formatDate,
   formatOrderStatus,
   getStatusColor,
 } from "../../utils/formatters";
