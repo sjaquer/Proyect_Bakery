@@ -26,7 +26,8 @@ export function mapApiOrder(apiOrder: any): Order {
     apiOrder.customerInfo ??
     apiOrder.CustomerInfo ??
     null;
-  const customer = customerRaw
+
+  let customer = customerRaw
     ? {
         ...customerRaw,
         name:
@@ -52,7 +53,34 @@ export function mapApiOrder(apiOrder: any): Order {
         createdAt: customerRaw.createdAt ?? customerRaw.created_at,
         updatedAt: customerRaw.updatedAt ?? customerRaw.updated_at,
       }
-    : customerRaw;
+    : ({} as any);
+
+  // If some fields are missing, try root-level aliases
+  customer = {
+    ...customer,
+    name:
+      customer.name ??
+      apiOrder.name ??
+      apiOrder.Name ??
+      apiOrder.fullName ??
+      apiOrder.full_name ??
+      '',
+    email: customer.email ?? apiOrder.email ?? apiOrder.Email ?? '',
+    phone:
+      customer.phone ??
+      apiOrder.phone ??
+      apiOrder.Phone ??
+      apiOrder.phoneNumber ??
+      apiOrder.phone_number ??
+      '',
+    address:
+      customer.address ??
+      apiOrder.address ??
+      apiOrder.Address ??
+      apiOrder.addressLine ??
+      apiOrder.address_line ??
+      '',
+  };
 
   const createdAt = apiOrder.createdAt ?? apiOrder.created_at ?? '';
 
