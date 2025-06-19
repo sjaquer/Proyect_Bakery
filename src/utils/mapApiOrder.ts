@@ -22,6 +22,7 @@ export function mapApiOrder(apiOrder: any): Order {
   const customer =
     apiOrder.customer ??
     apiOrder.Customer ??
+    apiOrder.User ??
     apiOrder.customerInfo ??
     apiOrder.CustomerInfo ??
     null;

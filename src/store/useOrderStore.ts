@@ -46,7 +46,7 @@ export const useOrderStore = create<OrderState>((set) => ({
    // Usuario autenticado → llamo al backend
     try {
       if (user.role === 'admin') {
-        const resp = await api.get<Order[]>(`${ENDPOINTS.adminOrders}?expand=customer`);
+        const resp = await api.get<Order[]>(`${ENDPOINTS.adminOrders}?expand=user`);
         set({ orders: resp.data.map(mapApiOrder), isLoading: false });
       } else {
         const resp = await getOrdersByCustomer(user.id);

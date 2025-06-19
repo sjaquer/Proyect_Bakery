@@ -3,13 +3,13 @@ import { ENDPOINTS } from './endpoints';
 import type { Order, OrderStatus, CheckoutData } from '../types/order';
 
 export const getOrders = () =>
-  api.get<Order[]>(`${ENDPOINTS.orders}?expand=customer`);
+  api.get<Order[]>(`${ENDPOINTS.orders}?expand=user`);
 
 export const getOrderById = (id: string) =>
-  api.get<Order>(`${ENDPOINTS.orders}/${id}?expand=customer`);
+  api.get<Order>(`${ENDPOINTS.orders}/${id}?expand=user`);
 
 export const getOrdersByCustomer = (customerId: string) =>
-  api.get<Order[]>(`${ENDPOINTS.customerOrders(customerId)}&expand=customer`);
+  api.get<Order[]>(`${ENDPOINTS.customerOrders(customerId)}&expand=user`);
 
 export const createOrder = (data: CheckoutData) =>
   api.post<Order>(ENDPOINTS.orders, data);
