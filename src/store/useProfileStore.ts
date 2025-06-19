@@ -8,7 +8,7 @@ interface ProfileState {
   isLoading: boolean;
   error: string | null;
   fetchProfile: () => Promise<void>;
-  updateProfile: (data: { name: string; phone: string; address: string }) => Promise<void>;
+  updateProfile: (data: { name: string; email: string; phone: string; address: string }) => Promise<void>;
   clearError: () => void;
 }
 
