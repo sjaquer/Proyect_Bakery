@@ -13,7 +13,7 @@ export const ENDPOINTS = {
 
   // Órdenes (cliente)
   orders:           '/orders',
-  customerOrders:   (customerId: string) => `/orders?customerId=${customerId}`,
+  customerOrders:   (customerId: string) => `/orders?userId=${customerId}`,
   orderStatus:      (id: string) => `/orders/${id}/status`,
 
   // Órdenes (admin)

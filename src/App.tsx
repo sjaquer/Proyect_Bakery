@@ -97,14 +97,49 @@ function App() {
   // Subscribe to order update events via SSE only when logged in
   useEffect(() => {
     if (!user) return;
-    const es = new EventSource('/api/orders/stream');
-    const handler = () => {
-      window.dispatchEvent(new CustomEvent('orders-updated'));
-    };
-    es.addEventListener('orders-updated', handler);
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const controller = new AbortController();
+
+    fetch('/api/orders/stream', {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: controller.signal,
+    })
+      .then((resp) => {
+        if (!resp.body) return;
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let buf = '';
+        let eventName = '';
+        const read = () => {
+          reader.read().then(({ done, value }) => {
+            if (done) return;
+            buf += decoder.decode(value, { stream: true });
+            const lines = buf.split(/\r?\n/);
+            buf = lines.pop() || '';
+            for (const line of lines) {
+              if (line.startsWith('event:')) {
+                eventName = line.slice(6).trim();
+              } else if (line.startsWith('data:')) {
+                if (eventName === 'orders-updated') {
+                  window.dispatchEvent(new CustomEvent('orders-updated'));
+                }
+              } else if (line === '') {
+                eventName = '';
+              }
+            }
+            read();
+          });
+        };
+        read();
+      })
+      .catch((err) => {
+        console.error('SSE connection error', err);
+      });
+
     return () => {
-      es.removeEventListener('orders-updated', handler);
-      es.close();
+      controller.abort();
     };
   }, [user]);
 
