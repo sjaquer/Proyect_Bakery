@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/useCartStore';
 import { useOrderStore } from '../store/useOrderStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { getUserProfile } from '../api/userService';
+import { useProfileStore } from '../store/useProfileStore';
 import { formatPrice } from '../utils/formatters';
 import Input from '../components/shared/Input';
 import Button from '../components/shared/Button';
@@ -22,6 +22,7 @@ const Checkout: React.FC = () => {
   const { items, total, clearCart } = useCartStore();
   const { createOrder, error, isLoading } = useOrderStore();
   const { user } = useAuthStore();
+  const { profile, fetchProfile } = useProfileStore();
 
   useEffect(() => {
     if (!user) {
@@ -30,21 +31,25 @@ const Checkout: React.FC = () => {
     }
     const load = async () => {
       try {
-        const resp = await getUserProfile();
-        const info = resp.data;
-        setFormData(prev => ({
-          ...prev,
-          name: info.name || '',
-          phone: info.phone || '',
-          email: info.email || '',
-          address: info.address || '',
-        }));
+        if (!profile) {
+          await fetchProfile();
+        }
+        const info = useProfileStore.getState().profile;
+        if (info) {
+          setFormData(prev => ({
+            ...prev,
+            name: info.name || '',
+            phone: info.phone || '',
+            email: info.email || '',
+            address: info.address || '',
+          }));
+        }
       } catch {
         // ignore profile errors
       }
     };
     load();
-  }, [user, navigate]);
+  }, [user, navigate, profile, fetchProfile]);
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
