@@ -6,7 +6,12 @@ import Button from '../components/shared/Button';
 
 const Profile: React.FC = () => {
   const { profile, fetchProfile, updateProfile, isLoading, error, clearError } = useProfileStore();
-  const [formData, setFormData] = useState({ name: '', phone: '', address: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+  });
 
   useEffect(() => {
     fetchProfile();
@@ -16,6 +21,7 @@ const Profile: React.FC = () => {
     if (profile) {
       setFormData({
         name: profile.name || '',
+        email: profile.email || '',
         phone: profile.phone || '',
         address: profile.address || '',
       });
@@ -54,6 +60,14 @@ const Profile: React.FC = () => {
             label="Teléfono"
             name="phone"
             value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+          <Input
+            label="Email"
+            name="email"
+            type="email"
+            value={formData.email}
             onChange={handleChange}
             required
           />
