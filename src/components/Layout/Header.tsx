@@ -68,7 +68,7 @@ const Header: React.FC = () => {
               to="/cart"
               className="relative p-2 text-gray-700 hover:text-amber-600 transition-colors duration-200"
             >
-              <ShoppingCart className="h-6 w-6" />
+              <ShoppingCart id="cart-icon" className="h-6 w-6" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {cartCount}
@@ -108,7 +108,7 @@ const Header: React.FC = () => {
               to="/cart"
               className="relative p-2 text-gray-700 hover:text-amber-600 transition-colors duration-200"
             >
-              <ShoppingCart className="h-6 w-6" />
+              <ShoppingCart id="cart-icon-mobile" className="h-6 w-6" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {cartCount}
@@ -169,7 +169,7 @@ const Header: React.FC = () => {
                   className="flex items-center space-x-2 text-gray-700 hover:text-amber-600 transition-colors duration-200"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <ShoppingCart className="h-5 w-5" />
+                  <ShoppingCart id="cart-icon-menu" className="h-5 w-5" />
                   <span>Carrito ({cartCount})</span>
                 </Link>
 

@@ -45,7 +45,10 @@ const Cart: React.FC = () => {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="divide-y divide-gray-200">
             {items.map((item) => (
-              <div key={item.id} className="p-6 flex items-center space-x-4">
+              <div
+                key={item.id}
+                className="p-4 sm:p-6 grid grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_auto_auto_auto] gap-4 items-center"
+              >
                 <img
                   src={item.imageUrl || placeholderImg}
                   alt={item.name}
@@ -57,7 +60,7 @@ const Cart: React.FC = () => {
                   }}
                 />
                 
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0">
                   <h3 className="text-lg font-medium text-gray-900">{item.name}</h3>
                   <p className="text-lg font-semibold text-amber-600">
                     {formatPrice(item.price)}
@@ -85,7 +88,7 @@ const Cart: React.FC = () => {
                   </button>
                 </div>
 
-                <div className="text-right">
+                <div className="text-right col-span-2 sm:col-auto">
                   <p className="text-lg font-semibold text-gray-900">
                     {formatPrice(item.price * item.quantity)}
                   </p>
@@ -93,7 +96,7 @@ const Cart: React.FC = () => {
 
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors justify-self-end"
                 >
                   <Trash2 className="h-5 w-5" />
                 </button>
