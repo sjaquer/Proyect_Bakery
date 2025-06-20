@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Plus} from 'lucide-react';
 import { Product } from '../../types/product';
 import { useCartStore } from '../../store/useCartStore';
@@ -12,6 +12,7 @@ import placeholderImg from '../../utils/placeholder';
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
    const { addItem } = useCartStore();
+   const imgRef = useRef<HTMLImageElement>(null);
 
   const handleAddToCart = () => {
       addItem({
@@ -21,12 +22,49 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         imageUrl: product.imageUrl,
         price: product.price,
       });
+
+      const img = imgRef.current;
+      const cartIcon =
+        document.getElementById('cart-icon') ||
+        document.getElementById('cart-icon-mobile') ||
+        document.getElementById('cart-icon-menu');
+
+      if (img && cartIcon) {
+        const imgRect = img.getBoundingClientRect();
+        const cartRect = cartIcon.getBoundingClientRect();
+
+        const clone = img.cloneNode(true) as HTMLImageElement;
+        clone.style.position = 'fixed';
+        clone.style.left = `${imgRect.left}px`;
+        clone.style.top = `${imgRect.top}px`;
+        clone.style.width = `${imgRect.width}px`;
+        clone.style.height = `${imgRect.height}px`;
+        clone.style.transition = 'transform 0.7s ease-in-out, opacity 0.7s';
+        clone.style.zIndex = '50';
+        clone.style.pointerEvents = 'none';
+        document.body.appendChild(clone);
+
+        const translateX =
+          cartRect.left + cartRect.width / 2 - (imgRect.left + imgRect.width / 2);
+        const translateY =
+          cartRect.top + cartRect.height / 2 - (imgRect.top + imgRect.height / 2);
+
+        requestAnimationFrame(() => {
+          clone.style.transform = `translate(${translateX}px, ${translateY}px) scale(0.1)`;
+          clone.style.opacity = '0';
+        });
+
+        clone.addEventListener('transitionend', () => {
+          clone.remove();
+        });
+      }
    };
 
   return (
      <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
        <div className="relative overflow-hidden">
         <img
+          ref={imgRef}
           src={product.imageUrl || placeholderImg}
           alt={product.name}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
