@@ -97,7 +97,7 @@ function App() {
   // Subscribe to order update events via SSE only when logged in
   useEffect(() => {
     if (!user) return;
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) return;
 
     const controller = new AbortController();

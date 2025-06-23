@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_URL =
   (import.meta.env.VITE_API_URL as string | undefined) ||
   'http://localhost:3000';
-console.log('🔎 [axiosConfig] baseURL =', API_URL);
+
 
 const base = API_URL.replace(/\/$/, '');
 // Avoid duplicating the `/api` segment if provided in VITE_API_URL
@@ -18,7 +18,7 @@ const api = axios.create({
 
 // **INTERCEPTOR** para mandar siempre el token en Authorization
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -29,9 +29,9 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (resp) => resp,
   (error) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (error.response?.status === 401 && token) {
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
       window.location.href = '/login';
     }
     return Promise.reject(error);

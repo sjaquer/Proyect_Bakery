@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import DOMPurify from 'dompurify';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
 import { useProductStore } from '../../store/useProductStore';
 import { Product, ProductFormData } from '../../types/product';
@@ -157,7 +158,7 @@ const Products: React.FC = () => {
                   <img
                     className="h-10 w-10 rounded object-cover"
                     src={product.imageUrl || placeholderImg}
-                    alt={product.name}
+                    alt={DOMPurify.sanitize(product.name)}
                     onError={(e) => {
                       const target = e.currentTarget;
                       target.onerror = null;
@@ -165,10 +166,18 @@ const Products: React.FC = () => {
                     }}
                   />
                   <div className="ml-4 flex-1">
-                    <p className="font-medium text-gray-900">{product.name}</p>
-                    <p className="text-sm text-gray-500 line-clamp-1">
-                      {product.description}
-                    </p>
+                    <p
+                      className="font-medium text-gray-900"
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(product.name),
+                      }}
+                    />
+                    <p
+                      className="text-sm text-gray-500 line-clamp-1"
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(product.description),
+                      }}
+                    />
                   </div>
                   <button
                     onClick={() => handleEdit(product)}
@@ -268,7 +277,7 @@ const Products: React.FC = () => {
                           <img
                             className="h-10 w-10 rounded object-cover"
                             src={product.imageUrl || placeholderImg}
-                            alt={product.name}
+                            alt={DOMPurify.sanitize(product.name)}
                             onError={(e) => {
                               const target = e.currentTarget;
                               target.onerror = null;
@@ -276,12 +285,18 @@ const Products: React.FC = () => {
                             }}
                           />
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
-                              {product.name}
-                            </div>
-                            <div className="text-sm text-gray-500 line-clamp-1">
-                              {product.description}
-                            </div>
+                            <div
+                              className="text-sm font-medium text-gray-900"
+                              dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(product.name),
+                              }}
+                            />
+                            <div
+                              className="text-sm text-gray-500 line-clamp-1"
+                              dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(product.description),
+                              }}
+                            />
                           </div>
                         </div>
                       </td>

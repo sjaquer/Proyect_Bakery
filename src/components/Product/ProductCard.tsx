@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import DOMPurify from 'dompurify';
 import { Plus} from 'lucide-react';
 import { Product } from '../../types/product';
 import { useCartStore } from '../../store/useCartStore';
@@ -66,7 +67,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <img
           ref={imgRef}
           src={product.imageUrl || placeholderImg}
-          alt={product.name}
+          alt={DOMPurify.sanitize(product.name)}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           onError={(e) => {
             const target = e.currentTarget;
@@ -84,17 +85,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       
       <div className="p-6">
          <div className="flex items-start justify-between mb-2">
-           <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
-             {product.name}
-           </h3>
+           <h3
+             className="text-lg font-semibold text-gray-900 line-clamp-2"
+             dangerouslySetInnerHTML={{
+               __html: DOMPurify.sanitize(product.name),
+             }}
+           />
            <span className="text-xl font-bold text-amber-600 ml-2">
              {formatPrice(product.price)}
            </span>
          </div>
          
-         <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-           {product.description}
-         </p>
+         <p
+           className="text-gray-600 text-sm mb-3 line-clamp-2"
+           dangerouslySetInnerHTML={{
+             __html: DOMPurify.sanitize(product.description),
+           }}
+         />
          
          <div className="flex items-center justify-between">
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 capitalize">
