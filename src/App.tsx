@@ -31,7 +31,7 @@ const HomePage: React.FC = () => {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src="https://files.catbox.moe/keh8ur.mp4" type="video/mp4" />
+          <source src="https://files.catbox.moe/bzfqeb.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 flex items-center justify-center h-full">
