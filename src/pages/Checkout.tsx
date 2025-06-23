@@ -80,6 +80,16 @@ const Checkout: React.FC = () => {
       alert('Selecciona un método de pago');
       return;
     }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{7,}$/;
+    if (!emailRegex.test(formData.email)) {
+      alert('Correo inválido');
+      return;
+    }
+    if (!phoneRegex.test(formData.phone)) {
+      alert('Teléfono inválido');
+      return;
+    }
     const payload: any = {
       items: items.map(item => ({
         productId: item.id,
