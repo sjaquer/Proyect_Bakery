@@ -199,7 +199,7 @@ const Header: React.FC = () => {
                   <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button variant="primary" size="sm" className="flex items-center space-x-1">
                       <User className="h-4 w-4" />
-                      <span>Acceso admin</span>
+                      <span>Iniciar Sesión</span>
                     </Button>
                   </Link>
                 )}
