@@ -23,16 +23,25 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+      <div className="relative h-[70vh] overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="relative z-10 flex items-center justify-center h-full">
+          <div className="text-center px-4">
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
               Recién horneado
-              <span className="text-amber-600 block">cada día</span>
+              <span className="text-amber-200 block">cada día</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Desde panes artesanales hasta postres deliciosos, descubre nuestra selección
-              elaborada con ingredientes de primera calidad y técnicas tradicionales.
+            <p className="text-xl text-gray-100 mb-8 max-w-2xl mx-auto">
+              Desde panes artesanales hasta postres deliciosos, descubre nuestra selección elaborada con ingredientes de primera calidad y técnicas tradicionales.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
@@ -47,13 +56,19 @@ const HomePage: React.FC = () => {
               >
                 Ver menú
               </a>
+              <a
+                href="#features"
+                className="inline-flex items-center justify-center px-8 py-3 border-2 border-amber-600 text-base font-medium rounded-lg text-amber-600 bg-transparent hover:bg-amber-600 hover:text-white transition-colors duration-200"
+              >
+                Conócenos
+              </a>
             </div>
           </div>
         </div>
       </div>
 
       {/* Features Section */}
-      <div className="py-16 bg-white">
+      <div id="features" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">¿Por qué elegirnos?</h2>
