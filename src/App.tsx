@@ -19,11 +19,12 @@ import Dashboard from './pages/Admin/Dashboard';
 import OrderManagement from './pages/Admin/OrderManagement';
 import { Phone, MapPin, Mail } from 'lucide-react';
 import { useAuthStore } from './store/useAuthStore';
+import { useThemeStore } from './store/useThemeStore';
 
 
 const HomePage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 dark:from-gray-800 dark:to-gray-900">
       {/* Hero Section */}
       <div className="relative h-[70vh] overflow-hidden">
         <video
@@ -70,7 +71,7 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Contact Section */}
-      <div id="features" className="py-16 bg-white">
+      <div id="features" className="py-16 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Contáctanos</h2>
@@ -114,6 +115,15 @@ const HomePage: React.FC = () => {
 
 function App() {
   const { user } = useAuthStore();
+  const { theme } = useThemeStore();
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   // Subscribe to order update events via SSE only when logged in
   useEffect(() => {
@@ -166,7 +176,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Header />
         <main>
           <Routes>
@@ -217,7 +227,7 @@ function App() {
                 <ProtectedRoute requireAdmin>
                   <div className="flex">
                     <AdminSidebar />
-                    <div className="flex-1 p-6 bg-gray-50">
+                    <div className="flex-1 p-6 bg-gray-50 dark:bg-gray-900">
                       <Outlet />
                     </div>
                   </div>

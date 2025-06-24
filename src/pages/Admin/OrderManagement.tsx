@@ -35,7 +35,7 @@ const OrderManagement: React.FC = () => {
     received: "bg-blue-50",
     preparing: "bg-orange-50",
     ready: "bg-green-50",
-    delivered: "bg-gray-50",
+    delivered: "bg-gray-50 dark:bg-gray-800",
   };
 
   useEffect(() => {
@@ -102,7 +102,7 @@ const OrderManagement: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">
           Gestión de Pedidos
@@ -134,7 +134,7 @@ const OrderManagement: React.FC = () => {
                     .map((o) => (
                       <div
                         key={o.id}
-                        className="bg-gray-50 rounded p-3 shadow border space-y-2"
+                        className="bg-gray-50 dark:bg-gray-800 rounded p-3 shadow border space-y-2"
                       >
                         <div className="text-sm font-medium">
                           #{String(o.id).slice(-8)}
@@ -252,7 +252,7 @@ const OrderManagement: React.FC = () => {
                 <h2 className="text-sm font-semibold mb-2">Cancelados</h2>
                 <ul className="text-sm space-y-1 mb-4">
                   {cancelledOrders.map((o) => (
-                    <li key={o.id} className="border rounded p-2 bg-gray-50">
+                    <li key={o.id} className="border rounded p-2 bg-gray-50 dark:bg-gray-800">
                       #{String(o.id).slice(-8)} - {o.customer?.name || "—"}
                     </li>
                   ))}
@@ -264,7 +264,7 @@ const OrderManagement: React.FC = () => {
                 <h2 className="text-sm font-semibold mb-2">Rechazados</h2>
                 <ul className="text-sm space-y-1">
                   {rejectedOrders.map((o) => (
-                    <li key={o.id} className="border rounded p-2 bg-gray-50">
+                    <li key={o.id} className="border rounded p-2 bg-gray-50 dark:bg-gray-800">
                       #{String(o.id).slice(-8)} - {o.customer?.name || "—"}
                       {o.reason && (
                         <span className="ml-2 text-red-600">({o.reason})</span>

@@ -11,7 +11,7 @@ const Cart: React.FC = () => {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-amber-50 py-12">
+      <div className="min-h-screen bg-amber-50 dark:bg-gray-900 py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <ShoppingBag className="mx-auto h-16 w-16 text-gray-400 mb-4" />
@@ -29,7 +29,7 @@ const Cart: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-amber-50 py-8">
+    <div className="min-h-screen bg-amber-50 dark:bg-gray-900 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Carrito de compras</h1>
@@ -42,7 +42,7 @@ const Cart: React.FC = () => {
           </Button>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
           <div className="divide-y divide-gray-200">
             {items.map((item) => (
               <div
@@ -104,7 +104,7 @@ const Cart: React.FC = () => {
             ))}
           </div>
 
-          <div className="bg-gray-50 px-6 py-4">
+          <div className="bg-gray-50 dark:bg-gray-700 px-6 py-4">
             <div className="flex items-center justify-between text-xl font-semibold text-gray-900">
               <span>Total:</span>
               <span>{formatPrice(total)}</span>

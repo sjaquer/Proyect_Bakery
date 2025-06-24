@@ -103,7 +103,7 @@ const Products: React.FC = () => {
 
   if (showStockForm) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-800 dark:bg-gray-900 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Actualizar Stock</h1>
@@ -111,7 +111,7 @@ const Products: React.FC = () => {
               Cancelar
             </Button>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
             <StockUpdateForm
               products={products}
               onSubmit={handleBulkStockUpdate}
@@ -125,7 +125,7 @@ const Products: React.FC = () => {
 
   if (showForm) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-800 dark:bg-gray-900 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-3xl font-bold text-gray-900">
@@ -135,7 +135,7 @@ const Products: React.FC = () => {
               Cancelar
             </Button>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
             <ProductForm
               initialData={editingProduct || undefined}
               onSubmit={editingProduct ? handleUpdateProduct : handleCreateProduct}
@@ -149,7 +149,7 @@ const Products: React.FC = () => {
   }
 
    return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-800 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Gestión de Productos</h1>
@@ -177,7 +177,7 @@ const Products: React.FC = () => {
         )}
 
         {/* Search */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Input
@@ -195,7 +195,7 @@ const Products: React.FC = () => {
             [...Array(5)].map((_, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow p-4 animate-pulse"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 animate-pulse"
               >
                 <div className="flex items-center space-x-4">
                   <div className="h-10 w-10 bg-gray-200 rounded" />
@@ -210,7 +210,7 @@ const Products: React.FC = () => {
             filteredProducts.map((product) => (
               <div
                 key={product.id}
-                className="bg-white rounded-lg shadow p-4 space-y-2"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 space-y-2"
               >
                 <div className="flex items-center">
                   <img
@@ -282,10 +282,10 @@ const Products: React.FC = () => {
         </div>
 
         {/* Products Table */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden hidden md:block">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hidden md:block">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Producto
@@ -307,7 +307,7 @@ const Products: React.FC = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200">
                 {isLoading ? (
                   [...Array(5)].map((_, index) => (
                     <tr key={index} className="animate-pulse">
@@ -342,7 +342,7 @@ const Products: React.FC = () => {
                   ))
                 ) : filteredProducts.length > 0 ? (
                   filteredProducts.map((product) => (
-                    <tr key={product.id} className="hover:bg-gray-50">
+                    <tr key={product.id} className="hover:bg-gray-50 dark:bg-gray-800">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <img

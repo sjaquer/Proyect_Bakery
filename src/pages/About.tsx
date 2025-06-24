@@ -3,11 +3,11 @@ import { Cake, HeartHandshake, Rocket } from 'lucide-react';
 
 const About: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 dark:from-gray-800 dark:to-gray-900 py-12">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold text-center text-gray-900 mb-12">Sobre Nosotros</h1>
 
-        <section className="bg-white/70 backdrop-blur-md rounded-lg shadow p-8 mb-8">
+        <section className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-lg shadow p-8 mb-8">
           <div className="flex items-center mb-4">
             <Cake className="h-8 w-8 text-amber-600 mr-2" />
             <h2 className="text-2xl font-semibold">Visión</h2>
@@ -22,7 +22,7 @@ const About: React.FC = () => {
           </p>
         </section>
 
-        <section className="bg-white/70 backdrop-blur-md rounded-lg shadow p-8 mb-8">
+        <section className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-lg shadow p-8 mb-8">
           <div className="flex items-center mb-4">
             <HeartHandshake className="h-8 w-8 text-amber-600 mr-2" />
             <h2 className="text-2xl font-semibold">Misión</h2>
@@ -37,7 +37,7 @@ const About: React.FC = () => {
           </p>
         </section>
 
-        <section className="bg-white/70 backdrop-blur-md rounded-lg shadow p-8">
+        <section className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-lg shadow p-8">
           <div className="flex items-center mb-4">
             <Rocket className="h-8 w-8 text-amber-600 mr-2" />
             <h2 className="text-2xl font-semibold">Nuestro Futuro</h2>
