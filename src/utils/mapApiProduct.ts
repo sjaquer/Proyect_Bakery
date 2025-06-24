@@ -5,5 +5,6 @@ export function mapApiProduct(apiProduct: any): Product {
     ...apiProduct,
     imageUrl: apiProduct.imageUrl ?? apiProduct.image_url ?? '',
     inStock: apiProduct.stock > 0,
+    featured: apiProduct.featured ?? false,
   } as Product;
 }

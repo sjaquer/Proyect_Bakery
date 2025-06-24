@@ -13,6 +13,7 @@ export interface Product {
   allergens?: string[];
   createdAt: string;
   updatedAt: string;
+  featured?: boolean;
 }
 
 export interface ProductFormData {
@@ -24,4 +25,5 @@ export interface ProductFormData {
   stock: number;    // ← formulario de admin debe enviar stock
   ingredients?: string[];
   allergens?: string[];
+  featured?: boolean;
 }

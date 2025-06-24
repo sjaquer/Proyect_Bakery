@@ -26,6 +26,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     stock: initialData?.stock ?? 0,
     ingredients: initialData?.ingredients || [],
     allergens: initialData?.allergens || [],
+    featured: initialData?.featured ?? false,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,10 +39,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-    const { name, value, type } = e.target;
+    const { name, value, type, checked } = e.target as HTMLInputElement;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'number' ? Number(value) : value,
+        [name]: type === 'number' ? Number(value) : type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -74,6 +75,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
           onChange={handleInputChange}
           required
         />
+        <label className="flex items-center space-x-2 text-sm">
+          <input type="checkbox" name="featured" checked={formData.featured} onChange={handleInputChange} className="h-4 w-4 text-amber-600 border-gray-300 rounded" />
+          <span>Destacado del día</span>
+        </label>
       </div>
 
       <div>

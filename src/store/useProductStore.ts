@@ -13,13 +13,14 @@ interface ProductState {
   fetchProductById: (id: string) => Promise<void>;
   createProduct: (data: ProductFormData) => Promise<void>;
   updateProduct: (id: string, data: ProductFormData) => Promise<void>;
+  toggleFeatured: (id: string, featured: boolean) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   adjustStock: (items: { productId: number; quantity: number }[]) => void;
   clearError: () => void;
 }
 
 
-export const useProductStore = create<ProductState>((set) => ({
+export const useProductStore = create<ProductState>((set, get) => ({
   products: [],
   selectedProduct: null,
   isLoading: false,
@@ -78,17 +79,35 @@ export const useProductStore = create<ProductState>((set) => ({
     try {
       const response = await api.put<Product>(ENDPOINTS.productById(id), data);
       const updated = mapApiProduct(response.data);
-      set(state => ({ 
+      set(state => ({
         products: state.products.map(p => p.id === id ? updated : p),
-        isLoading: false 
+        isLoading: false
       }));
     } catch (error: any) {
-      set({ 
+      set({
         error: error.response?.data?.message || 'Failed to update product',
-        isLoading: false 
+        isLoading: false
       });
       throw error;
     }
+  },
+
+  toggleFeatured: async (id: string, featured: boolean) => {
+    const state = get();
+    const product = state.products.find(p => p.id === id);
+    if (!product) return;
+    const data: ProductFormData = {
+      name: product.name,
+      description: product.description,
+      imageUrl: product.imageUrl,
+      price: product.price,
+      category: product.category,
+      stock: product.stock,
+      ingredients: product.ingredients,
+      allergens: product.allergens,
+      featured,
+    };
+    await state.updateProduct(id, data);
   },
 
   deleteProduct: async (id: string) => {

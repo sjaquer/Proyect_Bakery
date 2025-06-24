@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
-import { Plus, Edit, Trash2, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Star } from 'lucide-react';
 import { useProductStore } from '../../store/useProductStore';
 import { Product, ProductFormData } from '../../types/product';
 import { formatPrice } from '../../utils/formatters';
@@ -17,6 +17,7 @@ const Products: React.FC = () => {
     createProduct,
     updateProduct,
     deleteProduct,
+    toggleFeatured,
     isLoading,
     error,
   } = useProductStore();
@@ -248,6 +249,13 @@ const Products: React.FC = () => {
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
+                  <button
+                    onClick={() => toggleFeatured(product.id, !product.featured)}
+                    className={product.featured ? 'text-amber-500' : 'text-gray-300'}
+                    aria-label="Marcar destacado"
+                  >
+                    <Star className={`h-4 w-4${product.featured ? ' fill-amber-400' : ''}`} />
+                  </button>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 capitalize">
@@ -291,6 +299,9 @@ const Products: React.FC = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Stock
                   </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Destacado
+                  </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Acciones
                   </th>
@@ -316,13 +327,16 @@ const Products: React.FC = () => {
                         <div className="h-4 bg-gray-200 rounded w-12"></div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="h-4 bg-gray-200 rounded w-16"></div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex justify-end space-x-2">
-                          <div className="h-8 w-8 bg-gray-200 rounded"></div>
-                          <div className="h-8 w-8 bg-gray-200 rounded"></div>
-                        </div>
+                    <div className="h-4 bg-gray-200 rounded w-16"></div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <div className="h-4 w-4 bg-gray-200 rounded mx-auto"></div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex justify-end space-x-2">
+                      <div className="h-8 w-8 bg-gray-200 rounded"></div>
+                      <div className="h-8 w-8 bg-gray-200 rounded"></div>
+                    </div>
                       </td>
                     </tr>
                   ))
@@ -375,6 +389,15 @@ const Products: React.FC = () => {
                         >
                           {product.stock}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-center">
+                        <button
+                          onClick={() => toggleFeatured(product.id, !product.featured)}
+                          className={product.featured ? 'text-amber-500' : 'text-gray-300'}
+                          aria-label="Marcar destacado"
+                        >
+                          <Star className={`h-5 w-5${product.featured ? ' fill-amber-400' : ''}`} />
+                        </button>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
