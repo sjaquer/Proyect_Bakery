@@ -17,6 +17,7 @@ import Profile from './pages/Profile';
 import About from './pages/About';
 import Dashboard from './pages/Admin/Dashboard';
 import OrderManagement from './pages/Admin/OrderManagement';
+import { Phone, MapPin } from 'lucide-react';
 import { useAuthStore } from './store/useAuthStore';
 
 
@@ -79,15 +80,21 @@ const HomePage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="text-center">
+            <div className="flex flex-col items-center text-center">
+              <div className="bg-amber-100 p-4 rounded-full mb-4">
+                <MapPin className="h-8 w-8 text-amber-600" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Dirección</h3>
-              <p className="text-gray-600">Av. Panadero 123, Ciudad Panera</p>
+              <p className="text-gray-600">Jr. Huancavelica 879</p>
             </div>
 
-            <div className="text-center">
+            <div className="flex flex-col items-center text-center">
+              <div className="bg-amber-100 p-4 rounded-full mb-4">
+                <Phone className="h-8 w-8 text-amber-600" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Pedidos grandes</h3>
               <p className="text-gray-600">
-                Llámanos al 555-123-456 para órdenes de más de 100 unidades.
+                Llámanos al +51 928 527 185 para órdenes de más de 100 unidades.
               </p>
             </div>
           </div>
