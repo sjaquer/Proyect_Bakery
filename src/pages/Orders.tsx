@@ -64,7 +64,7 @@ const OrdersPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-amber-50 py-8">
+    <div className="min-h-screen bg-amber-50 dark:bg-gray-900 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Mis pedidos</h1>
 
@@ -73,7 +73,7 @@ const OrdersPage: React.FC = () => {
             {[...Array(3)].map((_, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-lg shadow-md p-6 animate-pulse"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 animate-pulse"
               >
                 <div className="h-4 bg-gray-200 rounded mb-4"></div>
                 <div className="h-3 bg-gray-200 rounded mb-2"></div>
@@ -117,7 +117,7 @@ const OrdersPage: React.FC = () => {
             {displayOrders.map((order) => (
               <div
                 key={order.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
               >
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">

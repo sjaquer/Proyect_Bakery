@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { ShoppingCart, User, LogOut, Cake, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Cake, Menu, X, Sun, Moon } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useCartStore } from '../../store/useCartStore';
+import { useThemeStore } from '../../store/useThemeStore';
 import Button from '../shared/Button';
 
 const Header: React.FC = () => {
@@ -10,6 +11,7 @@ const Header: React.FC = () => {
   const { user, logout } = useAuthStore();
   const { getItemCount } = useCartStore();
   const cartCount = getItemCount();
+  const { theme, toggleTheme } = useThemeStore();
 
   const handleLogout = () => {
     logout();
@@ -21,13 +23,13 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50">
+    <header className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <Cake className="h-8 w-8 text-amber-600" />
-            <span className="text-xl font-bold text-gray-900">Digital Bakery</span>
+            <span className="text-xl font-bold text-gray-900 dark:text-gray-100">Digital Bakery</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -35,7 +37,7 @@ const Header: React.FC = () => {
             <NavLink
               to="/shop"
               className={({ isActive }) =>
-                isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                isActive ? 'text-amber-600' : 'text-gray-700 dark:text-gray-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200'
               }
             >
               Tienda
@@ -43,7 +45,7 @@ const Header: React.FC = () => {
             <NavLink
               to="/orders"
               className={({ isActive }) =>
-                isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200'
               }
             >
               Mis pedidos
@@ -53,7 +55,7 @@ const Header: React.FC = () => {
                 to="/admin"
                 end={false}
                 className={({ isActive }) =>
-                  isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                  isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200'
                 }
               >
                 Administración
@@ -66,7 +68,7 @@ const Header: React.FC = () => {
             {/* Cart */}
             <Link
               to="/cart"
-              className="relative p-2 text-gray-700 hover:text-amber-600 transition-colors duration-200"
+              className="relative p-2 text-gray-700 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200"
             >
               <ShoppingCart id="cart-icon" className="h-6 w-6" />
               {cartCount > 0 && (
@@ -76,10 +78,14 @@ const Header: React.FC = () => {
               )}
             </Link>
 
+            <button onClick={toggleTheme} className="p-2 text-gray-700 hover:text-amber-600 dark:text-gray-200 dark:hover:text-amber-400">
+              {theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+            </button>
+
             {/* User Menu */}
             {user ? (
               <div className="flex items-center space-x-2">
-                <Link to="/profile" className="text-sm text-gray-700 hover:text-amber-600">
+                <Link to="/profile" className="text-sm text-gray-700 hover:text-amber-600 dark:hover:text-amber-400">
                   Hola, {user.name}
                 </Link>
                 <Button
@@ -104,22 +110,25 @@ const Header: React.FC = () => {
 
           {/* Mobile Actions */}
           <div className="flex items-center space-x-4 md:hidden">
-            <Link
-              to="/cart"
-              className="relative p-2 text-gray-700 hover:text-amber-600 transition-colors duration-200"
-            >
-              <ShoppingCart id="cart-icon-mobile" className="h-6 w-6" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
-            <button
-              onClick={toggleMobileMenu}
-              className="p-2 rounded-md text-gray-700 hover:text-amber-600 focus:outline-none"
-            >
-              {isMobileMenuOpen ? (
+          <Link
+            to="/cart"
+            className="relative p-2 text-gray-700 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200"
+          >
+            <ShoppingCart id="cart-icon-mobile" className="h-6 w-6" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+          <button onClick={toggleTheme} className="p-2 text-gray-700 hover:text-amber-600 dark:text-gray-200 dark:hover:text-amber-400">
+            {theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+          </button>
+          <button
+            onClick={toggleMobileMenu}
+            className="p-2 rounded-md text-gray-700 hover:text-amber-600 dark:hover:text-amber-400 focus:outline-none"
+          >
+            {isMobileMenuOpen ? (
                 <X className="h-6 w-6" />
               ) : (
                 <Menu className="h-6 w-6" />
@@ -135,7 +144,7 @@ const Header: React.FC = () => {
               <NavLink
                 to="/shop"
                 className={({ isActive }) =>
-                  isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                  isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200'
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -144,7 +153,7 @@ const Header: React.FC = () => {
               <NavLink
                 to="/orders"
                 className={({ isActive }) =>
-                  isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                  isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200'
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -155,7 +164,7 @@ const Header: React.FC = () => {
                   to="/admin"
                   end={false}
                   className={({ isActive }) =>
-                    isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 transition-colors duration-200'
+                    isActive ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200'
                   }
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -166,7 +175,7 @@ const Header: React.FC = () => {
               <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                 <Link
                   to="/cart"
-                  className="flex items-center space-x-2 text-gray-700 hover:text-amber-600 transition-colors duration-200"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <ShoppingCart id="cart-icon-menu" className="h-5 w-5" />
@@ -177,7 +186,7 @@ const Header: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <Link
                       to="/profile"
-                      className="text-sm text-gray-700 hover:text-amber-600"
+                      className="text-sm text-gray-700 hover:text-amber-600 dark:hover:text-amber-400"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Mi perfil

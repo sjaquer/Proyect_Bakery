@@ -62,7 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
    };
 
   return (
-     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
+     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
        <div className="relative overflow-hidden">
         <img
           ref={imgRef}
@@ -86,7 +86,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="p-6">
          <div className="flex items-start justify-between mb-2">
            <h3
-             className="text-lg font-semibold text-gray-900 line-clamp-2"
+             className="text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2"
              dangerouslySetInnerHTML={{
                __html: DOMPurify.sanitize(product.name),
              }}
@@ -97,7 +97,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
          </div>
          
          <p
-           className="text-gray-600 text-sm mb-3 line-clamp-2"
+           className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2"
            dangerouslySetInnerHTML={{
              __html: DOMPurify.sanitize(product.description),
            }}

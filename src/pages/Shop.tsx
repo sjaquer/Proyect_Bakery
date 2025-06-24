@@ -58,7 +58,7 @@ const Shop: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-amber-50 py-12">
+      <div className="min-h-screen bg-amber-50 dark:bg-gray-900 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <p className="text-red-600">Error al cargar productos: {error}</p>
@@ -69,7 +69,7 @@ const Shop: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-amber-50 py-8">
+    <div className="min-h-screen bg-amber-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -123,7 +123,7 @@ const Shop: React.FC = () => {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-md animate-pulse">
+              <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-md animate-pulse">
                 <div className="h-48 bg-gray-200 rounded-t-xl"></div>
                 <div className="p-6">
                   <div className="h-4 bg-gray-200 rounded mb-2"></div>

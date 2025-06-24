@@ -133,7 +133,7 @@ const Checkout: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
       {/* Header removido para evitar duplicado; usa el global */}
       <div className="container mx-auto py-12 px-4">
         <h2 className="text-3xl font-bold mb-6">Finalizar compra</h2>
@@ -141,7 +141,7 @@ const Checkout: React.FC = () => {
           onSubmit={handleSubmit}
           className="flex flex-col lg:flex-row gap-8"
         >
-          <div className="flex-1 bg-white p-6 rounded-lg shadow">
+          <div className="flex-1 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
             <h3 className="text-xl font-semibold mb-4">
               Información de envío
             </h3>
@@ -250,7 +250,7 @@ const Checkout: React.FC = () => {
             </div>
           </div>
 
-          <div className="w-full lg:w-1/3 bg-white p-6 rounded-lg shadow">
+          <div className="w-full lg:w-1/3 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
             <h3 className="text-xl font-semibold mb-4">
               Resumen de Pedido
             </h3>

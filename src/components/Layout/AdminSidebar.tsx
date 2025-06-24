@@ -4,11 +4,11 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 const AdminSidebar: React.FC = () => (
-  <nav className="space-y-2 p-4 bg-white rounded shadow">
+  <nav className="space-y-2 p-4 bg-white dark:bg-gray-800 rounded shadow">
     <NavLink
       to="/admin"
       className={({ isActive }) =>
-        isActive ? 'block font-semibold text-amber-600' : 'block text-gray-700'
+        isActive ? 'block font-semibold text-amber-600' : 'block text-gray-700 dark:text-gray-200'
       }
     >
       Panel
@@ -16,7 +16,7 @@ const AdminSidebar: React.FC = () => (
     <NavLink
       to="/admin/products"
       className={({ isActive }) =>
-        isActive ? 'block font-semibold text-amber-600' : 'block text-gray-700'
+        isActive ? 'block font-semibold text-amber-600' : 'block text-gray-700 dark:text-gray-200'
       }
     >
       Productos
@@ -24,7 +24,7 @@ const AdminSidebar: React.FC = () => (
     <NavLink
       to="/admin/manage-orders"
       className={({ isActive }) =>
-        isActive ? 'block font-semibold text-amber-600' : 'block text-gray-700'
+        isActive ? 'block font-semibold text-amber-600' : 'block text-gray-700 dark:text-gray-200'
       }
     >
       Gestionar pedidos
