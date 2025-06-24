@@ -7,6 +7,7 @@ import { formatPrice } from '../../utils/formatters';
 import Button from '../../components/shared/Button';
 import Input from '../../components/shared/Input';
 import ProductForm from '../../components/Product/ProductForm';
+import StockUpdateForm from '../../components/Product/StockUpdateForm';
 import placeholderImg from '../../utils/placeholder';
 
 const Products: React.FC = () => {
@@ -22,6 +23,7 @@ const Products: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [showStockForm, setShowStockForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   useEffect(() => {
@@ -73,7 +75,54 @@ const Products: React.FC = () => {
     setEditingProduct(null);
   };
 
-   if (showForm) {
+  const handleBulkStockUpdate = async (
+    updates: { id: string; stock: number }[]
+  ) => {
+    try {
+      for (const u of updates) {
+        const product = products.find(p => p.id === u.id);
+        if (!product) continue;
+        const data: ProductFormData = {
+          name: product.name,
+          description: product.description,
+          imageUrl: product.imageUrl,
+          price: product.price,
+          category: product.category,
+          stock: u.stock,
+          ingredients: product.ingredients,
+          allergens: product.allergens,
+        };
+        await updateProduct(product.id, data);
+      }
+      setShowStockForm(false);
+    } catch {
+      // error handled by store
+    }
+  };
+
+  if (showStockForm) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Actualizar Stock</h1>
+            <Button variant="outline" onClick={() => setShowStockForm(false)}>
+              Cancelar
+            </Button>
+          </div>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <StockUpdateForm
+              products={products}
+              onSubmit={handleBulkStockUpdate}
+              isLoading={isLoading}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (showForm) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,13 +152,21 @@ const Products: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Gestión de Productos</h1>
-          <Button
-            onClick={() => setShowForm(true)}
-            className="flex items-center space-x-2"
-          >
-            <Plus className="h-5 w-5" />
-            <span>Agregar Producto</span>
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowForm(true)}
+              className="flex items-center space-x-2"
+            >
+              <Plus className="h-5 w-5" />
+              <span>Agregar Producto</span>
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setShowStockForm(true)}
+            >
+              Actualizar Stock
+            </Button>
+          </div>
         </div>
 
         {error && (
