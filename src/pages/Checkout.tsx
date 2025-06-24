@@ -16,6 +16,7 @@ interface FormData {
   address: string;
   paymentMethod: 'yape' | 'cash' | '';
   cashAmount?: string;
+  isDelivery: boolean;
 }
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ const Checkout: React.FC = () => {
     address: '',
     paymentMethod: '',
     cashAmount: '',
+    isDelivery: true,
   });
 
 
@@ -69,7 +71,7 @@ const Checkout: React.FC = () => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: name === 'isDelivery' ? value === 'delivery' : value,
       ...(name === 'paymentMethod' && value !== 'cash' ? { cashAmount: '' } : {})
     }));
   };
@@ -99,6 +101,7 @@ const Checkout: React.FC = () => {
       ...(formData.paymentMethod === 'cash'
         ? { cashAmount: Number(formData.cashAmount || 0) }
         : {}),
+      isDelivery: formData.isDelivery,
       // Enviar la información de contacto tanto de manera anidada
       // como en la raíz para maximizar compatibilidad con la API
       name: formData.name,
@@ -228,6 +231,21 @@ const Checkout: React.FC = () => {
                     </p>
                   </div>
                 )}
+                <div>
+                  <label htmlFor="isDelivery" className="block mb-1 text-gray-700">
+                    Entrega
+                  </label>
+                  <select
+                    id="isDelivery"
+                    name="isDelivery"
+                    value={formData.isDelivery ? 'delivery' : 'pickup'}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
+                  >
+                    <option value="delivery">Delivery</option>
+                    <option value="pickup">Recoger en tienda</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
