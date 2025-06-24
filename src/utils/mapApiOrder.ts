@@ -23,6 +23,7 @@ export function mapApiOrder(apiOrder: any): Order {
     apiOrder.customer ??
     apiOrder.Customer ??
     apiOrder.User ??
+    apiOrder.user ??
     apiOrder.customerInfo ??
     apiOrder.CustomerInfo ??
     apiOrder.customer_info ??
