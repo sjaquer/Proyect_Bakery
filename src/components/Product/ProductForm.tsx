@@ -28,31 +28,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
     allergens: initialData?.allergens || [],
   });
 
-  const [ingredientsText, setIngredientsText] = useState(
-    initialData?.ingredients?.join(', ') || ''
-  );
-  const [allergensText, setAllergensText] = useState(
-    initialData?.allergens?.join(', ') || ''
-  );
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const ingredients = ingredientsText
-      .split(',')
-      .map(item => item.trim())
-      .filter(item => item.length > 0);
-    
-    const allergens = allergensText
-      .split(',')
-      .map(item => item.trim())
-      .filter(item => item.length > 0);
-
-    await onSubmit({
-      ...formData,
-      ingredients,
-      allergens,
-    });
+    await onSubmit(formData);
   };
 
   const handleInputChange = (
@@ -154,21 +132,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
           />
         </>
       )}
-
-
-      <Input
-        label="Ingredientes (separados por coma)"
-        value={ingredientsText}
-        onChange={(e) => setIngredientsText(e.target.value)}
-        helperText="Introduce los ingredientes separados por comas"
-      />
-
-      <Input
-        label="Alérgenos (separados por coma)"
-        value={allergensText}
-        onChange={(e) => setAllergensText(e.target.value)}
-        helperText="Introduce los alérgenos separados por comas"
-      />
 
 
       <div className="flex justify-end">
