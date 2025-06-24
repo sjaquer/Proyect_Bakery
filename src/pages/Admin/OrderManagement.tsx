@@ -162,6 +162,11 @@ const OrderManagement: React.FC = () => {
                         <div className="text-xs text-gray-500">
                           {o.customer?.address || "—"}
                         </div>
+                        {o.isDelivery !== undefined && (
+                          <div className="text-xs text-gray-500">
+                            {o.isDelivery ? 'Delivery' : 'Recoger en tienda'}
+                          </div>
+                        )}
                         {o.paymentMethod && (
                           <div className="flex items-center gap-1 text-xs text-gray-500">
                             <PaymentMethodIcon

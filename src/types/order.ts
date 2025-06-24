@@ -59,6 +59,7 @@ export interface Order {
   paymentMethod?: string;
   cashAmount?: number;
   reason?: string;
+  isDelivery?: boolean;
 }
 
 export interface CheckoutData {
@@ -74,4 +75,5 @@ export interface CheckoutData {
     phone: string;
     address: string;
   };
+  isDelivery?: boolean;
 }
