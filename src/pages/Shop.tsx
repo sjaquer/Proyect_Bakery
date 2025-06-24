@@ -25,6 +25,8 @@ const Shop: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const featuredProducts = products.filter(p => p.featured).slice(0, 3);
+
   const categories = useMemo(() => {
     const labelMap: Record<string, string> = {
       bread: 'Pan',
@@ -76,6 +78,19 @@ const Shop: React.FC = () => {
             Descubre nuestra selección de panes, pasteles y postres recién horneados con los mejores ingredientes.
           </p>
         </div>
+
+        {featuredProducts.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Destacados del día</h2>
+            <div className="flex space-x-4 overflow-x-auto pb-2">
+              {featuredProducts.map(prod => (
+                <div key={prod.id} className="flex-shrink-0 w-64">
+                  <ProductCard product={prod} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Search and Filter */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">

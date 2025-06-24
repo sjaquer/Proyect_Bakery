@@ -22,6 +22,7 @@ const ProductEdit: React.FC = () => {
     stock: 0,
     description: '',
     imageUrl: '',
+    featured: false,
   });
 
   useEffect(() => {
@@ -34,17 +35,25 @@ const ProductEdit: React.FC = () => {
             stock: data.stock,
             description: data.description,
             imageUrl: data.imageUrl || '',
+            featured: data.featured || false,
           })
         )
         .catch((err) => console.error(err));
     }
   }, [id, isEdit]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type, checked } = e.target as HTMLInputElement;
     setForm((f) => ({
       ...f,
-      [name]: name === 'price' || name === 'stock' ? Number(value) : value,
+      [name]:
+        name === 'price' || name === 'stock'
+          ? Number(value)
+          : type === 'checkbox'
+            ? checked
+            : value,
     }));
   };
 
@@ -91,6 +100,10 @@ const ProductEdit: React.FC = () => {
           onChange={handleChange}
           required
         />
+        <label className="flex items-center space-x-2 text-sm">
+          <input type="checkbox" name="featured" checked={form.featured} onChange={handleChange} className="h-4 w-4 text-amber-600 border-gray-300 rounded" />
+          <span>Destacado del día</span>
+        </label>
         <Input
           label="Descripción"
           name="description"
