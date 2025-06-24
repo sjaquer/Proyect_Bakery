@@ -14,6 +14,7 @@ import MyOrders from './pages/MyOrders';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import Profile from './pages/Profile';
+import About from './pages/About';
 import Dashboard from './pages/Admin/Dashboard';
 import OrderManagement from './pages/Admin/OrderManagement';
 import { useAuthStore } from './store/useAuthStore';
@@ -57,7 +58,7 @@ const HomePage: React.FC = () => {
                 Ver menú
               </a>
               <a
-                href="#features"
+                href="/about"
                 className="inline-flex items-center justify-center px-8 py-3 border-2 border-amber-600 text-base font-medium rounded-lg text-amber-600 bg-transparent hover:bg-amber-600 hover:text-white transition-colors duration-200"
               >
                 Conócenos
@@ -67,37 +68,27 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Features Section */}
+      {/* Contact Section */}
       <div id="features" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">¿Por qué elegirnos?</h2>
-            <p className="text-lg text-gray-600">Ingredientes de calidad, métodos tradicionales y comodidad moderna</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Contáctanos</h2>
+            <p className="text-lg text-gray-600">
+              Encuentra nuestra dirección o solicita pedidos grandes por teléfono
+            </p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="text-center">
-              <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🥖</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Frescura diaria</h3>
-              <p className="text-gray-600">Todos nuestros productos se hornean cada mañana con recetas tradicionales.</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Dirección</h3>
+              <p className="text-gray-600">Av. Panadero 123, Ciudad Panera</p>
             </div>
-            
+
             <div className="text-center">
-              <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🚚</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Entrega rápida</h3>
-              <p className="text-gray-600">Servicio de entrega rápido y confiable que lleva nuestra panadería a tu puerta.</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">⭐</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Calidad premium</h3>
-              <p className="text-gray-600">Utilizamos solo los mejores ingredientes de proveedores de confianza.</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Pedidos grandes</h3>
+              <p className="text-gray-600">
+                Llámanos al 555-123-456 para órdenes de más de 100 unidades.
+              </p>
             </div>
           </div>
         </div>
@@ -166,9 +157,10 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/shop" element={<Shop />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/about" element={<About />} />
             <Route
               path="/profile"
               element={
