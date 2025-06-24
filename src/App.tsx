@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from './components/Layout/AdminSidebar';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -20,6 +20,9 @@ import OrderManagement from './pages/Admin/OrderManagement';
 import { Phone, MapPin, Mail } from 'lucide-react';
 import { useAuthStore } from './store/useAuthStore';
 import { useThemeStore } from './store/useThemeStore';
+import { useOrderStore } from './store/useOrderStore';
+import type { Order } from './types/order';
+import { formatOrderStatus } from './utils/formatters';
 
 
 const HomePage: React.FC = () => {
@@ -116,6 +119,8 @@ const HomePage: React.FC = () => {
 function App() {
   const { user } = useAuthStore();
   const { theme } = useThemeStore();
+  const { orders, fetchOrders } = useOrderStore();
+  const prevOrdersRef = useRef<Order[]>([]);
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -173,6 +178,43 @@ function App() {
       controller.abort();
     };
   }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const handleUpdate = async () => {
+      const previous = prevOrdersRef.current;
+      await fetchOrders();
+      const current = useOrderStore.getState().orders;
+      for (const order of current) {
+        const prev = previous.find((p) => p.id === order.id);
+        if (
+          prev &&
+          prev.status !== order.status &&
+          (order.status === 'received' || order.status === 'ready')
+        ) {
+          if ('Notification' in window) {
+            if (Notification.permission === 'default') {
+              await Notification.requestPermission();
+            }
+            if (Notification.permission === 'granted') {
+              new Notification(`Pedido #${String(order.id).slice(-8)}`, {
+                body: `Estado actualizado a ${formatOrderStatus(order.status)}`,
+              });
+            }
+          }
+        }
+      }
+      prevOrdersRef.current = current;
+    };
+
+    window.addEventListener('orders-updated', handleUpdate);
+    return () => window.removeEventListener('orders-updated', handleUpdate);
+  }, [user, fetchOrders]);
+
+  useEffect(() => {
+    prevOrdersRef.current = orders;
+  }, [orders]);
 
   return (
     <Router>
