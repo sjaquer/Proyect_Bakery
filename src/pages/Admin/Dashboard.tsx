@@ -20,11 +20,14 @@ const Dashboard: React.FC = () => {
     return () => window.removeEventListener('orders-updated', handler);
   }, [fetchOrders]);
 
-  const totalRevenue = orders
-    .filter((order) => order.status === 'delivered')
+  const today = new Date().toISOString().slice(0, 10);
+  const dailyRevenue = orders
+    .filter(
+      (order) =>
+        order.status === 'delivered' && order.createdAt.slice(0, 10) === today
+    )
     .reduce((sum, order) => sum + (order.total ?? 0), 0);
   const pendingOrders = orders.filter(order => order.status === 'pending').length;
-  const outOfStockProducts = products.filter(product => !product.inStock).length;
 
   const stats = [
     {
@@ -46,8 +49,8 @@ const Dashboard: React.FC = () => {
       color: 'bg-yellow-500',
     },
     {
-      title: 'Ingresos Totales',
-      value: formatPrice(totalRevenue),
+      title: 'Ingresos de Hoy',
+      value: formatPrice(dailyRevenue),
       icon: DollarSign,
       color: 'bg-purple-500',
     },
@@ -109,17 +112,28 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Productos sin stock */}
+          {/* Estado de Stock */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Estado de Stock</h2>
             <div className="space-y-4">
-              {outOfStockProducts.length > 0 ? (
-                <>
-                  <div className="text-sm text-red-600 font-medium mb-2">
-                    Sin stock ({outOfStockProducts.length})
-                  </div>
-                  {outOfStockProducts.slice(0, 5).map((product) => (
-                    <div key={product.id} className="flex items-center justify-between p-4 border border-red-200 rounded-lg bg-red-50">
+              {products.length > 0 ? (
+                products.map((product) => {
+                  const stock = product.stock;
+                  const base = 'flex items-center justify-between p-4 border rounded-lg';
+                  let color = '';
+                  let textColor = '';
+                  if (stock === 0) {
+                    color = 'border-red-200 bg-red-50';
+                    textColor = 'text-red-600';
+                  } else if (stock < 10) {
+                    color = 'border-yellow-200 bg-yellow-50';
+                    textColor = 'text-yellow-600';
+                  } else {
+                    color = 'border-green-200 bg-green-50';
+                    textColor = 'text-green-600';
+                  }
+                  return (
+                    <div key={product.id} className={`${base} ${color}`}>
                       <div className="flex items-center space-x-3">
                         <img
                           src={product.imageUrl || placeholderImg}
@@ -136,17 +150,14 @@ const Dashboard: React.FC = () => {
                           <p className="text-sm text-gray-500 capitalize">{product.category}</p>
                         </div>
                       </div>
-                      <span className="text-sm text-red-600 font-medium">
-                        Sin stock
+                      <span className={`text-sm font-medium ${textColor}`}>
+                        {stock === 0 ? 'Sin stock' : `${stock} uds`}
                       </span>
                     </div>
-                  ))}
-                </>
+                  );
+                })
               ) : (
-                <div className="text-center py-8">
-                  <Package className="mx-auto h-12 w-12 text-green-500 mb-2" />
-                  <p className="text-green-600 font-medium">¡Todos los productos en stock!</p>
-                </div>
+                <p className="text-gray-500">No hay productos</p>
               )}
             </div>
           </div>
