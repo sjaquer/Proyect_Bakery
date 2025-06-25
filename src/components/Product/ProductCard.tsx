@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { Plus} from 'lucide-react';
 import { Product } from '../../types/product';
@@ -13,6 +13,7 @@ import placeholderImg from '../../utils/placeholder';
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
    const { addItem } = useCartStore();
+   const [quantity, setQuantity] = useState(1);
    const imgRef = useRef<HTMLImageElement>(null);
 
   const handleAddToCart = () => {
@@ -22,7 +23,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         name: product.name,
         imageUrl: product.imageUrl,
         price: product.price,
-      });
+      }, quantity);
+
+      setQuantity(1);
 
       const img = imgRef.current;
       const cartIcon =
@@ -107,25 +110,35 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 capitalize">
             {product.category} 
           </span> 
-          <span className={product.stock > 0 
-            ? 'text-green-600 text-sm' 
-            : 'text-red-600 text-sm' 
-          }> 
-            {product.stock > 0 
+          <span className={product.stock > 0
+            ? 'text-green-600 text-sm'
+            : 'text-red-600 text-sm'
+          }>
+            {product.stock > 0
               ? `En stock: ${product.stock}`
               : 'Agotado'
-            } 
+            }
           </span>
-                    
-          <Button
-           onClick={handleAddToCart}
-           disabled={product.stock <= 0}
-            size="sm"
-            className="flex items-center space-x-1"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Añadir</span>
-          </Button>
+
+          <div className="flex items-center space-x-2">
+            <input
+              type="number"
+              min={1}
+              max={product.stock}
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              className="w-16 px-2 py-1 border border-gray-300 rounded-md text-center"
+            />
+            <Button
+              onClick={handleAddToCart}
+              disabled={product.stock <= 0}
+              size="sm"
+              className="flex items-center space-x-1"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Añadir</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
