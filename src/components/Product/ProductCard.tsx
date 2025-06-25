@@ -66,7 +66,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
-       <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden">
         <img
           ref={imgRef}
           src={product.imageUrl || placeholderImg}
@@ -79,12 +79,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           }}
         />
 
+        {product.stock > 0 && (
+          <span className="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-2 py-0.5 rounded">
+            {product.stock}
+          </span>
+        )}
+
         {product.stock <= 0 && (
-           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-             <span className="text-white font-semibold">Agotado</span>
-           </div>
-         )}
-       </div>
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <span className="text-white font-semibold">Agotado</span>
+          </div>
+        )}
+      </div>
       
       <div className="p-6">
          <div className="flex items-start justify-between mb-2">
@@ -108,16 +114,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
          
         <div className="flex items-center justify-between">
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 capitalize">
-            {product.category} 
-          </span> 
-          <span className={product.stock > 0
-            ? 'text-green-600 text-sm'
-            : 'text-red-600 text-sm'
-          }>
-            {product.stock > 0
-              ? `En stock: ${product.stock}`
-              : 'Agotado'
-            }
+            {product.category}
           </span>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
