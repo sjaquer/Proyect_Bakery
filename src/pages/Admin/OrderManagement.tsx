@@ -14,6 +14,7 @@ import {
   getStatusColor,
   formatPaymentMethod,
 } from "../../utils/formatters";
+import DOMPurify from "dompurify";
 import type { Order } from "../../types/order";
 import { ORDER_STATUSES } from "../../types/order";
 
@@ -192,9 +193,12 @@ const OrderManagement: React.FC = () => {
                           {formatPrice(o.total)}
                         </div>
                         {o.status === "rejected" && o.reason && (
-                          <div className="text-xs text-red-600">
-                            Motivo: {o.reason}
-                          </div>
+                          <div
+                            className="text-xs text-red-600"
+                            dangerouslySetInnerHTML={{
+                              __html: DOMPurify.sanitize(`Motivo: ${o.reason}`),
+                            }}
+                          />
                         )}
                         <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
                           <span
@@ -267,7 +271,12 @@ const OrderManagement: React.FC = () => {
                     <li key={o.id} className="border rounded p-2 bg-gray-50 dark:bg-gray-800">
                       #{String(o.id).slice(-8)} - {o.customer?.name || "—"}
                       {o.reason && (
-                        <span className="ml-2 text-red-600">({o.reason})</span>
+                        <span
+                          className="ml-2 text-red-600"
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(`(${o.reason})`),
+                          }}
+                        />
                       )}
                     </li>
                   ))}
