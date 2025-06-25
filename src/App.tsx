@@ -17,6 +17,7 @@ import Profile from './pages/Profile';
 import About from './pages/About';
 import Dashboard from './pages/Admin/Dashboard';
 import OrderManagement from './pages/Admin/OrderManagement';
+import BusinessIntelligence from './pages/Admin/BusinessIntelligence';
 import { Phone, MapPin, Mail } from 'lucide-react';
 import { useAuthStore } from './store/useAuthStore';
 import { useThemeStore } from './store/useThemeStore';
@@ -281,6 +282,7 @@ function App() {
               <Route path="products/create" element={<ProductEdit />} />
               <Route path="products/edit/:id" element={<ProductEdit />} />
               <Route path="manage-orders" element={<OrderManagement />} />
+              <Route path="intelligence" element={<BusinessIntelligence />} />
             </Route>
        </Routes>
         </main>

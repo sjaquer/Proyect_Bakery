@@ -29,6 +29,14 @@ const AdminSidebar: React.FC = () => (
     >
       Gestionar pedidos
     </NavLink>
+    <NavLink
+      to="/admin/intelligence"
+      className={({ isActive }) =>
+        isActive ? 'block font-semibold text-amber-600' : 'block text-gray-700 dark:text-gray-200'
+      }
+    >
+      Inteligencia
+    </NavLink>
     {/* …otros enlaces… */}
   </nav>
 );
