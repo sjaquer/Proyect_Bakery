@@ -9,7 +9,7 @@
 ---
 
 <p align="center">
-  <img src="https://img.shields.io/badge/React-18.2.0-blue?logo=react&logoColor=white" alt="React">
+  <img src="https://img.shields.io/badge/React-18.3.1-blue?logo=react&logoColor=white" alt="React">
   <img src="https://img.shields.io/badge/TypeScript-5.1.3-blue?logo=typescript&logoColor=white" alt="TypeScript">
   <img src="https://img.shields.io/badge/Vite-5.1.0-yellow?logo=vite&logoColor=black" alt="Vite">
   <img src="https://img.shields.io/badge/TailwindCSS-3.4.2-lightgray?logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
@@ -21,36 +21,36 @@
 
 ## 🧠 Descripción
 
-Digital Bakery Frontend es una aplicación web **responsiva**, **ligera** y **modular** construida con React, TypeScript, Vite y Tailwind CSS. Proporciona una vitrina digital adaptable a cualquier negocio con catálogo de productos (panaderías, cafeterías, floristerías, artesanías, suscripciones, etc.), optimizando costes y garantizando una experiencia de usuario fluida.
+Digital Bakery Frontend es una **SPA** moderna, escrita en **React** y **TypeScript**, que emplea **Vite** para la construcción y **Tailwind CSS** para la capa de estilos. Ofrece una vitrina digital adaptable a negocios con catálogo de productos —panaderías, cafeterías, floristerías, artesanías o servicios por suscripción— y prioriza la velocidad de carga y la experiencia de usuario.
 
 ---
 
 ## ✨ Características principales
 
-- **Catálogo interactivo**: búsqueda, filtrado y paginación de productos.
-- **Flujo de compra completo**: carrito, checkout y validación de datos.
-- **Actualizaciones en tiempo real**: pedidos y notificaciones vía SSE.
-- **Componentes reutilizables**: arquitectura basada en hooks y contextos.
-- **Optimización**: bundles ligeros, carga diferida y compresión de imágenes con Google Image FX.
+- **Catálogo interactivo**: búsqueda, filtrado y paginación de artículos con rendimiento optimizado.
+- **Flujo de compra completo**: carrito persistente, proceso de checkout y validación de datos.
+- **Actualizaciones en tiempo real**: seguimiento de pedidos y notificaciones mediante SSE.
+- **Componentes reutilizables**: estructura basada en hooks y contextos para fomentar la modularidad.
+- **Optimización avanzada**: bundles livianos, carga diferida y compresión de imágenes a través de Google Image FX.
 
 ---
 
 ## 💡 Innovación y adaptabilidad
 
 - **Modularidad total**  
-  Componentes desacoplados listos para integrarse en cualquier sector: panaderías, tiendas, servicios de suscripción, etc.
+  Componentes desacoplados pensados para integrarse en cualquier sector: comercios, servicios o suscripciones.
 
 - **Costos operativos reducidos**  
-  Despliegue en Vercel y librerías open‑source ofrecen gastos hasta un **40 % menores** que soluciones tradicionales.
+  El despliegue en Vercel y el uso de librerías open source disminuyen hasta un **40 %** los gastos frente a plataformas tradicionales.
 
 - **Escalabilidad y flexibilidad**  
-  Estructura de carpetas y hooks facilita expansión de funcionalidades sin reescribir código.
+  La organización de carpetas y la abstracción de hooks facilitan agregar nuevas funcionalidades sin reescribir código.
 
 - **Enfoque UX/UI profesional**  
-  Diseño accesible, responsive y optimizado para Core Web Vitals.
+  Interfaces accesibles, responsive y optimizadas para las Core Web Vitals.
 
 - **Preparado para IA futura**  
-  Puntos de extensión en la interfaz para chatbots, recomendadores y paneles de BI en próximas versiones.
+  Puntos de extensión disponibles para chatbots, motores de recomendación y dashboards de BI.
 
 ---
 
@@ -58,50 +58,49 @@ Digital Bakery Frontend es una aplicación web **responsiva**, **ligera** y **mo
 
 ```
 frontend/
-├── public/                
-│   └── index.html, favicon, assets estáticos
+├── public/           # index.html, favicon y recursos estáticos
 ├── src/
-│   ├── assets/            
-│   ├── components/        
-│   ├── hooks/             
-│   ├── pages/             
-│   ├── services/          
-│   ├── styles/            
-│   ├── App.tsx            
-│   └── main.tsx           
-├── .env.example           
-├── vite.config.ts         
-├── tailwind.config.ts     
-├── tsconfig.json          
-├── package.json           
-└── README.md              
+│   ├── assets/
+│   ├── components/
+│   ├── hooks/
+│   ├── pages/
+│   ├── services/
+│   ├── styles/
+│   ├── App.tsx
+│   └── main.tsx
+├── .env.example
+├── vite.config.ts
+├── tailwind.config.js
+├── tsconfig.json
+├── package.json
+└── README.md
 ```
 
 ---
 
 ## ⚙️ Instalación y desarrollo local
 
-1. Clona el repositorio  
+1. **Clona el repositorio**
    ```bash
    git clone https://github.com/sjaquer/digital-bakery-frontend.git
    cd digital-bakery-frontend
    ```
 
-2. Instala dependencias  
+2. **Instala dependencias**
    ```bash
    npm install
    ```
 
-3. Configura variables de entorno  
-   - Copia `.env.example` a `.env` y ajusta según tu entorno.
+3. **Configura variables de entorno**
+   Copia `.env.example` a `.env` y ajusta los valores según tu entorno.
 
-4. Ejecuta en modo desarrollo  
+4. **Ejecuta en modo desarrollo**
    ```bash
    npm run dev
    ```
-   Accede en `http://localhost:5173`
+   Visita `http://localhost:5173`
 
-5. Genera build de producción  
+5. **Genera build de producción**
    ```bash
    npm run build
    ```
@@ -110,7 +109,7 @@ frontend/
 
 ## 🚀 Despliegue
 
-El frontend está optimizado para deploy en **Vercel**, aprovechando Edge Functions y CDN global. Solo necesitas vincular tu repositorio y configurar la variable de entorno `VITE_API_BASE_URL`.
+El proyecto está preparado para desplegarse en **Vercel**, sacando provecho de las Edge Functions y de la CDN global. Vincula tu repositorio y define la variable `VITE_API_BASE_URL` para apuntar a tu API.
 
 ---
 
@@ -122,17 +121,17 @@ El frontend está optimizado para deploy en **Vercel**, aprovechando Edge Funct
 
 ## 🔮 Futuras integraciones (IA planeada)
 
-> *Estas características se implementarán en versiones posteriores tras validar el MVP.*
+> *Estas funcionalidades se incorporarán en futuras versiones tras validar el MVP.*
 
-- Chatbot conversacional para atención y gestión de pedidos.  
-- Recomendador de productos basado en comportamiento.  
-- Dashboards de BI para métricas e inventario.
+- Chatbot conversacional para soporte y gestión de pedidos.
+- Sistema de recomendación de productos basado en comportamiento.
+- Paneles de Business Intelligence para métricas e inventario.
 
 ---
 
 ## 📜 Licencia
 
-MIT License.
+Este proyecto se distribuye bajo la licencia MIT.
 
 ---
 
