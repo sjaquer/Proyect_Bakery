@@ -29,7 +29,7 @@ const Header: React.FC = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <Cake className="h-8 w-8 text-amber-600" />
-            <span className="text-xl font-bold text-gray-900 dark:text-gray-100">Digital Bakery</span>
+            <span className="text-xl font-bold text-gray-900 dark:text-gray-100">Panaderia Montoya</span>
           </Link>
 
           {/* Desktop Navigation */}
