@@ -4,7 +4,15 @@
 
 @layer base {
   body {
-    @apply text-gray-900 dark:text-gray-200;
+    @apply font-body text-gray-900 dark:text-gray-200;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+
+  button {
+    @apply font-button;
   }
 
   .dark .text-gray-900 {
