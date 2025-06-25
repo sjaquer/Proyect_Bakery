@@ -206,7 +206,7 @@ const OrderManagement: React.FC = () => {
                           >
                             {formatOrderStatus(o.status)}
                           </span>
-                          <div className="flex gap-2 flex-wrap justify-center">
+                          <div className="flex flex-col sm:flex-row gap-2 flex-wrap justify-center w-full">
                             {o.status === "pending" && (
                               <Button
                                 size="xs"
