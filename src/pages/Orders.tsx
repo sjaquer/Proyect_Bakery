@@ -12,6 +12,7 @@ import {
   getStatusColor
 } from '../utils/formatters';
 import placeholderImg from '../utils/placeholder';
+import DOMPurify from 'dompurify';
 
 const OrdersPage: React.FC = () => {
   const navigate = useNavigate();
@@ -207,7 +208,12 @@ const OrdersPage: React.FC = () => {
           )}
           {order.status === 'rejected' && order.reason && (
             <div className="border-t border-gray-200 pt-4 mt-4">
-              <p className="text-sm text-red-600">Pedido rechazado: {order.reason}</p>
+              <p
+                className="text-sm text-red-600"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(`Pedido rechazado: ${order.reason}`),
+                }}
+              />
             </div>
           )}
           {order.status === 'pending' && (
