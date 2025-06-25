@@ -106,7 +106,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
            }}
          />
          
-         <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 capitalize">
             {product.category} 
           </span> 
@@ -120,20 +120,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             }
           </span>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
             <input
               type="number"
               min={1}
               max={product.stock}
               value={quantity}
               onChange={(e) => setQuantity(Number(e.target.value))}
-              className="w-16 px-2 py-1 border border-gray-300 rounded-md text-center"
+              className="w-full sm:w-20 px-2 py-1 border border-gray-300 rounded-md text-center"
             />
             <Button
               onClick={handleAddToCart}
               disabled={product.stock <= 0}
               size="sm"
-              className="flex items-center space-x-1"
+              className="flex items-center justify-center space-x-1 w-full sm:w-auto"
             >
               <Plus className="h-4 w-4" />
               <span>Añadir</span>
