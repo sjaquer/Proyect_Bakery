@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCartStore } from '../store/useCartStore';
 import { useOrderStore } from '../store/useOrderStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -146,20 +146,16 @@ const Checkout: React.FC = () => {
               Información de envío
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                label="Nombre"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-              <Input
-                label="Teléfono"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
+              <div className="md:col-span-2 space-y-2">
+                <p className="text-gray-700">
+                  Los datos de nombre, teléfono y dirección se completarán automáticamente con la información de tu cuenta.
+                </p>
+                <Link to="/profile">
+                  <Button type="button" variant="outline">
+                    Cambiar datos desde mi perfil
+                  </Button>
+                </Link>
+              </div>
               <div className="md:col-span-2">
                 <Input
                   label="Email"
@@ -167,22 +163,6 @@ const Checkout: React.FC = () => {
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label
-                  htmlFor="address"
-                  className="block mb-1 text-gray-700"
-                >
-                  Dirección
-                </label>
-                <textarea
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
                   required
                 />
               </div>
@@ -279,10 +259,11 @@ const Checkout: React.FC = () => {
               <span>Total:</span>
               <span>{formatPrice(total)}</span>
             </div>
-            <div className="text-sm text-gray-600 mb-4 space-y-2">
-              <p>• Envío gratis para pedidos superiores a S/ 25</p>
+            <div className="text-sm text-gray-600 mb-4">
               <p>
-                • Recibirás un correo de confirmación cuando tu pedido sea procesado
+                Se te enviará un mensaje en whatsapp cuando tu pedido esté saliendo
+                a tu domicilio o, si es para recoger, cuando esté listo para
+                recoger. También servirá para responder preguntas.
               </p>
             </div>
             {error && <p className="text-red-500 mb-2">{error}</p>}
