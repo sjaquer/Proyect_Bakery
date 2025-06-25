@@ -82,9 +82,9 @@ const Shop: React.FC = () => {
         {featuredProducts.length > 0 && (
           <div className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Destacados del día</h2>
-            <div className="flex space-x-4 overflow-x-auto pb-2">
+            <div className="flex flex-wrap justify-center gap-4">
               {featuredProducts.map(prod => (
-                <div key={prod.id} className="flex-shrink-0 w-64 sm:w-72 lg:w-80">
+                <div key={prod.id} className="w-64 sm:w-72 lg:w-80">
                   <ProductCard product={prod} />
                 </div>
               ))}

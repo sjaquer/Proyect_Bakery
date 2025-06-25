@@ -112,11 +112,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
            }}
          />
          
-        <div className="flex items-center justify-between">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 capitalize">
-            {product.category}
-          </span>
-
+       <div className="flex items-center justify-center">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
             <input
               type="number"
